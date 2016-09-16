@@ -1,0 +1,33 @@
+{
+  "name": "picwords2",
+  "version": "0.0.1",
+  "description": "Online quiz with pictures v.2 using MEAN stack (Typescript, Angular 2)",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivor06/picwords2.git"
+  },
+  "dependencies": {
+    "@types/core-js": ">= 0.9.7",
+    "es6-promise": ">= 3.2.1",
+    "es6-shim": ">= 0.35.1",
+    "tslint": ">= 3.13.0",
+    "typescript": ">= 2.1.0"
+  },
+  "engines": {
+    "node": ">= 6.3.1",
+    "npm": ">= 3.10.3"
+  },
+  "keywords": [
+    "quiz",
+    "pictures"
+  ],
+  "author": "Michael M.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ivor06/picwords2/issues"
+  },
+  "homepage": "https://github.com/ivor06/picwords2#readme"
+}
