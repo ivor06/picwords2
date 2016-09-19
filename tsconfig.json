@@ -13,12 +13,23 @@
     "removeComments": false
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "server/node_modules",
+    "typings"
+  ],
+  "files": [
+    "./server/app.ts",
+    "./server/config.ts",
+    "./server/server.ts"
   ],
   "typeRoots": [
-    "./node_modules/@types"
+    //    "./node_modules/@types"
+    "./typings",
+    "."
   ],
   "types": [
-    "core-js"
+    //"core-js"
+    "typings",
+    ""
   ]
 }

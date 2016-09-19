@@ -1,0 +1,62 @@
+{
+  "extends": "tslint:latest",
+  "rules": {
+    "interface-name": false,
+    "label-position": true,
+    "max-line-length": [
+      true,
+      140
+    ],
+    "member-access": true,
+    "member-ordering": [
+      true,
+      "public-before-private",
+      "static-before-instance",
+      "variables-before-functions"
+    ],
+    "no-arg": true,
+    "no-require-imports": true,
+    "no-consecutive-blank-lines": true,
+    "no-construct": true,
+    "no-debugger": true,
+    "no-duplicate-key": true,
+    "no-duplicate-variable": true,
+    "no-empty": false,
+    "no-eval": true,
+    "no-unreachable": true,
+    "no-unused-expression": false,
+    "no-unused-variable": true,
+    "no-var-requires": true,
+    "no-var-keyword": true,
+    "no-inferrable-types": true,
+    "no-internal-module": false,
+    "no-null-keyword": false,
+    "one-line": [
+      true,
+      "check-open-brace",
+      "check-whitespace"
+    ],
+    "quotemark": [
+      true,
+      "double"
+    ],
+    "radix": false,
+    "semicolon": true,
+    "switch-default": false,
+    "triple-equals": [
+      true,
+      "allow-null-check"
+    ],
+    "typedef": false,
+    "typedef-whitespace": [
+      true,
+      {
+        "catch-clause": "nospace",
+        "index-signature": "nospace",
+        "parameter": "nospace",
+        "property-signature": "nospace",
+        "variable-declarator": "nospace"
+      }
+    ]
+  }
+}
