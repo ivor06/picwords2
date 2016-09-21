@@ -2,4 +2,4 @@
 picwords2.iml
 node_modules/*
 server/node_modules/*
-client/node_modules/*
+public/node_modules/*

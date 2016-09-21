@@ -20,16 +20,15 @@
   "files": [
     "./server/app.ts",
     "./server/config.ts",
-    "./server/server.ts"
+    "./server/server.ts",
+    "./public/app/main.ts",
+    "./public/app/app.module.ts",
+    "./public/app/app.component.ts"
   ],
   "typeRoots": [
-    //    "./node_modules/@types"
-    "./typings",
     "."
   ],
   "types": [
-    //"core-js"
-    "typings",
-    ""
+    "typings"
   ]
 }
