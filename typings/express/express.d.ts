@@ -8,8 +8,8 @@
  var app = express();
  =============================================== */
 
-/// <reference path="./serve-static.d.ts" />
-/// <reference path="./express-serve-static-core.d.ts" />
+/// <reference path="../serve-static/serve-static.d.ts" />
+/// <reference path="../express-serve-static-core/express-serve-static-core.d.ts" />
 
 declare module "express" {
     import * as serveStatic from "serve-static";

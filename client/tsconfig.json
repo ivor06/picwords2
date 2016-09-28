@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "target": "es5",
+    "sourceMap": true,
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noEmitOnError": false,
+    "preserveConstEnums": false,
+    "allowJs": true,
+    "removeComments": false
+  },
+  "files": [
+    "../node_modules/@types/core-js/index.d.ts"
+  ],
+  "types": [
+    "../node_modules/@types/core-js/index.d.ts"
+  ]
+}

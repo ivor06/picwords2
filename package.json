@@ -30,5 +30,12 @@
   "bugs": {
     "url": "https://github.com/ivor06/picwords2/issues"
   },
-  "homepage": "https://github.com/ivor06/picwords2#readme"
+  "homepage": "https://github.com/ivor06/picwords2#readme",
+  "devDependencies": {
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-tslint": "^6.1.1",
+    "gulp-typescript": "^3.0.1",
+    "gulp-uglify": "^2.0.0"
+  }
 }

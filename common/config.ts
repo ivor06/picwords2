@@ -4,6 +4,12 @@ export namespace SERVER {
     export const PORT = process.env.PORT || 3000;
 }
 
+/* Client configure */
+export namespace CLIENT {
+    export const BUILD_PATH = "public";
+    export const SRC_ROOT_PATH = "./client";
+}
+
 /* Database configure */
 export namespace DB {
     export const COLLECTION = "picwords2";

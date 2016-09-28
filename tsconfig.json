@@ -1,34 +1,38 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "moduleResolution": "node",
     "target": "es5",
     "sourceMap": true,
     "declaration": false,
+    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noEmitOnError": false,
-    "preserveConstEnums": true,
+    "preserveConstEnums": false,
     "allowJs": true,
     "removeComments": false
   },
   "exclude": [
     "node_modules",
     "server/node_modules",
-    "typings"
+    "client/node_modules"
   ],
   "files": [
+    "./typings/gulp-tslint/gulp-tslint.d.ts",
+    "./typings/gulp-uglify/gulp-uglify.d.ts",
+    "./typings/gulp-tsd/gulp-tsd.d.ts",
+    "./typings/del/del.d.ts",
+    "./gulpfile.ts",
     "./server/app.ts",
-    "./server/config.ts",
-    "./server/server.ts",
-    "./public/app/main.ts",
-    "./public/app/app.module.ts",
-    "./public/app/app.component.ts"
+    "./common/config.ts",
+    "./server/server.ts"
   ],
   "typeRoots": [
-    "."
+    "./node_modules/@types"
   ],
   "types": [
-    "typings"
+    "core-js"
   ]
 }
