@@ -1,0 +1,27 @@
+<div class="wrapper">
+    <div class="btn-group dropdown">
+        <button
+                type="button"
+                class="btn btn-info dropdown-toggle"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="true"
+                (click)="onToggle()">
+            <span class="flag-icon flag-icon-{{ langList[currentLang].flagName }}">></span>
+            <span>{{ langList[currentLang].langName }}</span>
+            <span class="caret"></span>
+        </button>
+        <ul
+                class="dropdown-menu"
+                role="menu"
+                [style.display]="isActiveLanguageList ? 'block' : 'none'">
+            <li
+                    *ngFor="let language of langList | keys"
+                    (click)="onSelectLanguage(language.key)"
+                    class="btn btn-info">
+                <span class="flag-icon flag-icon-{{ langList[language.key].flagName }}">></span>
+                <span>{{langList[language.key].langName}}</span>
+            </li>
+        </ul>
+    </div>
+</div>

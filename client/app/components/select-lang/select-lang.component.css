@@ -1,0 +1,13 @@
+.wrapper {
+    /*margin: 0 2%;*/
+    /*width: 100px;*/
+    /*float: right;*/
+}
+
+.wrapper ul li {
+    width: 100%;
+}
+
+.wrapper ul li:hover {
+    background-color: #95a5a6;
+}

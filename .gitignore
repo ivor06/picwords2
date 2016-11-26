@@ -1,5 +1,9 @@
 .idea/*
 picwords2.iml
+npm-debug.log
 node_modules/*
 server/node_modules/*
 client/node_modules/*
+typings/*
+public/*
+libs/*

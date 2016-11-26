@@ -1,5 +1,9 @@
-(function (global) {
+(function () {
     System.config({
+        // transpiler: 'typescript',
+        typescriptOptions: {
+            emitDecoratorMetadata: true
+        },
         paths: {
             'npm:': 'node_modules/'
         },
@@ -13,20 +17,21 @@
             '@angular/http': 'npm:@angular/http/bundles/http.umd.js',
             '@angular/router': 'npm:@angular/router/bundles/router.umd.js',
             '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
-            'rxjs': 'npm:rxjs',
-            'angular2-in-memory-web-api': 'npm:angular2-in-memory-web-api/index.js'
+            'rxjs': 'npm:rxjs'
         },
         packages: {
             app: {
                 main: './main.js',
                 defaultExtension: 'js'
             },
-            rxjs: {
+            common: {
                 defaultExtension: 'js'
             },
-            'angular2-in-memory-web-api': {
-                main: "index.js",
-                defaultExtension: "js"
+            libs: {
+                defaultExtension: 'js'
+            },
+            rxjs: {
+                defaultExtension: 'js'
             }
         }
     });

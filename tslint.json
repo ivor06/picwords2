@@ -1,11 +1,13 @@
 {
   "extends": "tslint:latest",
   "rules": {
+    "curly": false,
     "interface-name": false,
+    "forin": false,
     "label-position": true,
     "max-line-length": [
       true,
-      160
+      200
     ],
     "member-access": false,
     "member-ordering": [
@@ -16,6 +18,7 @@
     ],
     "no-arg": true,
     "no-require-imports": true,
+    "no-reference": false,
     "no-console": false,
     "no-consecutive-blank-lines": true,
     "no-construct": true,
@@ -26,7 +29,7 @@
     "no-eval": true,
     "no-unreachable": true,
     "no-unused-expression": false,
-    "no-unused-variable": true,
+    "no-unused-variable": false,
     "no-var-requires": true,
     "no-var-keyword": true,
     "no-inferrable-types": true,
@@ -39,7 +42,9 @@
       "check-open-brace",
       "check-whitespace"
     ],
+    "one-variable-per-declaration": false,
     "ordered-imports": false,
+    "quotemark": [true],
     "radix": false,
     "semicolon": true,
     "switch-default": false,
