@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "description": "Online quiz with pictures v.2 using MEAN stack (Typescript, Angular 2)",
   "scripts": {
+    "typings install": "typings install",
+    "postinstall": "typings install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -10,12 +12,11 @@
     "url": "git+https://github.com/ivor06/picwords2.git"
   },
   "dependencies": {
-    "@types/core-js": ">= 0.9.7",
     "es6-promise": ">= 3.2.1",
     "es6-shim": ">= 0.35.1",
     "tslint": ">= 3.13.0",
     "typescript": ">= 2.1.0",
-    "typings": "^1.3.3"
+    "typings": "^1.5.0"
   },
   "engines": {
     "node": ">= 6.3.1",
@@ -36,6 +37,7 @@
     "gulp": "^3.9.1",
     "gulp-tslint": "^6.1.1",
     "gulp-typescript": "^3.0.1",
-    "gulp-uglify": "^2.0.0"
+    "gulp-uglify": "^2.0.0",
+    "run-sequence": "^1.2.2"
   }
 }
