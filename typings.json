@@ -1,15 +1,19 @@
 {
   "globalDependencies": {
     "core-js": "registry:dt/core-js#0.0.0+20160725163759",
+    "gulp-nodemon": "registry:dt/gulp-nodemon#0.0.0+20160316155526",
     "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#48c1e3c1d6baefa4f1a126f188c27c4fefd36bff"
   },
   "dependencies": {
     "del": "registry:npm/del#2.2.0+20160416211512",
     "express": "registry:npm/express#4.14.0+20160925001530",
     "glob": "registry:npm/glob#6.0.0+20160723033700",
-    "gulp": "registry:npm/gulp#4.0.0-alpha.2+20160817105618"
+    "gulp": "registry:npm/gulp#4.0.0-alpha.2+20160817105618",
+    "gulp-sourcemaps": "registry:npm/gulp-sourcemaps#2.0.0-alpha+20160823215745"
   },
   "globalDevDependencies": {
-    "run-sequence": "registry:dt/run-sequence#0.0.0+20160316155526"
+    "gulp-copy": "registry:dt/gulp-copy#0.0.2+20161006211742",
+    "run-sequence": "registry:dt/run-sequence#0.0.0+20160316155526",
+    "through": "registry:dt/through#0.0.0+20160317120654"
   }
 }

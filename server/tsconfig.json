@@ -16,17 +16,16 @@
   },
   "exclude": [
     "node_modules",
-    "server/node_modules",
-    "server",
-    "client/node_modules",
-    "client",
-    "public",
-    "typings",
-    "typings/**/*",
+    "../typings",
+    "../typings/**/*",
     "*.*d.ts"
   ],
   "files": [
-    "./typings/index.d.ts",
-    "./gulpfile.ts"
+    "../typings/index.d.ts",
+    "../common/classes/user.ts",
+    "../common/interfaces.ts",
+    "./app.ts",
+    "./server.ts",
+    "./routes/index.ts"
   ]
 }

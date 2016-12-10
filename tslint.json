@@ -69,6 +69,7 @@
         "property-signature": "nospace",
         "variable-declarator": "nospace"
       }
-    ]
+    ],
+    "variable-name": false
   }
 }
