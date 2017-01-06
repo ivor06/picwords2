@@ -11,13 +11,13 @@ import {LANGUAGES} from "../../../../common/config";
 
 export class SelectLangComponent {
 
-    langList = LANGUAGES;
+    @Output() static onChangeLanguage = new EventEmitter();
+
+    languages = LANGUAGES;
 
     isActiveLanguageList = false;
 
     currentLang: string = navigator.language;
-
-    @Output() static onChangeLanguage = new EventEmitter();
 
     onToggle(evt: any) {
         this.isActiveLanguageList = !this.isActiveLanguageList;
