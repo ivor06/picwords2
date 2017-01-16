@@ -1,0 +1,15 @@
+{
+  "user-new": "New player",
+  "user-edit": "Edit player",
+  "user-legend": "Player",
+  "user-name": "Nickname",
+  "user-password": "Password",
+  "user-avatar": "Avatar",
+  "user-about": "About yourself",
+  "user-city": "City",
+  "required-name": "Name is required",
+  "required-email": "Email is required",
+  "required-password": "Password is required",
+  "invalid-email": "Please type a valid email",
+  "button-save": "Save"
+}

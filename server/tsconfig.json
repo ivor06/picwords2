@@ -24,8 +24,13 @@
     "../typings/index.d.ts",
     "../common/classes/user.ts",
     "../common/interfaces.ts",
+    "../common/error.ts",
     "./app.ts",
     "./server.ts",
-    "./routes/index.ts"
+    "./routes/index.ts",
+    "./providers/db.ts",
+    "./providers/user.ts",
+    "./auth/auth.config.ts",
+    "./auth/strategies/local.ts"
   ]
 }

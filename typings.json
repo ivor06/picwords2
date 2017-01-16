@@ -1,15 +1,27 @@
 {
   "globalDependencies": {
     "core-js": "registry:dt/core-js#0.0.0+20160725163759",
+    "express-session": "registry:dt/express-session#0.0.0+20161119044246",
     "gulp-nodemon": "registry:dt/gulp-nodemon#0.0.0+20160316155526",
-    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#48c1e3c1d6baefa4f1a126f188c27c4fefd36bff"
+    "jsonschema": "registry:dt/jsonschema#0.0.0+20160811135847",
+    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#48c1e3c1d6baefa4f1a126f188c27c4fefd36bff",
+    "rx-dom": "registry:dt/rx-dom#2.5.3+20160921164505",
+    "socket.io": "registry:dt/socket.io#1.4.4+20160915014424"
   },
   "dependencies": {
+    "bcryptjs": "registry:dt/bcryptjs#2.4.0+20170109141314",
+    "body-parser": "registry:npm/body-parser#1.15.2+20161116154925",
     "del": "registry:npm/del#2.2.0+20160416211512",
     "express": "registry:npm/express#4.14.0+20160925001530",
     "glob": "registry:npm/glob#6.0.0+20160723033700",
     "gulp": "registry:npm/gulp#4.0.0-alpha.2+20160817105618",
-    "gulp-sourcemaps": "registry:npm/gulp-sourcemaps#2.0.0-alpha+20160823215745"
+    "gulp-sourcemaps": "registry:npm/gulp-sourcemaps#2.0.0-alpha+20160823215745",
+    "jsonwebtoken": "registry:npm/jsonwebtoken#7.1.8+20160811031426",
+    "mongodb": "registry:npm/mongodb#2.1.0+20170107184700",
+    "passport": "registry:npm/passport#0.3.0+20161028163825",
+    "passport-http": "registry:dt/passport-http#0.3.0+20161104204819",
+    "passport-http-bearer": "registry:dt/passport-http-bearer#1.0.1+20160708003644",
+    "passport-local": "registry:dt/passport-local#1.0.0+20161128184045"
   },
   "globalDevDependencies": {
     "gulp-copy": "registry:dt/gulp-copy#0.0.2+20161006211742",

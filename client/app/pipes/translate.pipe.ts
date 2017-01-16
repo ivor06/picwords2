@@ -9,7 +9,10 @@ const langList = LANG_LIST;
 
 const localizations = new Map<string, MapHashString>();
 
-@Pipe({name: "translate"})
+@Pipe({
+    name: "translate"
+    // , pure: false TODO try!
+})
 
 export class TranslatePipe implements PipeTransform {
 

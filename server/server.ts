@@ -1,23 +1,17 @@
-/// <reference path="../typings/express/express.d.ts" />
-/// <reference path="../typings/body-parser/body-parser.d.ts" />
-
-import * as http from "http";
-import * as bodyParser from "body-parser";
-import * as https from "https";
 import * as express from "express";
-import * as path from "path";
-import {BaseError} from "../util/error";
-import {HttpError} from "../util/error";
-import {router} from "./routes/index";
+import * as bodyParser from "body-parser";
+import * as passport from "passport";
+
+import {HttpError} from "../common/error";
 import * as CONFIG from "../common/config";
+import {router} from "./routes/index";
 
 export {
     Server
 };
 
 class Server {
-    public app: express.Application;
-    public server: https.Server;
+    app: express.Application;
 
     /**
      *  Bootstrap the application
@@ -25,10 +19,9 @@ class Server {
      *  @class Server
      *  @method bootstrap
      *  @static
-     *  @return {ng.auto.IInjectorService} Returns the newly created injector for this app.
+     *  @return {Server} Returns Server instance.
      */
-    public static  bootstrap(): Server {
-        console.log("bootstrap");
+    static  bootstrap(): Server {
         return new Server();
     }
 
@@ -39,7 +32,6 @@ class Server {
      * constructor
      */
     constructor() {
-        // create express.js application
         this.app = express();
 
         // configure application
@@ -54,36 +46,21 @@ class Server {
             port = CONFIG.SERVER.PORT;
         }
 
-        this.app.use(express.static(path.join("../public")));
+        this.app.use(express.static("public"));
         this.app.use(bodyParser.json());
+        this.app.use(bodyParser.urlencoded({extended: false}));
+        this.app.use(passport.initialize());
+        this.app.use(passport.session());
         this.app.use("/", router);
+        this.app.use(function (req, res) {
+            res.redirect("/");
+        });
         this.app.use((req, res, next) => {
             next(new HttpError(404));
         });
-        const serv = this.app.listen(port, hostname, function () {
-            console.log("express app listen on ", serv.address().address + ":" + serv.address().port);
+        this.app.use((err, req, res, next) => {
+            console.error("Error:", err);
+            throw err;
         });
-
-        // this.app.use(express.methodOverride());
-        // this.app.use("/components", express.static(__dirname + "/components"));
-        // this.app.use("/js", express.static(__dirname + "/js"));
-        // this.app.use("/icons", express.static(__dirname + "/icons"));
-
-        // create https server
-        // const self = this;
-        // this.server = this.app.listen(3000, function () {
-        //     console.log("server listening on", self.server.address().address + ":" + self.server.address().port);
-        // });
-        // this.server = https.createServer(this.app);
-        //
-        // this.server.listen(CONFIG.SERVER.PORT, CONFIG.SERVER.HOST_NAME);
-        // this.server.on("error", (error: any) => {
-        //     console.log("server on error");
-        //     console.error(error);
-        // });
-        // const self = this;
-        // this.server.on("listening", () => {
-        //     console.log("server listening on", self.server.address().address + ":" + self.server.address().port);
-        // });
     }
 }

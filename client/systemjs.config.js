@@ -17,7 +17,14 @@
             '@angular/http': 'npm:@angular/http/bundles/http.umd.js',
             '@angular/router': 'npm:@angular/router/bundles/router.umd.js',
             '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
-            'rxjs': 'npm:rxjs'
+            'rx': 'npm:rx',
+            'rxjs': 'npm:rxjs',
+            'rx-dom': 'npm:rx-dom',
+            'primeng': 'npm:primeng',
+            'punycode': 'node_modules/punycode/punycode.js',
+            'querystring': 'node_modules/querystring',
+            'url': 'node_modules/url',
+            'jsonschema': 'node_modules/jsonschema'
         },
         packages: {
             app: {
@@ -30,7 +37,35 @@
             libs: {
                 defaultExtension: 'js'
             },
+            rx: {
+                main: './index.js',
+                defaultExtension: 'js'
+            },
             rxjs: {
+                main: './Rx.js',
+                defaultExtension: 'js'
+            },
+            "rx-dom": {
+                main: './index.js',
+                defaultExtension: 'js'
+            },
+            primeng: {
+                defaultExtension: 'js'
+            },
+            punicode: {
+                main: './punycode.js',
+                defaultExtension: 'js'
+            },
+            querystring: {
+                main: './index.js',
+                defaultExtension: 'js'
+            },
+            url: {
+                main: './url.js',
+                defaultExtension: 'js'
+            },
+            jsonschema: {
+                main: './lib/index.js',
                 defaultExtension: 'js'
             }
         }

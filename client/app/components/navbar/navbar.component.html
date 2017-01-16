@@ -1,0 +1,44 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand" routerLink="/">
+                <img alt="Brand" src="./assets/brand.jpg">
+            </a>
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" aria-expanded="false"
+                    role="navigation">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar">a</span>
+                <span class="icon-bar">b</span>
+                <span class="icon-bar">c</span>
+            </button>
+        </div>
+        <!-- Collect the nav links, forms,    -->
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav width-wide">
+                <li role="presentation"><a routerLink="users" routerLinkActive="active">Players</a></li>
+                <li role="presentation"><a>Profile</a></li>
+                <li role="presentation"><a>Messages <span class="badge">3</span></a></li>
+                <li role="presentation"></li>
+                <li *ngIf="!userName" role="presentation">
+                    <button class="btn btn-info" routerLink="signin">Sign in</button>
+                </li>
+                <li *ngIf="!userName" role="presentation">
+                    <button class="btn btn-group" routerLink="users/new">Sing up</button>
+                </li>
+                <li *ngIf="userName" role="presentation">
+                    <button class="btn btn-group" (click)="onLogout()">Logout</button>
+                </li>
+                <li *ngIf="userName" role="presentation">
+                    <button class="btn btn-group" (click)="onGetSecret()">GetSecretPage</button>
+                </li>
+                <li *ngIf="userName" role="presentation"><p class="navbar-text">Signed in as <a href="#"
+                                                                                                class="navbar-link">{{userName}}</a>
+                </p></li>
+                <li role="presentation" class="float-right">
+                    <select-lang></select-lang>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

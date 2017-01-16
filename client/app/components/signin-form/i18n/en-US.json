@@ -1,0 +1,10 @@
+{
+  "username": "Username",
+  "username-required": "Username is required",
+  "username-cannot-contain-space": "Username cannot contain space",
+  "required-email": "Email is required",
+  "required-password": "Password is required",
+  "invalid-email": "Please type a valid email",
+  "password": "Password",
+  "signin": "Sign in"
+}

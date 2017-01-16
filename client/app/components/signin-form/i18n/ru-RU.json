@@ -1,0 +1,10 @@
+{
+  "username": "Имя пользователя",
+  "username-required": "Требуется ввести имя пользователя",
+  "username-cannot-contain-space": "Имя пользователя не может содержать пробелов",
+  "required-email": "Введите email",
+  "required-password": "Требуется ввести пароль",
+  "invalid-email": "Некорректный email",
+  "password": "Пароль",
+  "signin": "Войти"
+}

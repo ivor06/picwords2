@@ -14,7 +14,7 @@ export class BroadcastMessageEvent {
         this.broadcastService.broadcast(BroadcastMessageEvent, eventName, data);
     }
 
-    on(eventName: string): Observable<string> {
+    on(eventName: string): Observable<any> {
         return this.broadcastService.on<string>(BroadcastMessageEvent, eventName);
     }
 }

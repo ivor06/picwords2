@@ -1,0 +1,15 @@
+{
+  "user-new": "Новый игрок",
+  "user-edit": "Редактирование профиля",
+  "user-legend": "Игрок",
+  "user-name": "Имя/псевдоним",
+  "user-password": "Пароль",
+  "user-avatar": "Аватар",
+  "user-about": "О себе",
+  "user-city": "Город",
+  "required-name": "Введите имя",
+  "required-email": "Введите email",
+  "required-password": "Требуется ввести пароль",
+  "invalid-email": "Некорректный email",
+  "button-save": "Сохранить"
+}

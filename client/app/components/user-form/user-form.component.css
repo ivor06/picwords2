@@ -1,0 +1,9 @@
+.user-form {
+    padding-top: 75px;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;
+}

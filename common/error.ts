@@ -15,14 +15,14 @@ class BaseError {
 }
 
 class HttpError extends BaseError {
-    statusCode: number;
+    status: number;
 
     constructor(statusCode: number, title?: string, message?: string) {
         super(title, message);
-        this.statusCode = statusCode;
+        this.status = statusCode;
     }
 
     toString(): string {
-        return this.statusCode + " " + super.toString();
+        return this.status + " " + super.toString();
     }
 }

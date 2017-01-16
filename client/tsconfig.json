@@ -24,11 +24,25 @@
     "./app/app.module.ts",
     "./app/app.routing.ts",
     "./app/pipes/keys.pipe.ts",
-    "./app/services/i18n.service.ts",
+    "./app/pipes/object-to-array.pipe.ts",
     "./app/pipes/translate.mixin.ts",
     "./app/pipes/translate.pipe.ts",
+    "./app/services/broadcast-message.event.ts",
+    "./app/services/broadcast.service.ts",
+    "./app/services/i18n.service.ts",
+    "./app/services/user.service.ts",
+    "./app/validators/form.validator.ts",
     "./app/components/app/app.component.ts",
+    "./app/components/responsive/responsive.component.ts",
     "./app/components/select-lang/select-lang.component.ts",
-    "../common/interfaces.ts"
+    "./app/components/navbar/navbar.component.ts",
+    "./app/components/footer/footer.component.ts",
+    "./app/components/signin-form/signin-form.component.ts",
+    "./app/components/user-form/user-form.component.ts",
+    "./app/components/users/users.component.ts",
+    "./app/components/game/game.component.ts",
+    "../common/classes/user.ts",
+    "../common/interfaces.ts",
+    "../common/schemas/user.schema.ts"
   ]
 }

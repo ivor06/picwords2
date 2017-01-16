@@ -1,0 +1,43 @@
+<div class="signin-form">
+    <h1>{{ "signin" | translate: "signin-form" : currentLanguage }}</h1>
+    <form #f="ngForm" [formGroup]="form" (ngSubmit)="signin()">
+        <div class="form-group">
+            <label>Email</label>
+            <input
+                    formControlName="email"
+                    #email="ngForm"
+                    id="email"
+                    type="text"
+                    class="form-control"
+                    [formControl]="form.controls['email']">
+        </div>
+        <div *ngIf="email.touched && email.errors">
+            <div
+                    *ngIf="email.errors.required"
+                    class="alert alert-danger">{{ "required-email" | translate: "signin-form" : currentLanguage }}
+            </div>
+            <div
+                    *ngIf="!email.errors.required && email.errors.invalidEmail"
+                    class="alert alert-danger">{{ "invalid-email" | translate: "signin-form" : currentLanguage }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password">{{ "password" | translate: "signin-form" : currentLanguage }}</label>
+            <input
+                    formControlName="password"
+                    #password="ngForm"
+                    id="password"
+                    type="password"
+                    class="form-control"
+                    [formControl]="form.controls['password']">
+        </div>
+        <div *ngIf="password.touched && !password.valid" class="alert alert-danger">
+            {{ "required-password" | translate: "signin-form" : currentLanguage }}
+        </div>
+        <button
+                class="btn btn-primary"
+                type="submit"
+                [disabled]="!form.valid">Sign Up
+        </button>
+    </form>
+</div>

@@ -3,11 +3,7 @@
  */
 
 import {Pipe, PipeTransform} from "@angular/core";
-
-type ObjectType = {
-    key: string;
-    value: any;
-}
+import {ObjectType} from "../../../common/interfaces";
 
 @Pipe({name: "keys"})
 
