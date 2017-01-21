@@ -6,28 +6,28 @@ const router = express.Router();
 
 export {router}
 
-router.get("/user", function (req, res, next) {
-    res.send(req.params);
-});
-
-router.get("/secret",
+router.get("/secret", // TODO Only for testing!
     localToken(),
-    (req, res) => res.send(req.params));
+    (req, res) => {
+        res.json({secret: "123"});
+    });
 
 router.post("/register",
     localRegister(),
-    (req, res) => res.send(req.user));
+    (req, res) => res.json(req.user));
 
 router.post("/login",
     localLogin(),
-    (req, res) => res.send(req.user));
+    (req, res) => res.json(req.user));
 
 router.get("/login/token",
     localToken(),
-    (req, res) => res.send(req.user));
+    (req, res) => res.json(req.user));
 
 router.get('/logout',
-    (req, res) => req.logout().then(data => {
-        console.log("logout data:", data);
-        res.send({result: data});
-    }));
+    localToken(),
+    (req, res) => {
+        req.logout();
+        res.end();
+    }
+);

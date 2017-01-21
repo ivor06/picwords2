@@ -9,7 +9,7 @@
                         <label>{{ "user-name" | translate: "user-form" : currentLanguage }}</label>
                         <input
                                 type="text"
-                                [(ngModel)]="user.name"
+                                [(ngModel)]="user.local.name"
                                 #name="ngForm"
                                 [formControl]="form.controls['name']"
                                 class="form-control">
@@ -21,7 +21,7 @@
                         <label>Email</label>
                         <input
                                 type="text"
-                                [(ngModel)]="user.email"
+                                [(ngModel)]="user.local.email"
                                 name="email"
                                 #email="ngForm"
                                 [formControl]="form.controls['email']"
@@ -43,7 +43,7 @@
                         <label>{{ "user-password" | translate: "user-form" : currentLanguage }}</label>
                         <input
                                 type="text"
-                                [(ngModel)]="user.password"
+                                [(ngModel)]="user.local.password"
                                 name="email"
                                 #password="ngForm"
                                 [formControl]="form.controls['password']"
@@ -56,13 +56,13 @@
                         <label>{{ "user-avatar" | translate: "user-form" : currentLanguage }}</label>
                         <input
                                 type="text"
-                                [(ngModel)]="user.avatar"
+                                [(ngModel)]="user.local.avatar"
                                 formControlName="avatar"
                                 class="form-control">
                         <div class="media">
                             <div class="media-left">
                                 <a href="#">
-                                    <img class="avatar" src="{{user.avatar}}">
+                                    <img class="avatar" src="{{user.local.avatar}}">
                                 </a>
                             </div>
                             <div class="media-body">
@@ -75,7 +75,7 @@
                         <label>{{ "user-about" | translate: "user-form" : currentLanguage }}</label>
                         <input
                                 type="text"
-                                [(ngModel)]="user.about"
+                                [(ngModel)]="user.local.about"
                                 formControlName="about"
                                 class="form-control">
                     </div>
@@ -83,7 +83,7 @@
                         <label>{{ "user-city" | translate: "user-form" : currentLanguage }}</label>
                         <input
                                 type="text"
-                                [(ngModel)]="user.city"
+                                [(ngModel)]="user.local.city"
                                 formControlName="city"
                                 class="form-control">
                     </div>

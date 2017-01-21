@@ -1,12 +1,14 @@
 /// <reference path="../../../../typings/index.d.ts" />
 import {Component, Output, EventEmitter} from "@angular/core";
-import {Router, ActivatedRoute} from '@angular/router';
+import {Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 import {FormValidator} from "../../validators/form.validator";
 import {TranslateMixin} from "../../pipes/translate.mixin";
 import {UserService} from "../../services/user.service";
 import {BroadcastMessageEvent} from "../../services/broadcast-message.event";
+
+const fb = new FormBuilder();
 
 @Component({
     moduleId: module.id,
@@ -16,16 +18,16 @@ import {BroadcastMessageEvent} from "../../services/broadcast-message.event";
 })
 
 export class SignInFormComponent extends TranslateMixin {
-    private _form: FormGroup;
+    private form: FormGroup;
 
     @Output() public submit = new EventEmitter();
 
-    constructor(private formBuilder: FormBuilder,
-                private router: Router,
+    constructor(private _formBuilder: FormBuilder,
+                private _router: Router,
                 private _userService: UserService,
                 private _broadcastMessageEvent: BroadcastMessageEvent) {
         super();
-        this._form = this.formBuilder.group({
+        this.form = fb.group({
             email: ["", Validators.compose([
                 Validators.required,
                 FormValidator.email
@@ -35,10 +37,9 @@ export class SignInFormComponent extends TranslateMixin {
     }
 
     signin() {
-        this._userService.signIn(this._form.value)
-            .then(user => {
-                this._broadcastMessageEvent.emit("signin", user.name);
-                this.router.navigate(["/"]);
+        this._userService.signIn(this.form.value)
+            .then(() => {
+                this._router.navigate(["/"]);
             })
             .catch(error => {
                 console.log("error in userService.signIn:", error); // TODO Modal/Dialog window

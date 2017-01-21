@@ -1,4 +1,3 @@
-/// <reference path="../../../../typings/index.d.ts" />
 import {Component, OnInit} from "@angular/core";
 import {Router, ActivatedRoute, Params} from "@angular/router";
 import {UserService} from "../../services/user.service";
@@ -22,48 +21,28 @@ export class NavBarComponent implements OnInit {
     }
 
     ngOnInit() {
-        // console.log("navbar currentRoute:", this.route);
-        this.route.params.subscribe(currentRoute => {
-            // console.log("navbar currentRoute params:", currentRoute);
-        });
-
-        this._broadcastMessageEvent.on("signin")
+        this._broadcastMessageEvent.on("signin/logout")
             .subscribe(userName => {
                 this.userName = userName;
             });
     }
-
-    // onSignIn() {
-    //
-    // }
 
     onMenuToggle() {
         console.log("onMenuToggle");
     }
 
     onLogout() {
-        console.log("onLogout");
-        this._userService.logout()
-            .then((data) => {
-                console.log("http post done. logout:", data);
-                this.userName = null;
-                this._userService.setToken(null);
-                // this.router.navigate(["/"]);
-            })
-            .catch(error => {
-                console.log("error in userService.logout:", error);
-            });
+        this._userService.logout();
     }
 
-    onGetSecret() {
-        console.log("onGetSecret");
+    onGetSecret() { // TODO Only for testing!
         this._userService.getSecretPage()
             .then((data) => {
-                console.log("http post done. onGetSecret:", data);
+                console.log("getSecretPage:", data);
                 // this.router.navigate(["/"]);
             })
             .catch(error => {
-                console.log("error in userService.getSecretPage:", error);
+                console.log("getSecretPage error:", error);
             });
     }
 }

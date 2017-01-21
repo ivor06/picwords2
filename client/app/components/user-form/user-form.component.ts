@@ -4,7 +4,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {validate} from "jsonschema";
 
 import {FormValidator} from "../../validators/form.validator";
-import {User} from "../../../../common/classes/user";
+import {User, ProfileLocal} from "../../../../common/classes/user";
 import {UserService} from "../../services/user.service";
 import {TranslateMixin} from "../../pipes/translate.mixin";
 import {userSchema} from "../../../../common/schemas/user.schema";
@@ -20,8 +20,7 @@ import {BroadcastMessageEvent} from "../../services/broadcast-message.event";
 export class UserFormComponent extends TranslateMixin implements OnInit {
     title: string;
     private form: FormGroup;
-    private user: User = new User();
-
+    private user: User = new User({local: {}});
     private isLoading = true;
 
     constructor(private _formBuilder: FormBuilder,
@@ -66,11 +65,8 @@ export class UserFormComponent extends TranslateMixin implements OnInit {
     signUp() {
         const validateResult = validate(this.user, userSchema);
         if (validateResult && validateResult.errors.length === 0)
-            this._userService.signUp(this.user)
-                .then(user => {
-                    if (user.token)
-                        this._userService.setToken(user.token);
-                    this._broadcastMessageEvent.emit("signin", user.name);
+            this._userService.signUp(this.user.local)
+                .then(() => {
                     this._router.navigate(["/"]);
                 })
                 .catch(error => {

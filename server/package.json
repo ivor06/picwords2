@@ -8,6 +8,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.0",
     "body-parser": "1.15.2",
+    "crypto": "0.0.3",
     "express": "^4.14.0",
     "express-session": "^1.14.2",
     "http": "0.0.0",
@@ -23,6 +24,7 @@
     "passport-oauth": "^1.0.0",
     "passport-openid": "^0.4.0",
     "passport-twitter": "^1.0.4",
+    "rxjs": "^5.0.0-rc.4",
     "socket.io": "^1.7.2"
   },
   "engines": {
