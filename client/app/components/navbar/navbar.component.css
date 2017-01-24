@@ -25,3 +25,22 @@ nav a.active {
 .float-right {
     float: right;
 }
+
+.avatar {
+    margin-left: 10px;
+    margin-top: -15px
+}
+
+.button-vk {
+    padding: 0;
+}
+
+.icon-vk {
+    width: 41px;
+}
+
+.large-size {
+    font-size: 40px;
+    margin-left: 10px;
+    margin-top: -10px;
+}

@@ -1,13 +1,21 @@
 import * as express from "express";
 
-import {localRegister, localLogin, localToken} from "../auth/auth.config";
+import {
+    localRegister,
+    localLogin,
+    localToken,
+    vkLogin,
+    vkloginCallback,
+    vkLoginSendAccessToken,
+    vkToken
+} from "../auth/auth.config";
 
 const router = express.Router();
 
 export {router}
 
 router.get("/secret", // TODO Only for testing!
-    localToken(),
+    localToken(), // TODO 403 Forbidden
     (req, res) => {
         res.json({secret: "123"});
     });
@@ -23,6 +31,16 @@ router.post("/login",
 router.get("/login/token",
     localToken(),
     (req, res) => res.json(req.user));
+
+router.get("/auth/vk", vkLogin);
+
+router.get("/auth/vk/token",
+    vkToken(),
+    (req, res) => res.json(req.user));
+
+router.get("/auth/vk/callback", vkloginCallback);
+
+router.get("/auth/vk/get_access_token", vkLoginSendAccessToken);
 
 router.get('/logout',
     localToken(),

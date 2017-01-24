@@ -11,6 +11,7 @@
   "dependencies": {
     "bcryptjs": "registry:dt/bcryptjs#2.4.0+20170109141314",
     "body-parser": "registry:npm/body-parser#1.15.2+20161116154925",
+    "crypto-js": "registry:dt/crypto-js#3.1.4+20160727175746",
     "del": "registry:npm/del#2.2.0+20160416211512",
     "express": "registry:npm/express#4.14.0+20160925001530",
     "glob": "registry:npm/glob#6.0.0+20160723033700",

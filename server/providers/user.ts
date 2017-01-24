@@ -1,14 +1,14 @@
 import * as bcryptjs from "bcryptjs";
 
 import {User, UserType, ProfileLocal, ProfileVk} from "../../common/classes/user";
-import {HttpError} from "../../common/error";
 import {connect} from "./db";
 import {Collection, ObjectID} from "mongodb";
-import {Request} from '~express/lib/request'; // TODO remove
+import {Request} from '~express/lib/request';
 
 export {
     findById,
     findByEmail,
+    findByToken,
     updateUser,
     findOrCreateByProfile,
     generateHash,
@@ -33,17 +33,24 @@ function findByEmail(email: string): Promise<UserType> {
         .next()) as Promise<UserType>;
 }
 
-function updateUser(user: User): Promise<string> {
+function findByToken(token: string): Promise<UserType> {
+    return users.then((usersCol: Collection) => usersCol
+        .find({"vk.access_token": token})
+        .limit(1)
+        .next()) as Promise<UserType>;
+}
+
+function updateUser(user: UserType): Promise<number> {
     return users.then((usersCol: Collection) => usersCol
         .updateOne(
             {_id: new ObjectID(user.id)},
-            user,
+            {$set: user},
             {upsert: true}
         ))
-        .then(result => result.result.ok === 1 ? result.upsertedId.toString() : null);
+        .then(result => result.result.ok && result.result.nModified);
 }
 
-function insertUser(user: UserType): Promise<string> {
+function insertUser(user: UserType): Promise<string> { // TODO updateOne with upsert:true
     return users.then(usersCol => usersCol
         .insertOne(user)
         .then(result => (result.result.ok === 1) ? result.insertedId.toString() : null)
@@ -52,7 +59,7 @@ function insertUser(user: UserType): Promise<string> {
 
 function findOrCreateByProfile(profile: ProfileLocal, req?: Request): Promise<string>
 function findOrCreateByProfile(profile: ProfileVk, req?: Request): Promise<string>
-function findOrCreateByProfile(profile: ProfileLocal|ProfileVk, req?): Promise<string|HttpError> { // TODO req Type
+function findOrCreateByProfile(profile: ProfileLocal|ProfileVk, req?): Promise<string> { // TODO req Type
     return users.then(usersCol => {
         let profileType: string,
             searchObj: any;
@@ -63,13 +70,13 @@ function findOrCreateByProfile(profile: ProfileLocal|ProfileVk, req?): Promise<s
             profileType = "vk";
             searchObj = {"vk.user_id": profile["user_id"]};
         } else {
-            return new HttpError(500, "Server error", "Cannot find/create user profile");
+            return new Promise((resole, reject) => reject("Cannot find/create user profile")); // TODO More sipmle, please!
         }
         return usersCol
             .find(searchObj)
             .limit(1)
             .next()
-            .then(user => {
+            .then((user: UserType) => {
                 if (!user) {
                     const newUser = new User(req ? {
                             ipList: [req.connection.remoteAddress],
@@ -79,13 +86,15 @@ function findOrCreateByProfile(profile: ProfileLocal|ProfileVk, req?): Promise<s
                     newUser[profileType] = profile;
                     return insertUser(newUser);
                 }
-                return Promise.resolve(user._id);
+                return (user.vk.access_token === (profile as ProfileVk).access_token)
+                    ? Promise.resolve(user._id)
+                    : updateUser({id: user._id, vk: profile as ProfileVk}).then(() => user._id);
             });
     });
 }
 
 function generateHash(password: string): Promise<string> {
-    return bcryptjs.genSalt(1).then(salt => bcryptjs.hash(password, salt)); // TODO common/utils the same
+    return bcryptjs.genSalt(1).then(salt => bcryptjs.hash(password, salt)); // TODO common/utils the same ?
 }
 
 function passwordToHashSync(password: string): string {

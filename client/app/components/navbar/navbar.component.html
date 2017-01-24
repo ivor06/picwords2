@@ -26,15 +26,25 @@
                 <li *ngIf="!userName" role="presentation">
                     <button class="btn btn-group" routerLink="users/new">Sing up</button>
                 </li>
+                <li *ngIf="!userName" role="presentation">
+                    <button class="btn btn-group button-vk" (click)="onVkAuth()">
+                        <img src="./assets/icons/vk_152.png" class="img-circle icon-vk">
+                    </button>
+                </li>
                 <li *ngIf="userName" role="presentation">
                     <button class="btn btn-group" (click)="onLogout()">Logout</button>
                 </li>
                 <li role="presentation">
                     <button class="btn btn-group" (click)="onGetSecret()">GetSecretPage</button>
                 </li>
-                <li *ngIf="userName" role="presentation"><p class="navbar-text">Signed in as <a href="#"
-                                                                                                class="navbar-link">{{userName}}</a>
-                </p></li>
+                <li *ngIf="userName" role="presentation">
+                    <p class="navbar-text">Signed in as
+                        <a href="{{user.vk ? 'https://vk.com/id' + user.vk.user_id : '#'}}" class="navbar-link">{{userName}}
+                            <img *ngIf="avatar" src="{{avatar}}" alt="user avatar" class="img-circle icon-vk">
+                            <span *ngIf="!avatar" class="glyphicon glyphicon-user large-size"></span>
+                        </a>
+                    </p>
+                </li>
                 <li role="presentation" class="float-right">
                     <select-lang></select-lang>
                 </li>

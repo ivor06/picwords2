@@ -5,7 +5,7 @@ import {Request} from '~express/lib/request';
 import {ParsedAsJson} from 'body-parser';
 
 import {User, ProfileLocal} from "../../../common/classes/user";
-import {SERVER} from "../../../common/config";
+import {AUTH} from "../../../common/config";
 import {HttpError} from "../../../common/error";
 import {findByEmail, findOrCreateByProfile, passwordToHashSync, validateSync} from "../../providers/user";
 
@@ -23,21 +23,23 @@ const
                 token: jwt.sign({
                     email: email,
                     password: password
-                }, SERVER.JWT_SECRET, {
+                }, AUTH.LOCAL.JWT_SECRET, {
                     algorithm: "HS256"
                 })
             });
             if (req.body.avatar) profileLocal.avatar = (req.body.avatar);
             if (req.body.about) profileLocal.about = (req.body.about);
             if (req.body.city) profileLocal.city = (req.body.city);
-            findOrCreateByProfile(profileLocal, req).then(id => cb(id ? null : new HttpError(500, "Server error", "User register error"), {
+            findOrCreateByProfile(profileLocal, req).then(
+                id => cb(id ? null : new HttpError(500, "Server error", "User register error"), {
                 id: id,
                 local: {
                     token: profileLocal.token,
                     name: profileLocal.name,
                     avatar: profileLocal.avatar
                 }
-            }), cb);
+                }),
+                error => cb(new HttpError(500, "Server error", error)));
         }, cb);
     },
     localLoginInit = function (req, email, password, cb) {
@@ -54,7 +56,7 @@ const
     },
     localBearerInit = function (token, cb) {
         if (!token || !jwt.decode(token))
-            return cb(new HttpError(400, "Bad request", "Token required"));
+            return cb(new HttpError(401, "Unauthorized", "Token required"));
         findByEmail(jwt.decode(token)["email"]).then(user => cb(null, (user && validateSync(jwt.decode(token)["password"], user.local.password)) ? {
             id: user._id,
             local: {

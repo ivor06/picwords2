@@ -9,6 +9,7 @@ export {
     // Achievements,
     // UserHistory,
     KeyboardEventWithTargetValue,
+    VK,
     JsonSchema
 }
 
@@ -27,6 +28,18 @@ interface KeyboardEventWithValue extends EventTarget {
 
 interface KeyboardEventWithTargetValue extends KeyboardEvent {
     target: KeyboardEventWithValue;
+}
+
+namespace VK {
+    export interface OauthRedirectPartsUrl {
+        oauthUrl: string,
+        redirect_uri: string,
+        client_id: string,
+        state: string,
+        display: string,
+        response_type: string,
+        v: string
+    }
 }
 
 // http://blog.enriched.io/using-json-schema/

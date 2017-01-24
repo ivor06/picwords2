@@ -5,7 +5,11 @@ const TYPES = {
     FUNCTION: "function"
 };
 
-export {TYPES, traversalObject, onError}
+export {
+    TYPES,
+    traversalObject,
+    onError
+}
 
 // TODO ObjectType from KeysPipe
 function traversalObject(obj: any, iterator: (obj: any, key: string) => void) {
