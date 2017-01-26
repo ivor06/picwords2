@@ -9,11 +9,12 @@ import {HttpError} from "../../../common/error";
 import {UserType, ProfileVk, ProfileVkType, ErrorOnGetAccessTokenVk} from "../../../common/classes/user";
 import {HashObject} from "../../../common/interfaces";
 import {AUTH} from "../../../common/config";
-import {findOrCreateByProfile, generateHash, findByToken} from "../../providers/user";
+import {findOrCreateByProfile, generateHash, findByToken, unsetToken} from "../../providers/user";
 import {TYPES} from "../../../common/util";
 
 const
     hashTokens: HashObject<ReplaySubject<UserType|HttpError>> = {},
+    hashIds: HashObject<string> = {},
     vkLogin = (req, res) => generateHash(Date.now().toString()).then(hash => {
         const
             getShortHash = (_hash => {
@@ -23,6 +24,7 @@ const
             shortHash = getShortHash(hash),
             userAgent = req.headers["user-agent"],
             mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(userAgent);
+        hashIds[shortHash] = req.body.id;
         res.json({
             oauthUrl: AUTH.VK.OAUTH_URL_AUTHORIZE,
             redirect_uri: AUTH.VK.AUTH_CALLBACK,
@@ -78,12 +80,9 @@ const
                                 }
                                 if ((parsedData as ProfileVkType).id) {
                                     Object.assign(profileVk, parsedData as ProfileVk); // TODO request database.getCitiesById and database.getCountriesById to obtain user's city and country
-                                    findOrCreateByProfile(profileVk, req).then(id => {
-                                        if (id)
-                                            hashTokens[state].next({
-                                                id: id,
-                                                vk: profileVk
-                                            });
+                                    findOrCreateByProfile(profileVk, Object.assign(req, {id: hashIds[state]})).then(user => {
+                                        if (user)
+                                            hashTokens[state].next(user);
                                         else
                                             hashTokens[state].error(new HttpError(500, "Server error", "User register error"));
                                         hashTokens[state].complete();
@@ -139,46 +138,21 @@ const
         else
             res.send(new HttpError(500, "Not Found", "Access token not found"));
     },
-    vkTokenInit = function (token, cb) {
-        if (!token)
-            return cb(new HttpError(400, "Bad request", "Token required"));
-        findByToken(token).then(user => {
-            if (!user)
-                return cb(null, false);
-            const options = {
-                hostname: AUTH.VK.API_URL,
-                port: 443,
-                path: AUTH.VK.API.SECURE.CHECK_TOKEN +
-                "v=" + AUTH.VK.API.VERSION +
-                "&client_id=" + AUTH.VK.APP_ID +
-                "&client_secret=" + AUTH.VK.SECRET_KEY +
-                "&access_token=" + token
-            };
-
-            /* Check access token */
-            https.get(options, response => {
-                response.on("data", data => {
-                    let parsedData: any;
-                    try {
-                        parsedData = JSON.parse(data);
-                    }
-                    catch (e) {
-                        return cb(e);
-                    }
-                    return cb(null, parsedData.success ? {
-                        id: user._id,
-                        vk: user.vk
-                    } : false, {message: parsedData.error["error_msg"]});
-                });
-                response.on("error", cb);
-            });
-        }, cb);
+    vkTokenInit = (token, cb) => {
+        return token
+            ? findByToken(token).then(user => cb(null, user), cb)
+            : cb(new HttpError(400, "Bad request", "Token required"));
     },
-    vkTokenStrategy = new BearerStrategy.Strategy(vkTokenInit);
+    vkLogoutInit = (token, cb) => token
+        ? findByToken(token).then(user => unsetToken(token).then(() => cb(null, {id: user._id}), cb), cb)
+        : cb(new HttpError(400, "Bad request", "Token required")),
+    anyTokenStrategy = new BearerStrategy.Strategy(vkTokenInit),
+    vkTokenLogoutStrategy = new BearerStrategy.Strategy(vkLogoutInit);
 
 export {
-    vkTokenStrategy,
+    anyTokenStrategy,
     vkLogin,
     vkloginCallback,
-    vkLoginSendAccessToken
+    vkLoginSendAccessToken,
+    vkTokenLogoutStrategy
 }

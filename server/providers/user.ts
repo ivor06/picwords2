@@ -9,6 +9,7 @@ export {
     findById,
     findByEmail,
     findByToken,
+    unsetToken,
     updateUser,
     findOrCreateByProfile,
     generateHash,
@@ -34,10 +35,29 @@ function findByEmail(email: string): Promise<UserType> {
 }
 
 function findByToken(token: string): Promise<UserType> {
+    const
+        profileName = token.length === 149 ? "local" : "vk",
+        query = profileName === "vk" ? {"vk.access_token": token} : {"local.token": token}; // TODO Too weird!
     return users.then((usersCol: Collection) => usersCol
-        .find({"vk.access_token": token})
+        .find(query)
         .limit(1)
         .next()) as Promise<UserType>;
+}
+
+function insertUser(user: UserType): Promise<string> {
+    return users.then(usersCol => usersCol
+        .insertOne(user)
+        .then(result => (result.result.ok === 1) ? result.insertedId.toString() : null)
+    );
+}
+
+function unsetToken(token: string): Promise<number> {
+    return users.then((usersCol: Collection) => usersCol
+        .updateOne(
+            {"vk.access_token": token},
+            {$unset: {"vk.access_token": ""}}
+        ))
+        .then(result => result.result.ok && result.result.nModified);
 }
 
 function updateUser(user: UserType): Promise<number> {
@@ -50,16 +70,9 @@ function updateUser(user: UserType): Promise<number> {
         .then(result => result.result.ok && result.result.nModified);
 }
 
-function insertUser(user: UserType): Promise<string> { // TODO updateOne with upsert:true
-    return users.then(usersCol => usersCol
-        .insertOne(user)
-        .then(result => (result.result.ok === 1) ? result.insertedId.toString() : null)
-    );
-}
-
-function findOrCreateByProfile(profile: ProfileLocal, req?: Request): Promise<string>
-function findOrCreateByProfile(profile: ProfileVk, req?: Request): Promise<string>
-function findOrCreateByProfile(profile: ProfileLocal|ProfileVk, req?): Promise<string> { // TODO req Type
+function findOrCreateByProfile(profile: ProfileLocal, req?: Request): Promise<UserType>
+function findOrCreateByProfile(profile: ProfileVk, req?: Request): Promise<UserType>
+function findOrCreateByProfile(profile: ProfileLocal|ProfileVk, req?): Promise<UserType> { // TODO req Type
     return users.then(usersCol => {
         let profileType: string,
             searchObj: any;
@@ -78,17 +91,27 @@ function findOrCreateByProfile(profile: ProfileLocal|ProfileVk, req?): Promise<s
             .next()
             .then((user: UserType) => {
                 if (!user) {
+                    if (req.body.id) {
+                        const
+                            id: string = req.body.id;
+                        user = {id: id, _id: id};
+                        user[profileType] = profile;
+                        return updateUser(user).then(() => user);
+                    }
                     const newUser = new User(req ? {
                             ipList: [req.connection.remoteAddress],
                             userAgentList: [req.headers["user-agent"]] // TODO header x-forwarded-for if server behind proxy
                         } : {}
                     );
                     newUser[profileType] = profile;
-                    return insertUser(newUser);
+                    return insertUser(newUser).then(id => Object.assign(newUser, {id: id, _id: id}));
                 }
-                return (user.vk.access_token === (profile as ProfileVk).access_token)
-                    ? Promise.resolve(user._id)
-                    : updateUser({id: user._id, vk: profile as ProfileVk}).then(() => user._id);
+                return ((profile as ProfileVk).access_token && (user.vk.access_token === (profile as ProfileVk).access_token)) // TODO Too weird!
+                    ? Promise.resolve(user)
+                    : updateUser({id: user._id, vk: profile as ProfileVk}).then(() => {
+                    user[profileType] = profile;
+                    return user;
+                });
             });
     });
 }

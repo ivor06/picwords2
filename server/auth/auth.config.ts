@@ -1,12 +1,24 @@
 import * as passport from "passport";
 import {findById} from "../providers/user";
+import {
+    anyTokenStrategy,
+    vkLogin,
+    vkloginCallback,
+    vkLoginSendAccessToken,
+    vkTokenLogoutStrategy
+} from "./strategies/vk"
 
 import {localRegisterStrategy, localLoginStrategy, localBearerStrategy} from "./strategies/local"
 
 export {
     localRegister,
     localLogin,
-    localToken
+    localToken,
+    vkLogin,
+    vkloginCallback,
+    vkLoginSendAccessToken,
+    anyToken,
+    vkTokenLogout
 }
 
 passport.serializeUser((user, done) => {
@@ -22,7 +34,8 @@ passport.deserializeUser((id, done) => {
 passport.use("local-register", localRegisterStrategy);
 passport.use("local-login", localLoginStrategy);
 passport.use("local-token", localBearerStrategy);
-
+passport.use("any-token", anyTokenStrategy);
+passport.use("vk-token-logout", vkTokenLogoutStrategy);
 
 function localRegister() {
     return passport.authenticate("local-register");
@@ -36,3 +49,10 @@ function localToken() {
     return passport.authenticate("local-token", {session: false});
 }
 
+function anyToken() {
+    return passport.authenticate("any-token");
+}
+
+function vkTokenLogout() {
+    return passport.authenticate("vk-token-logout");
+}

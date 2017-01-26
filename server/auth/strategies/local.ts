@@ -31,40 +31,19 @@ const
             if (req.body.about) profileLocal.about = (req.body.about);
             if (req.body.city) profileLocal.city = (req.body.city);
             findOrCreateByProfile(profileLocal, req).then(
-                id => cb(id ? null : new HttpError(500, "Server error", "User register error"), {
-                id: id,
-                local: {
-                    token: profileLocal.token,
-                    name: profileLocal.name,
-                    avatar: profileLocal.avatar
-                }
-                }),
+                id => cb(id ? null : new HttpError(500, "Server error", "User register error"), user), // TODO user does not exist!!
                 error => cb(new HttpError(500, "Server error", error)));
         }, cb);
     },
     localLoginInit = function (req, email, password, cb) {
         if (!email || !password)
             return cb(new HttpError(400, "Bad request", "email and password required"));
-        findByEmail(email).then(user => cb(null, (user && validateSync(password, user.local.password)) ? req.user = {
-            id: user._id,
-            local: {
-                token: user.local.token,
-                name: user.local.name,
-                avatar: user.local.avatar
-            }
-        } : false), cb);
+        findByEmail(email).then(user => cb(null, (user && validateSync(password, user.local.password)) ? req.user = user : false), cb);
     },
     localBearerInit = function (token, cb) {
         if (!token || !jwt.decode(token))
             return cb(new HttpError(401, "Unauthorized", "Token required"));
-        findByEmail(jwt.decode(token)["email"]).then(user => cb(null, (user && validateSync(jwt.decode(token)["password"], user.local.password)) ? {
-            id: user._id,
-            local: {
-                token: user.local.token,
-                name: user.local.name,
-                avatar: user.local.avatar
-            }
-        } : false), cb);
+        findByEmail(jwt.decode(token)["email"]).then(user => cb(null, (user && validateSync(jwt.decode(token)["password"], user.local.password)) ? user : false), cb);
     },
     localOptions = {
         usernameField: "email",
