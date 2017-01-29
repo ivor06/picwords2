@@ -11,7 +11,8 @@ export const userSchema: JsonSchema = {
         "geo": {$ref: "#/definitions/GeoType"},
         "achievements": {$ref: "#/definitions/AchievementsType"},
         "currentRoom": {type: "string"},
-        "local": {$ref: "#/definitions/LocalType"}
+        "local": {$ref: "#/definitions/LocalType"},
+        "vk": {$ref: "#/definitions/VkType"}
     },
     additionalProperties: false,
     definitions: {
@@ -36,7 +37,7 @@ export const userSchema: JsonSchema = {
             additionalProperties: false
         },
         LocalType: {
-            type: "object", // TODO required
+            type: "object",
             properties: {
                 name: {type: "string"},
                 email: {type: "string"},
@@ -48,6 +49,43 @@ export const userSchema: JsonSchema = {
                 city: {type: "string"}
             },
             additionalProperties: false
+        },
+        VkType: {
+            type: "object",
+            properties: {
+                access_token: {type: "string"},
+                expires_in: {type: "number"},
+                // user_id: {type: "string"},
+                id: {type: "number"},
+                /* base VK user profile fields */
+                first_name: {type: "string"},
+                last_name: {type: "string"},
+                deactivated: {type: "string"},
+                hidden: {type: "number"},
+                /* additional fields */
+                about: {type: "string"},
+                bdate: {type: "string"},
+                city: {$ref: "#/definitions/VkCityType"},
+                country: {$ref: "#/definitions/VkCityType"},
+                exports: {type: "string"},
+                has_mobile: {type: "number"},
+                has_photo: {type: "number"},
+                home_town: {type: "string"},
+                nickname: {type: "string"},
+                photo_id: {type: "string"},
+                photo_50: {type: "string"},
+                photo_max: {type: "string"},
+                sex: {type: "number"},
+                verified: {type: "string"}
+            },
+            additionalProperties: false
+        },
+        VkCityType: {
+            type: "object",
+            properties: {
+                id: {type: "number"},
+                title: {type: "string"}
+            }
         }
     }
 };

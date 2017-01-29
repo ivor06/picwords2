@@ -63,21 +63,33 @@ namespace DB {
 
 /* Auth configure */
 namespace AUTH {
+    export const PROFILE_LIST = ["local", "vk"];
+    export const COMMON_FIELD_LIST = ["id", "achievements", "language"];
     export const LOCAL = {
-        JWT_SECRET: "******"
+        JWT_SECRET: "myJwtSecret",
+        CREDENTIALS_LIST: ["email", "token"],
+        REMOVE_FIELD_LIST: ["password"],
+        TOKEN_FIELD: "token",
+        USER_FIELD_LIST: [
+            "name", "avatar", "about", "city", "country"
+        ]
     };
     export const VK = {
-        APP_ID: "******", //  previous: "5826443"
-        SECRET_KEY: "******", // previous: "Xw63uzr7jYGgVcTeyIkd"
+        APP_ID: "******",
+        CREDENTIALS_LIST: ["access_token"],
+        REMOVE_FIELD_LIST: ["expires_in", "deactivated", "hidden", "bdate", "exports", "has_mobile", "verified"],
+        SERVICE_ACCESS_TOKEN: "******",
+        SECRET_KEY: "******",
+        TOKEN_FIELD: "access_token",
         OAUTH_URL: "oauth.vk.com",
         OAUTH_URL_AUTHORIZE: "https://oauth.vk.com/authorize",
         AUTH_CALLBACK: "******",
         API_URL: "api.vk.com",
+        USER_FIELD_LIST: [
+            "about", "bdate", "city", "country", "exports", "has_mobile", "has_photo",
+            "home_town", "nickname", "photo_id", "photo_50", "photo_max", "sex", "verified"
+        ],
         API: {
-            USER_FIELD_LIST: [
-                "about", "bdate", "city", "country", "exports", "has_mobile", "has_photo",
-                "home_town", "nickname", "photo_id", "photo_50", "photo_max", "sex", "verified"
-            ],
             GET_USERS: "/method/users.get?",
             GET_PHOTO: "/method/photos.get?",
             SECURE: {

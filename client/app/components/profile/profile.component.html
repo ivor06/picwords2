@@ -1,0 +1,98 @@
+<div class="signin-form">
+    <h1>{{ "profile" | translate: "profile" : currentLanguage }}</h1>
+    <i *ngIf="isLoading" class="fa fa-spinner fa-spin fa-3x"></i>
+    <div *ngIf="!isLoading" class="container-fluid profile">
+        <div class="row">
+            <div class="col-sm-6">
+                <h3>{{ "profile-local" | translate: "profile" : currentLanguage }}</h3>
+                <a *ngIf="user.local" routerLink="edit">{{ "profile-edit" | translate: "profile" : currentLanguage
+                    }}</a>
+                <a *ngIf="user.local"><span (click)="onLogout('local')" class="cursor-pointer">{{ "profile-logout" | translate: "profile" : currentLanguage }}</span></a>
+                <div *ngIf="!user.local"><a><span (click)="addProfile('local')" class="cursor-pointer">{{ "profile-local-add" | translate: "profile" : currentLanguage }}</span></a>
+                </div>
+                <div *ngIf="user.local" class="media">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="avatar" src="./assets/images/1.jpg">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">
+                            <ul>
+                                <li>
+                                    <div class="container-flex">
+                                        <div class="row">
+                                            <div class="col-sm-4">{{ "user-local-name" | translate: "profile" :
+                                                currentLanguage }}:
+                                            </div>
+                                            <div class="col-sm-8">{{user.local.name}}</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4">{{ "user-local-city" | translate: "profile" :
+                                                currentLanguage}}:
+                                            </div>
+                                            <div class="col-sm-8">{{user.local.city}}</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4">{{ "user-local-about" | translate: "profile" :
+                                                currentLanguage}}:
+                                            </div>
+                                            <div class="col-sm-8">{{user.local.about}}</div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <h3>{{ "profile-vk" | translate: "profile" : currentLanguage }}</h3>
+                <a *ngIf="user.vk"><span (click)="onLogout('vk')" class="cursor-pointer">{{ "profile-logout" | translate: "profile" : currentLanguage }}</span></a>
+                <div *ngIf="!user.vk"><a><span (click)="addProfile('vk')" class="cursor-pointer">{{ "profile-vk-add" | translate: "profile" : currentLanguage }}</span></a>
+                </div>
+                <div *ngIf="user.vk" class="media">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="avatar" src="{{user.vk.photo_max}}">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">
+                            <ul>
+                                <li>
+                                    <div class="container-flex">
+                                        <div *ngIf="user.vk.nickname" class="row">
+                                            <div class="col-sm-4">{{ "user-vk-nickname" | translate: "profile" :
+                                                currentLanguage }}:
+                                            </div>
+                                            <div class="col-sm-8">{{user.vk.nickname}}</div>
+                                        </div>
+                                        <div *ngIf="!user.vk.nickname" class="row">
+                                            <div class="col-sm-4">{{ "user-vk-name" | translate: "profile" :
+                                                currentLanguage }}:
+                                            </div>
+                                            <div class="col-sm-8">"{{user.vk.first_name}} {{user.vk.last_name}}"</div>
+                                        </div>
+                                        <div *ngIf="user.vk.city" class="row">
+                                            <div class="col-sm-4">{{ "user-vk-city" | translate: "profile" :
+                                                currentLanguage }}:
+                                            </div>
+                                            <div class="col-sm-8">{{user.vk.city?.title}}</div>
+                                        </div>
+                                        <div *ngIf="user.vk.about" class="row">
+                                            <div class="col-sm-4">{{ "user-vk-about" | translate: "profile" :
+                                                currentLanguage }}:
+                                            </div>
+                                            <div class="col-sm-8">{{user.vk.about}}</div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

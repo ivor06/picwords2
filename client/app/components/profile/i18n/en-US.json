@@ -1,0 +1,18 @@
+{
+  "profile": "My profile",
+  "profile-local": "Local profile",
+  "profile-local-add": "Add Local profile",
+  "profile-vk": "Vk profile",
+  "profile-vk-add": "Add Vk profile",
+  "profile-edit": "Edit",
+  "profile-logout": "Logout",
+  "user-local-name": "Nickname",
+  "user-local-avatar": "Avatar",
+  "user-local-about": "About yourself",
+  "user-local-city": "City",
+  "user-vk-nickname": "Nickname",
+  "user-vk-name": "Name",
+  "user-vk-city": "City",
+  "user-vk-about": "About:",
+  "user-vk-avatar": "Photo"
+}

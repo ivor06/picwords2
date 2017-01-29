@@ -15,7 +15,6 @@ export {
 }
 
 class User {
-    _id: string;
     id: string;
     language: string;
     history: UserHistory;
@@ -37,7 +36,6 @@ class User {
 }
 
 type UserType = {
-    _id?: string;
     id?: string;
     language?: string;
     history?: UserHistory;
@@ -110,11 +108,9 @@ class ProfileVk {
     /* VK auth object fields */
     access_token: string;
     expires_in: number;
-    user_id: string;
+    id: number; // one of the base fields according https://vk.com/dev/objects/user
 
     /* base VK user profile fields */
-    id: string; // one of the base fields according https://vk.com/dev/objects/user
-    uid: string; // but real Vk service' answer contains uid instead id
     first_name: string;
     last_name: string;
     deactivated: string;
@@ -127,13 +123,13 @@ class ProfileVk {
     country: VkCityType;
     exports: string;
     has_mobile: number;
-    has_photo: string;
+    has_photo: number;
     home_town: string;
     nickname: string;
     photo_id: string;
-    photo_100: string;
+    photo_50: string;
     photo_max: string;
-    sex: string;
+    sex: number;
     verified: string;
 
     constructor(profileVk?: ProfileVkType) {
@@ -149,10 +145,9 @@ type ProfileVkType = {
     /* VK auth object fields */
     access_token: string;
     expires_in: number;
-    user_id?: string;
+    id: number; // one of the base fields according https://vk.com/dev/objects/user
 
     /* base VK user profile fields */
-    id?: string; // one of the base fields according https://vk.com/dev/objects/user
     //uid?: string; // but some of real Vk service' answers contain uid instead id
     first_name?: string;
     last_name?: string;
@@ -166,13 +161,13 @@ type ProfileVkType = {
     country?: VkCityType;
     exports?: string;
     has_mobile?: number;
-    has_photo?: string;
+    has_photo?: number;
     home_town?: string;
     nickname?: string;
     photo_id?: string;
     photo_50?: string;
     photo_max?: string;
-    sex?: string;
+    sex?: number;
     verified?: string;
 }
 

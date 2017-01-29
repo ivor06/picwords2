@@ -1,9 +1,9 @@
 <div class="user-form">
-    <h1>{{ title | translate: "user-form" : currentLanguage }}</h1>
+    <h1>{{ isEdit ? "edit" : "user-new" | translate: "user-form" : currentLanguage }}</h1>
     <i *ngIf="isLoading" class="fa fa-spinner fa-spin fa-3x"></i>
     <div *ngIf="!isLoading" class="row">
         <div class="col-md-6 well">
-            <form [formGroup]="form" (ngSubmit)="signUp()">
+            <form [formGroup]="form" (ngSubmit)="save()">
                 <fieldset>
                     <div class="form-group">
                         <label>{{ "user-name" | translate: "user-form" : currentLanguage }}</label>
@@ -25,9 +25,11 @@
                                 name="email"
                                 #email="ngForm"
                                 [formControl]="form.controls['email']"
-                                class="form-control">
+                                class="form-control"
+                                [attr.readonly]="isEdit">
                     </div>
-                    <div *ngIf="email.touched && email.errors">
+                    <div *ngIf="!isEdit && email.touched && email.errors">
+                        <p>"email"</p>
                         <div
                                 *ngIf="email.errors.required"
                                 class="alert alert-danger">{{ "required-email" | translate: "signin-form" :
@@ -39,17 +41,17 @@
                             currentLanguage }}
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div *ngIf="!isEdit" class="form-group">
                         <label>{{ "user-password" | translate: "user-form" : currentLanguage }}</label>
                         <input
                                 type="text"
                                 [(ngModel)]="user.local.password"
-                                name="email"
+                                name="password"
                                 #password="ngForm"
                                 [formControl]="form.controls['password']"
                                 class="form-control">
                     </div>
-                    <div *ngIf="password.touched && !password.valid" class="alert alert-danger">
+                    <div *ngIf="!isEdit && password?.touched && !password?.valid" class="alert alert-danger">
                         {{ "required-password" | translate: "user-form" : currentLanguage }}
                     </div>
                     <div class="form-group">

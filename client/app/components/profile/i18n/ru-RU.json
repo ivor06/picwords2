@@ -1,0 +1,18 @@
+{
+  "profile": "Мой профиль",
+  "profile-local": "Локальный профиль",
+  "profile-local-add": "Добавить локальный профиль",
+  "profile-vk": "Профиль Вконтакте",
+  "profile-vk-add": "Добавить профиль Вконтакте",
+  "profile-edit": "Редактировать",
+  "profile-logout": "Выйти",
+  "user-local-name": "Имя",
+  "user-local-avatar": "Аватар",
+  "user-local-about": "О себе",
+  "user-local-city": "Город",
+  "user-vk-nickname": "Ник",
+  "user-vk-name": "Имя",
+  "user-vk-city": "Город",
+  "user-vk-about": "О себе:",
+  "user-vk-avatar": "Аватар"
+}

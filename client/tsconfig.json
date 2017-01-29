@@ -41,6 +41,7 @@
     "./app/components/user-form/user-form.component.ts",
     "./app/components/users/users.component.ts",
     "./app/components/game/game.component.ts",
+    "./app/components/profile/profile.component.ts",
     "../common/classes/user.ts",
     "../common/interfaces.ts",
     "../common/schemas/user.schema.ts"

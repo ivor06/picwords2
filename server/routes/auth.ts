@@ -1,11 +1,13 @@
 import * as express from "express";
 
+import {updateProfile} from "../providers/user"
+import {ProfileLocal} from "../../common/classes/user";
 import {
     localRegister,
     localLogin,
     localToken,
     vkLogin,
-    vkloginCallback,
+    vkLoginCallback,
     vkLoginSendAccessToken,
     anyToken,
     vkTokenLogout
@@ -18,6 +20,13 @@ export {routerAuth}
 routerAuth.post("/local/register",
     localRegister(),
     (req, res) => res.json(req.user));
+
+routerAuth.post("/local/edit",
+    localToken(),
+    (req, res) => updateProfile(new ProfileLocal(req.body)).then(
+        res.json.bind(res),
+        res.send.bind(res)
+    ));
 
 routerAuth.post("/local/login",
     localLogin(),
@@ -35,9 +44,9 @@ routerAuth.get("/local/logout",
     }
 );
 
-routerAuth.post("/vk/login", vkLogin);
+routerAuth.get("/vk/login", vkLogin);
 
-routerAuth.get("/vk/callback", vkloginCallback);
+routerAuth.get("/vk/callback", vkLoginCallback);
 
 routerAuth.get("/vk/get_access_token", vkLoginSendAccessToken);
 

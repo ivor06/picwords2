@@ -1,4 +1,3 @@
-/// <reference path="../../../../typings/index.d.ts" />
 import {Component, Output, EventEmitter} from "@angular/core";
 import {Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -37,12 +36,26 @@ export class SignInFormComponent extends TranslateMixin {
     }
 
     signin() {
-        this._userService.signIn(this.form.value)
+        this._userService.signInLocal(this.form.value)
             .then(() => {
-                this._router.navigate(["/"]);
+                this._router.navigate(["profile"]);
             })
             .catch(error => {
                 console.log("error in userService.signIn:", error); // TODO Modal/Dialog window
+            });
+    }
+
+    onSignUp() {
+        this._router.navigate(["signup"]);
+    }
+
+    onVkAuth() {
+        this._userService.signInVk()
+            .then((data) => {
+                this._router.navigate(["profile"]);
+            })
+            .catch(error => {
+                console.error("userService.onVkAuth error:", error);
             });
     }
 }

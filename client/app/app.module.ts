@@ -21,6 +21,7 @@ import {BroadcastService} from "./services/broadcast.service";
 import {BroadcastMessageEvent} from "./services/broadcast-message.event";
 import {ResponsiveComponent} from "./components/responsive/responsive.component";
 import {SignInFormComponent} from "./components/signin-form/signin-form.component";
+import {ProfileComponent} from "./components/profile/profile.component";
 
 @NgModule({
     imports: [
@@ -44,6 +45,7 @@ import {SignInFormComponent} from "./components/signin-form/signin-form.componen
         TranslatePipe,
         NavBarComponent,
         FooterComponent,
+        ProfileComponent,
         SignInFormComponent,
         UserFormComponent,
         UsersComponent,

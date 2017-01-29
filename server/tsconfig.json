@@ -28,6 +28,7 @@
     "./app.ts",
     "./server.ts",
     "./routes/index.ts",
+    "./routes/auth.ts",
     "./providers/db.ts",
     "./providers/user.ts",
     "./auth/auth.config.ts",

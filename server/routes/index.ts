@@ -1,18 +1,21 @@
 import * as express from "express";
 
-import {anyToken} from "../auth/auth.config";
-
-import {findById} from "../providers/user"
+import {findById, cleanUser, findByRoom} from "../providers/user"
 
 const router = express.Router();
 
 export {router}
 
 router.get("/user/:id",
-    anyToken(), // TODO 403 Forbidden
     (req, res) => {
         findById(req.params.id).then(
-            res.json.bind(res),
+            user => res.json(cleanUser(user)),
             res.send.bind(res)
         );
     });
+
+router.get("/user/room/:name",
+    (req, res) => findByRoom(req.params.name).then(
+        res.json.bind(res),
+        res.send.bind(res)
+    ));

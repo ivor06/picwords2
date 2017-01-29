@@ -4,46 +4,55 @@ import * as jwt from "jsonwebtoken";
 import {Request} from '~express/lib/request';
 import {ParsedAsJson} from 'body-parser';
 
-import {User, ProfileLocal} from "../../../common/classes/user";
+import {ProfileLocal} from "../../../common/classes/user";
 import {AUTH} from "../../../common/config";
+import {filterObjectKeys} from "../../../common/util";
 import {HttpError} from "../../../common/error";
-import {findByEmail, findOrCreateByProfile, passwordToHashSync, validateSync} from "../../providers/user";
+import {findByEmail, findOrCreateByProfile, passwordToHashSync, validateSync, cleanUser} from "../../providers/user";
 
 const
     localRegisterInit = function (req: Request&ParsedAsJson, email: string, password: string, cb) {
         if (!email || !password)
             return cb(new HttpError(400, "Bad request", "email and password required"));
-        findByEmail(email).then(user => {
-            if (user)
-                return cb(null, false, {message: "User " + email + " already exists!"});
-            const profileLocal = new ProfileLocal({
-                name: req.body.name,
+        const profileLocal = new ProfileLocal({
+            name: req.body.name,
+            email: email,
+            password: passwordToHashSync(password),
+            token: jwt.sign({
                 email: email,
-                password: passwordToHashSync(password),
-                token: jwt.sign({
-                    email: email,
-                    password: password
-                }, AUTH.LOCAL.JWT_SECRET, {
-                    algorithm: "HS256"
-                })
-            });
-            if (req.body.avatar) profileLocal.avatar = (req.body.avatar);
-            if (req.body.about) profileLocal.about = (req.body.about);
-            if (req.body.city) profileLocal.city = (req.body.city);
-            findOrCreateByProfile(profileLocal, req).then(
-                id => cb(id ? null : new HttpError(500, "Server error", "User register error"), user), // TODO user does not exist!!
-                error => cb(new HttpError(500, "Server error", error)));
-        }, cb);
+                password: password
+            }, AUTH.LOCAL.JWT_SECRET, {
+                algorithm: "HS256"
+            })
+        });
+        if (req.body.avatar) profileLocal.avatar = (req.body.avatar);
+        if (req.body.about) profileLocal.about = (req.body.about);
+        if (req.body.city) profileLocal.city = (req.body.city);
+        findOrCreateByProfile(profileLocal, req).then(
+            user => cb(
+                user ? null : new HttpError(500, "Server error", "User register error"),
+                filterObjectKeys(cleanUser(user || {}, []), AUTH.COMMON_FIELD_LIST.concat(["local"]))),
+            error => cb(new HttpError(500, "Server error", error)));
     },
     localLoginInit = function (req, email, password, cb) {
         if (!email || !password)
             return cb(new HttpError(400, "Bad request", "email and password required"));
-        findByEmail(email).then(user => cb(null, (user && validateSync(password, user.local.password)) ? req.user = user : false), cb);
+        findByEmail(email).then(user => cb(
+            null,
+            (user && validateSync(password, user.local.password))
+                ? req.user = filterObjectKeys(cleanUser(user || {}, []), AUTH.COMMON_FIELD_LIST.concat(["local"]))
+                : false),
+            cb);
     },
     localBearerInit = function (token, cb) {
         if (!token || !jwt.decode(token))
             return cb(new HttpError(401, "Unauthorized", "Token required"));
-        findByEmail(jwt.decode(token)["email"]).then(user => cb(null, (user && validateSync(jwt.decode(token)["password"], user.local.password)) ? user : false), cb);
+        findByEmail(jwt.decode(token)["email"]).then(user => cb(
+            null,
+            (user && validateSync(jwt.decode(token)["password"], user.local.password))
+                ? filterObjectKeys(cleanUser(user || {}, [AUTH.LOCAL.TOKEN_FIELD]), AUTH.COMMON_FIELD_LIST.concat(["local"]))
+                : false
+        ), cb);
     },
     localOptions = {
         usernameField: "email",

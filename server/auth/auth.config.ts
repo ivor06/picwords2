@@ -3,7 +3,7 @@ import {findById} from "../providers/user";
 import {
     anyTokenStrategy,
     vkLogin,
-    vkloginCallback,
+    vkLoginCallback,
     vkLoginSendAccessToken,
     vkTokenLogoutStrategy
 } from "./strategies/vk"
@@ -15,19 +15,17 @@ export {
     localLogin,
     localToken,
     vkLogin,
-    vkloginCallback,
+    vkLoginCallback,
     vkLoginSendAccessToken,
     anyToken,
     vkTokenLogout
 }
 
-passport.serializeUser((user, done) => {
-    return done(null, user.id ? user.id : user._id);
-});
+passport.serializeUser((user, done) => done(null, user.id));
 
 passport.deserializeUser((id, done) => {
     findById(id).then(user => {
-        done(null, Object.assign(user, {id: user._id})); //carring
+        done(null, user);
     }, done);
 });
 

@@ -8,24 +8,20 @@ import "rxjs/add/observable/throw";
 import {
     User,
     UserType,
-    UserByRoomType,
     UsersByRoom,
-    UserSignin
+    ProfileLocalType
 } from "../../../common/classes/user";
-import {API_URL} from "../../../common/config";
-import {HttpError} from "../../../common/error";
+import {API_URL, AUTH} from "../../../common/config";
 import {BroadcastMessageEvent} from "./broadcast-message.event";
 import {VK} from "../../../common/interfaces";
-import {traversalObject} from "../../../common/util";
+import {traversalObject, promiseSeries, isEmptyObject} from "../../../common/util";
 
 @Injectable()
 export class UserService {
 
+    private user: UserType = {};
+
     private _userList: UserType[];
-
-    private _userByRoomList: UserByRoomType[];
-
-    private _usersByRoom: UsersByRoom;
 
     private _headers = new Headers({
         "Content-Type": "application/json"
@@ -36,77 +32,77 @@ export class UserService {
     constructor(private _http: Http,
                 private _broadcastMessageEvent: BroadcastMessageEvent) {
         const
-            localToken = this.getToken("localToken"),
-            vkToken = this.getToken("vkToken");
-        if (localToken) {
-            this._headers.append("Authorization", "Bearer " + localToken);
+            localToken = this.getToken("local"),
+            vkToken = this.getToken("vk");
+        if (localToken)
             this.signInToken();
-        }
-        if (vkToken) {
-            this._headers.append("Authorization", "Bearer " + vkToken);
+        if (vkToken)
             this.signInVkToken();
-        }
     }
 
     getUserList(): Observable<User[]> {
         return Observable.of(this._userList);
     }
 
-    getUsersByRoom(room: string): Observable<UsersByRoom> {
-        return Observable.of(this._usersByRoom);
+    getUsersByRoom(roomName: string): Observable<UsersByRoom> {
+        return this._http.get(API_URL + "/user/room/" + roomName, {headers: this._headers})
+            .map(response => response.json());
     }
 
-    getUserByRoomList(room: string): Observable<UserByRoomType[]> {
-        return Observable.of(this._userByRoomList);
+    getUser(id: string): Observable<UserType> {
+        if (!id)
+            return Observable.of(null);
+        return id ? this._http.get(API_URL + "/user/" + id)
+            .map(response => {
+                this.user = response.json();
+                this._broadcastMessageEvent.emit("set-user", this.user);
+                return this.user;
+            }) : null;
     }
 
-    getUser(id: string): Observable<User> {
-        return this._userList[+id] ? Observable.of(this._userList[+id]) : Observable.throw(new HttpError(404, "User not found", "User not found"));
+    getCurrentUser(): UserType {
+        return (this.user && !isEmptyObject(this.user)) ? this.user : null;
     }
 
-    signUp(profileLocal: UserType) {
-        return this._http.post(API_URL + "/register", profileLocal, {headers: this._headers})
+    getCurrentUserId(): string {
+        return (this.user && !isEmptyObject(this.user)) ? this.user.id : null;
+    }
+
+    edit(profileLocal: ProfileLocalType) {
+        this.setAuthHeader("local");
+        return this._http.post(API_URL + "/auth/local/edit", profileLocal, {headers: this._headers})
             .toPromise()
-            .then(response => {
-                const user: UserType = response.json();
-                if (user && user.local) {
-                    this.setToken("localToken", user.local.token);
-                }
-                this._broadcastMessageEvent.emit("signin/logout", user);
-                return user;
+            .then(() => {
+                this.user.local = profileLocal;
+                this._broadcastMessageEvent.emit("set-user", this.user);
+                return this.user;
             });
+    }
+
+    signUp(profileLocal: ProfileLocalType) {
+        const url = API_URL + "/auth/local/register" + (this.getCurrentUserId() ? ("/?id=" + this.getCurrentUserId()) : "");
+        return this._http.post(url, profileLocal, {headers: this._headers})
+            .toPromise()
+            .then(response => this.setUser(response.json(), "local", true));
     }
 
     signInToken() {
-        return this._http.get(API_URL + "/login/token", {headers: this._headers})
+        this.setAuthHeader("local");
+        return this._http.get(API_URL + "/auth/local/token", {headers: this._headers})
             .toPromise()
-            .then(response => {
-                const user: UserType = response.json();
-                if (user && user.local) {
-                    this._broadcastMessageEvent.emit("signin/logout", user);
-                }
-                return user;
-            })
-            .catch(error => {
-                console.error("signInToken error", error);
-            });
+            .then(response => this.setUser(response.json(), "local"))
+            .catch(() => this.clearProfile("local"));
     }
 
-    signIn(user: UserSignin) {
-        return this._http.post(API_URL + "/login", user, {headers: this._headers})
+    signInLocal(profileLocal: ProfileLocalType) {
+        const url = API_URL + "/auth/local/login" + (this.getCurrentUserId() ? ("/id=" + this.getCurrentUserId()) : "");
+        return this._http.post(url, profileLocal, {headers: this._headers})
             .toPromise()
-            .then(response => {
-                const user: UserType = response.json();
-                if (user && user.local) {
-                    this.setToken("localToken", user.local.token);
-                    this._broadcastMessageEvent.emit("signin/logout", user);
-                }
-                return user;
-            });
+            .then(response => this.setUser(response.json(), "local", true));
     }
 
     oauthVkRedirect(url: string): Promise<boolean> {
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             const
                 title = "VK auth",
                 windowOuterWidthMin = 550,
@@ -127,22 +123,16 @@ export class UserService {
     }
 
     signInVkToken() {
+        this.setAuthHeader("vk");
         return this._http.get(API_URL + "/auth/vk/token", {headers: this._headers})
             .toPromise()
-            .then(response => {
-                const user: UserType = response.json();
-                if (user && (user.local || user.vk)) {
-                    this._broadcastMessageEvent.emit("signin/logout", user);
-                }
-                return user;
-            })
-            .catch(() => {
-                this.signInVk();
-            });
+            .then(response => this.setUser(response.json(), "vk"))
+            .catch(() => this.clearProfile("vk"));
     }
 
     signInVk() {
-        return this._http.get(API_URL + "/auth/vk", {headers: this._headers})
+        const url = API_URL + "/auth/vk/login" + (this.getCurrentUserId() ? ("/?id=" + this.getCurrentUserId()) : "");
+        return this._http.get(url, {headers: this._headers})
             .toPromise()
             .then(response => {
                     const urlParts: VK.OauthRedirectPartsUrl = response.json();
@@ -155,56 +145,70 @@ export class UserService {
                                 urlPartsList.push("&" + key + "=" + value)
                         });
                         return this.oauthVkRedirect(urlParts.oauthUrl + "?" + urlPartsList.join("").substring(1))
-                            .then(() => {
-                                return this._http.get(API_URL + "/auth/vk/get_access_token?state=" + state, {headers: this._headers})
-                                    .toPromise()
-                                    .then(response => {
-                                        const user: UserType = response.json();
-                                        if (user && user.vk) {
-                                            this.setToken("vkToken", user.vk.access_token);
-                                            this._broadcastMessageEvent.emit("signin/logout", user);
-                                        }
-                                        return user;
-                                    });
-                            });
+                            .then(() => this._http.get(API_URL + "/auth/vk/get_access_token?state=" + state, {headers: this._headers})
+                                .toPromise()
+                                .then(response => this.setUser(response.json(), "vk", true)));
                     }
-                    return urlParts;
+                return null;
                 }
             );
     }
 
-    logout() {
-        this._http.get(API_URL + "/logout", {headers: this._headers})
-            .subscribe(
-                () => this.setToken("localToken", null),
-                () => {
-                    this.setToken("vkToken", null);
-                    this._broadcastMessageEvent.emit("signin/logout", null);
-                },
-                () => {
-                    this._broadcastMessageEvent.emit("signin/logout", null);
-                }
-            );
+    logout(profileName?: string) {
+        promiseSeries((profileName ? [profileName] : AUTH.PROFILE_LIST)
+            .filter(name => {
+                const token = this.getToken(name);
+                if (!token)
+                    this.clearProfile(name);
+                return !!token;
+            })
+            .map(name => {
+                this.setAuthHeader(name);
+                return this._http.get(API_URL + "/auth/" + name + "/logout", {headers: this._headers})
+                    .toPromise()
+                    .then(
+                        () => name,
+                        () => name
+                    );
+            }), this.clearProfile.bind(this));
     }
 
-    getSecretPage() {
-        return this._http.get(API_URL + "/secret", {headers: this._headers})
-            .toPromise()
-            .then(response => response.json());
+    setUser(user: UserType, profileName: string, setToken: boolean = false) {
+        this.user = this.user ? Object.assign(this.user, user) : user;
+        if (setToken && this.user[profileName] && this.user[profileName][AUTH[profileName.toUpperCase()].TOKEN_FIELD]) {
+            this.setToken(profileName, this.user[profileName][AUTH[profileName.toUpperCase()].TOKEN_FIELD]);
+            delete this.user[profileName][AUTH[profileName.toUpperCase()].TOKEN_FIELD];
+        }
+        this._broadcastMessageEvent.emit("set-user", this.user);
+        return this.user;
     }
 
-    getToken(tokenName: string): string {
-        return this._localStorage ? this._localStorage.getItem(tokenName) : null;
+    getToken(profileName: string): string {
+        return this._localStorage ? this._localStorage.getItem(profileName + "Token") : null;
     }
 
-    setToken(tokenName: string, token: string) {
+    setToken(profileName: string, token: string) {
         if (token !== null) {
-            this._localStorage.setItem(tokenName, token);
-            this._headers.set("Authorization", "Bearer " + token);
+            this._localStorage.setItem(profileName + "Token", token);
+            this.setAuthHeader(profileName);
         }
         else {
-            this._localStorage.removeItem(tokenName);
-            this._headers.delete("Authorization");
+            this._localStorage.removeItem(profileName + "Token");
         }
+    }
+
+    setAuthHeader(profileName?: string) {
+        if (profileName)
+            this._headers.set("Authorization", "Bearer " + this.getToken(profileName));
+        else
+            this._headers.delete("Authorization");
+    }
+
+    clearProfile(profileName: string) {
+        this.setToken(profileName, null);
+        delete this.user[profileName];
+        if (AUTH.PROFILE_LIST.every(name => !(this.user[name])))
+            this.user = {};
+        this._broadcastMessageEvent.emit("set-user", this.user);
     }
 }

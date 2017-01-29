@@ -37,7 +37,14 @@
         <button
                 class="btn btn-primary"
                 type="submit"
-                [disabled]="!form.valid">Sign Up
+                [disabled]="!form.valid">Sign In
         </button>
     </form>
+    <br/>
+    <div>Or</div>
+    <br/>
+    <button class="btn btn-group" (click)="onSignUp()">{{ "sign-up" | translate: "navbar" : currentLanguage }}</button>
+    <button class="btn btn-group button-vk" (click)="onVkAuth()">
+        <img src="./assets/icons/vk_152.png" class="img-circle icon-vk">
+    </button>
 </div>
