@@ -2,6 +2,7 @@ import {HashObject} from "./interfaces";
 
 const
     API_URL = "http://localhost:3000",
+    SOCKET_IO_URL = "ws://localhost:3001",
     LANG_DEFAULT = "en",
     LANG_LIST = ["en-US", "ru-RU"],
     LANGUAGES: HashObject<LangObject> = {
@@ -19,13 +20,16 @@ const
 
 export {
     API_URL,
+    SOCKET_IO_URL,
     LANG_DEFAULT,
     LANG_LIST,
     LANGUAGES,
     SERVER,
     CLIENT,
     DB,
-    AUTH
+    AUTH,
+    GAME,
+    MESSAGES
 }
 
 type LangObject = {
@@ -38,6 +42,7 @@ type LangObject = {
 namespace SERVER {
     export const HOST_NAME = "127.0.0.1"; // TODO HOST_NAME = process.env.HOST_NAME || "127.0.0.1"
     export const PORT = 3000; // TODO PORT = process.env.PORT || 3000
+    export const SOCKET_IO_PORT = 3001;
     export const SRC_ROOT_PATH = "server";
     export const BUILD_PATH = "build-server";
     export const APP_PATH = "app.js";
@@ -58,7 +63,7 @@ namespace CLIENT {
 /* Database configure */
 namespace DB {
     export const COLLECTION = "******";
-    export const URL = "******";
+    export const URL = "mongodb://******/" + COLLECTION;
 }
 
 /* Auth configure */
@@ -66,7 +71,7 @@ namespace AUTH {
     export const PROFILE_LIST = ["local", "vk"];
     export const COMMON_FIELD_LIST = ["id", "achievements", "language"];
     export const LOCAL = {
-        JWT_SECRET: "myJwtSecret",
+        JWT_SECRET: "******",
         CREDENTIALS_LIST: ["email", "token"],
         REMOVE_FIELD_LIST: ["password"],
         TOKEN_FIELD: "token",
@@ -79,11 +84,11 @@ namespace AUTH {
         CREDENTIALS_LIST: ["access_token"],
         REMOVE_FIELD_LIST: ["expires_in", "deactivated", "hidden", "bdate", "exports", "has_mobile", "verified"],
         SERVICE_ACCESS_TOKEN: "******",
-        SECRET_KEY: "******",
+        SECRET_KEY: "******", // previous: "Xw63uzr7jYGgVcTeyIkd"
         TOKEN_FIELD: "access_token",
         OAUTH_URL: "oauth.vk.com",
         OAUTH_URL_AUTHORIZE: "https://oauth.vk.com/authorize",
-        AUTH_CALLBACK: "******",
+        AUTH_CALLBACK: "http://localhost:3000/auth/vk/callback",
         API_URL: "api.vk.com",
         USER_FIELD_LIST: [
             "about", "bdate", "city", "country", "exports", "has_mobile", "has_photo",
@@ -98,4 +103,20 @@ namespace AUTH {
             VERSION: "5.62"
         }
     };
+}
+
+
+/* Game configure */
+namespace GAME {
+    export const QUESTION_TIME = 20000;
+    export const QUESTION_DELAY = 2000;
+    export const MAX_POINTS = 3;
+    export const HINT_TIME = Math.floor(QUESTION_TIME / 3);
+    export const NO_ANSWER_LIMIT = 10;
+}
+
+
+/* Messages configure */
+namespace MESSAGES {
+    export const MAX_LENGTH = 200;
 }

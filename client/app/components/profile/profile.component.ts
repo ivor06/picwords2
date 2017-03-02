@@ -36,14 +36,13 @@ export class ProfileComponent extends TranslateMixin implements OnInit {
             if (id && id !== this.currentUserId)
                 this._userService.getUser(id)
                     .subscribe(
-                        (user) => this.user = user,
+                        user => this.user = user,
                         error => this.isLoading = false,
                         () => this.isLoading = false
                     );
-            else if (this.currentUserId) {
+            else if (this.currentUserId)
                 this.user = this._userService.getCurrentUser();
-                this.isLoading = false;
-            }
+            this.isLoading = false;
         });
     }
 

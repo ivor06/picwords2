@@ -7,13 +7,18 @@ import {SelectLangComponent} from "../components/select-lang/select-lang.compone
 export class TranslateMixin {
 
     protected currentLanguage = LANG_DEFAULT;
+    protected scope: string;
 
     constructor() {
-        const selector = (Reflect as any).getMetadata('annotations', this.constructor)[0].selector; // TODO find annotation instanceof ComponentDecorator
+        this.scope = (Reflect as any).getMetadata('annotations', this.constructor)[0].selector; // TODO find annotation instanceof ComponentDecorator
         TranslatePipe.instantSubject
             .subscribe(translatePipe =>
-                translatePipe.setLocalization(selector)
-                .then(() => this.currentLanguage = navigator.language));
+                translatePipe.setLocalization(this.scope)
+                    .then(() => this.currentLanguage = navigator.language.substr(0, 2)));
         SelectLangComponent.onChangeLanguage.subscribe(lang => this.currentLanguage = lang);
+    }
+
+    getTranslation(name: string, language?: string): string {
+        return TranslatePipe.getTranslation(name, this.scope, language ? language : this.currentLanguage);
     }
 }

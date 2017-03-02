@@ -7,11 +7,15 @@ import {MapHashString} from "../../../common/interfaces";
 
 const langList = LANG_LIST;
 
-const localizations = new Map<string, MapHashString>();
+const
+    localizations = new Map<string, MapHashString>(),
+    getTranslation = (value: string, scope: string, language: string): string => (localizations && localizations.get(scope) && localizations.get(scope).get(language))
+        ? localizations.get(scope).get(language)[value]
+        : value;
 
 @Pipe({
     name: "translate"
-    // , pure: false TODO try!
+    // , pure: false TODO try
 })
 
 export class TranslatePipe implements PipeTransform {
@@ -22,8 +26,12 @@ export class TranslatePipe implements PipeTransform {
         TranslatePipe.instantSubject.next(this);
     }
 
+    static getTranslation(value: string, scope: string, language: string): string {
+        return getTranslation(value, scope, language);
+    }
+
     transform(value: string, scope: string, language: string): string {
-        return localizations && localizations.get(scope) ? localizations.get(scope).get(language)[value] : "";
+        return getTranslation(value, scope, language);
     }
 
     setLocalization(scope: string) {

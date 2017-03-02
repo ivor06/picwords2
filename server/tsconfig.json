@@ -22,6 +22,8 @@
   ],
   "files": [
     "../typings/index.d.ts",
+    "../common/classes/message.ts",
+    "../common/classes/question.ts",
     "../common/classes/user.ts",
     "../common/interfaces.ts",
     "../common/error.ts",
@@ -30,7 +32,10 @@
     "./routes/index.ts",
     "./routes/auth.ts",
     "./providers/db.ts",
+    "./providers/question.ts",
     "./providers/user.ts",
+    "./controllers/game.ts",
+    "./controllers/message.ts",
     "./auth/auth.config.ts",
     "./auth/strategies/local.ts",
     "./auth/strategies/vk.ts"

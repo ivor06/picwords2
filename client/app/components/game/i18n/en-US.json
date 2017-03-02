@@ -1,0 +1,17 @@
+{
+  "player": "Player",
+  "placeholder": "Your answer...",
+  "game-started": "Game has started",
+  "game-stopped": "Game has stopped",
+  "question": "Question",
+  "hint": "Hint",
+  "letters": "letters",
+  "letters-end": "",
+  "answer-correct": "Correct answer is",
+  "answer-correct-yourself": "You've earned",
+  "answer-point": "point",
+  "answer-points": "points",
+  "answer-nobody": "Nobody answered the question",
+  "answer-late": "Sorry, you've been late tor",
+  "seconds": "seconds"
+}

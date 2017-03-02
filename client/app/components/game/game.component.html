@@ -1,0 +1,79 @@
+<div class="game">
+    <div class="device-xs visible-xs"></div>
+    <div class="device-sm visible-sm"></div>
+    <div class="device-md visible-md"></div>
+    <div class="device-lg visible-lg"></div>
+    <div class="container-game container-fluid">
+        <div class="row">
+            <div class="game-area col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                <div class="row">
+                    <ul class="messageList">
+                        <li
+                                *ngFor="let message of messageList"
+                                class="{{(message.isSystem ? 'message-system ' : '') + (message.isSending ? 'message-sending' : '') + (message.className ? message.className : '')}}">
+                            {{message?.time | date: "hh:mm:ss"}}
+                            {{" " + ((message.clientId && !message.answer) ? ((message.clientId === socketId) ? "" :
+                            ((_users && message.clientId && _users[message.clientId] && _users[message.clientId].name) ?
+                            _users[message.clientId].name : "Someone") + ": ") : "")}}
+                            {{message.isQuestion ? ("question" | translate: "game" : currentLanguage) + ": " : ""}}
+                            {{message.isHint ? ("hint" | translate: "game" : currentLanguage) + ": " : ""}}
+                            {{(message.answer && !message.isNobodyAnswered) ? (("answer-correct" | translate: "game" :
+                            currentLanguage) + " " + message.answer + (( message.clientId && (message.clientId ===
+                            socketId)) ? (". " + ("answer-correct-yourself" | translate: "game" : currentLanguage) + " "
+                            + message.answerPoints + " " + ((message.answerPoints > 1 ? "answer-points" :
+                            "answer-point") | translate: "game" : currentLanguage)) : "")) : ""}}
+                            {{message.isLate ? ("answer-late" | translate: "game" : currentLanguage) + " " +
+                            message.answerTime + ("seconds" | translate: "game" : currentLanguage) : ""}}
+                            {{message.isNobodyAnswered ? ("answer-nobody" | translate: "game" : currentLanguage) + ". "
+                            + ("answer-correct" | translate: "game" : currentLanguage) + " " + message.answer : ""}}
+                            {{message.isStopped ? ("game-stopped" | translate: "game" : currentLanguage) + "." : ""}}
+                            {{(message.text != null ) ? (message.text + (message.isQuestion ? ( " (" +
+                            message.answerLength) + " " + ("letters" | translate: "game" : currentLanguage) +
+                            ((message.answerLength > 1 && message.answerLength < 5) ? ("letters-end" | translate: "game"
+                            : currentLanguage) : "") + ")" : "")) : ""}}
+                        </li>
+                    </ul>
+                </div>
+                <div class="row send-current-message">
+                    <div class="input-group">
+                        <input
+                                type="text"
+                                class="form-control"
+                                placeholder="{{'placeholder' | translate: 'game' : currentLanguage}}"
+                                [(ngModel)]="currentMessage"
+                                (keydown)="onKeyDown($event)">
+                        <span class="input-group-btn">
+                            <button
+                                    type="button"
+                                    class="btn btn-default"
+                                    aria-label="Left Align"
+                                    (click)="send()">
+                                <span
+                                        class="glyphicon glyphicon-arrow-right"
+                                        aria-hidden="true">
+                                </span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="!isXs" class="sidebar col-sm-4 col-md-4 col-lg-4">
+                <p-dataTable *ngIf="!isShowImage" [value]="_users | objecToArray" header="Users in the room">
+                    <p-column field="name" header="Name"></p-column>
+                    <p-column field="achievements.totalScore" header="Score"></p-column>
+                </p-dataTable>
+                <div *ngIf="isShowMiniature">
+                    <div class="media-bottom">
+                        <a href="#">
+                            <img class="img-rounded img-responsive img-fluid center-block pull-md-12"
+                                 src="{{currentImage}}">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">Image1</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

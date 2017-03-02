@@ -4,6 +4,7 @@ export {
     User,
     IUser,
     UserType,
+    Achievements,
     ProfileLocal,
     ProfileLocalType,
     ProfileVk,
@@ -183,8 +184,7 @@ type VkCityType = number | {
 
 type UserByRoomType = {
     name: string;
-    totalScore: number;
-    id?: string;
+    achievements?: Achievements;
 }
 
 interface UsersByRoom extends HashObject<UserByRoomType> {

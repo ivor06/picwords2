@@ -22,6 +22,7 @@ import {BroadcastMessageEvent} from "./services/broadcast-message.event";
 import {ResponsiveComponent} from "./components/responsive/responsive.component";
 import {SignInFormComponent} from "./components/signin-form/signin-form.component";
 import {ProfileComponent} from "./components/profile/profile.component";
+import {MessageService} from "./services/message.service";
 
 @NgModule({
     imports: [
@@ -55,6 +56,7 @@ import {ProfileComponent} from "./components/profile/profile.component";
         BroadcastMessageEvent,
         BroadcastService,
         I18nService,
+        MessageService,
         UserService
     ],
     bootstrap: [AppComponent]

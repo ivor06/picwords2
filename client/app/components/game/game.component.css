@@ -1,0 +1,45 @@
+.game {
+    height: 100%;
+    margin-top: -75px;
+    padding-top: 135px;
+    padding-bottom: 60px;
+}
+
+.container-game > .row > div {
+    height: 100%;
+}
+
+.messageList {
+    margin-top: -45px;
+    padding-top: 45px;
+}
+
+.game-area {
+    border: 1px solid brown;
+}
+
+.sidebar {
+    border: 1px solid brown;
+}
+
+.send-current-message {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.message-system {
+    color: gray;
+}
+
+.message-alert {
+    color: red;
+}
+
+.message-user-self {
+    color: blue;
+}
+
+.message-sending {
+    opacity: 0.7;
+}

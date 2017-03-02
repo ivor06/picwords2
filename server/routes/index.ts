@@ -15,7 +15,7 @@ router.get("/user/:id",
     });
 
 router.get("/user/room/:name",
-    (req, res) => findByRoom(req.params.name).then(
+    (req, res) => findByRoom(req.params.name).subscribe(
         res.json.bind(res),
         res.send.bind(res)
     ));

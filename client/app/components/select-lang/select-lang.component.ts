@@ -17,9 +17,9 @@ export class SelectLangComponent {
 
     isActiveLanguageList = false;
 
-    currentLang: string = navigator.language;
+    currentLang: string = navigator.language.substr(0, 2);
 
-    onToggle(evt: any) {
+    onToggle() {
         this.isActiveLanguageList = !this.isActiveLanguageList;
     }
 

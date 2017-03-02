@@ -3,11 +3,9 @@
 export {
     HashObject,
     HashString,
+    HashNumber,
     MapHashString,
     ObjectType,
-    // GeoCoordinates,
-    // Achievements,
-    // UserHistory,
     KeyboardEventWithTargetValue,
     VK,
     JsonSchema
@@ -15,6 +13,8 @@ export {
 
 interface HashObject<T> { [key: string]: T; }
 interface HashString extends HashObject<string> {}
+interface HashNumber extends HashObject<number> {
+}
 interface MapHashString extends Map<string, HashString> {}
 
 type ObjectType = {

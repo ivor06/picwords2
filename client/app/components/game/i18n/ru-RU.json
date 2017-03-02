@@ -1,0 +1,17 @@
+{
+  "player": "Player",
+  "placeholder": "Ваш ответ...",
+  "game-started": "Игра началась",
+  "game-stopped": "Игра остановлена",
+  "question": "Вопрос",
+  "hint": "Подсказка",
+  "letters": "букв",
+  "letters-end": "ы",
+  "answer-correct": "Правильный ответ:",
+  "answer-correct-yourself": "Вы зарабатываете",
+  "answer-point": "балл",
+  "answer-points": "балла",
+  "answer-nobody": "Никто не ответил на вопрос",
+  "answer-late": "Вы опоздали на",
+  "seconds": "с."
+}
