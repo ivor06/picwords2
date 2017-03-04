@@ -1,0 +1,49 @@
+<div id="myModal"
+     class="modal fade"
+     tabindex="-1"
+     [ngClass]="{'in': isAnimation, 'displayed': isDisplay}"
+     [ngStyle]="{'opacity': isAnimation ? 1 : 0}">
+    <div class="modal-dialog">
+        <div *ngIf="content" class="modal-content " [ngClass]="{'error-content': content.isError}"
+             (click)="content.isCloseOnClick && hide()">
+            <div class="modal-header"
+                 [ngClass]="{'alert': content.isError, 'alert-danger': content.isError, 'correct-header': !content.isError}">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                        (click)="hide()">&times;</button>
+                <h4 class="modal-title text-center">{{content.header ? ((content.isError ? ('error' | translate:
+                    'dialog-window' : currentLanguage) + ": " : "") + content.header) : ""}}</h4>
+            </div>
+            <div class="modal-body">
+                <div *ngIf="content.image" class="media-img">
+                    <img
+                            class="img-rounded img-responsive img-fluid center-block pull-md-12"
+                            src={{content.image}}>
+                </div>
+                <div *ngIf="content.image" class="media-body">
+                    <h4 class="media-heading text-center">{{content.text}}</h4>
+                </div>
+                <p *ngIf="!content.image && content.text" class="text-center">{{(content?.isError ? ('error-text' |
+                    translate: 'dialog-window' : currentLanguage) + ": " : "") + content.text}}</p>
+            </div>
+            <div *ngIf="!!content.buttonList && content.buttonList.length" class="modal-footer buttonList">
+                <div *ngFor="let button of content.buttonList">
+                    <button
+                            type="button"
+                            class="{{button.className}}"
+                            aria-label="Left Align"
+                            (click)="button.callBack(); hide()">
+                        {{button.label}}
+                        <span
+                                class="{{button.iconClassName}}"
+                                aria-hidden="true">
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <div *ngIf="content.isError" class="modal-footer">
+                <a href="#" onclick="location.reload(true); return false;">{{'reload-page' | translate: 'dialog-window'
+                    : currentLanguage}}</a>
+            </div>
+        </div>
+    </div>
+</div>

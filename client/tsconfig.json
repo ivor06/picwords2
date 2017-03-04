@@ -34,6 +34,7 @@
     "./app/services/user.service.ts",
     "./app/validators/form.validator.ts",
     "./app/components/app/app.component.ts",
+    "./app/components/dialog-window/dialog-window.component.ts",
     "./app/components/responsive/responsive.component.ts",
     "./app/components/select-lang/select-lang.component.ts",
     "./app/components/navbar/navbar.component.ts",

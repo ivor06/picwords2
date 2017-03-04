@@ -23,6 +23,7 @@ import {ResponsiveComponent} from "./components/responsive/responsive.component"
 import {SignInFormComponent} from "./components/signin-form/signin-form.component";
 import {ProfileComponent} from "./components/profile/profile.component";
 import {MessageService} from "./services/message.service";
+import {DialogWindowComponent} from "./components/dialog-window/dialog-window.component";
 
 @NgModule({
     imports: [
@@ -39,6 +40,7 @@ import {MessageService} from "./services/message.service";
     ],
     declarations: [
         AppComponent,
+        DialogWindowComponent,
         ResponsiveComponent,
         SelectLangComponent,
         KeysPipe,

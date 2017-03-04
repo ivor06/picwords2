@@ -1,0 +1,16 @@
+.displayed {
+    display: block;
+}
+
+.buttonList > * {
+    display: inline-block;
+}
+
+.error-content {
+    border: 2px solid red;
+    border-radius: 6px;
+}
+
+.correct-header {
+    background-color: #18bc9c;
+}
