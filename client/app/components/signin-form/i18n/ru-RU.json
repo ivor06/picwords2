@@ -6,5 +6,7 @@
   "required-password": "Требуется ввести пароль",
   "invalid-email": "Некорректный email",
   "password": "Пароль",
-  "signin": "Войти"
+  "signin": "Войти",
+  "signup": "Регистрация",
+  "or": "или"
 }

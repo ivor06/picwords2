@@ -25,7 +25,8 @@
                             {{message.isLate ? ("answer-late" | translate: "game" : currentLanguage) + " " +
                             message.answerTime + ("seconds" | translate: "game" : currentLanguage) : ""}}
                             {{message.isNobodyAnswered ? ("answer-nobody" | translate: "game" : currentLanguage) + ". "
-                            + ("answer-correct" | translate: "game" : currentLanguage) + " " + message.answer : ""}}
+                            + ("answer-correct" | translate: "game" : currentLanguage) + ": " + message.answer : ""}}
+                            {{message.isStarted ? ("game-started" | translate: "game" : currentLanguage) + "." : ""}}
                             {{message.isStopped ? ("game-stopped" | translate: "game" : currentLanguage) + "." : ""}}
                             {{(message.text != null ) ? (message.text + (message.isQuestion ? ( " (" +
                             message.answerLength) + " " + ("letters" | translate: "game" : currentLanguage) +
@@ -41,7 +42,7 @@
                                 class="form-control"
                                 placeholder="{{'placeholder' | translate: 'game' : currentLanguage}}"
                                 [(ngModel)]="currentMessage"
-                                (keydown)="onKeyDown($event)">
+                                (keydown.enter)="send()">
                         <span class="input-group-btn">
                             <button
                                     type="button"
@@ -58,19 +59,17 @@
                 </div>
             </div>
             <div *ngIf="!isXs" class="sidebar col-sm-4 col-md-4 col-lg-4">
-                <p-dataTable *ngIf="!isShowImage" [value]="_users | objecToArray" header="Users in the room">
+                <p-dataTable [value]="_users | objecToArray" header="Users in the room">
                     <p-column field="name" header="Name"></p-column>
                     <p-column field="achievements.totalScore" header="Score"></p-column>
                 </p-dataTable>
-                <div *ngIf="isShowMiniature">
-                    <div class="media-bottom">
-                        <a href="#">
-                            <img class="img-rounded img-responsive img-fluid center-block pull-md-12"
+                <div *ngIf="isShowMiniature" class="miniature">
+                    <div class="media-img">
+                        <div (click)="showImage()">
+                            <img
+                                    class="img-rounded image-preview"
                                  src="{{currentImage}}">
-                        </a>
-                    </div>
-                    <div class="media-body">
-                        <h4 class="media-heading">Image1</h4>
+                        </div>
                     </div>
                 </div>
             </div>

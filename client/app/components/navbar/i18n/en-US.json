@@ -4,7 +4,7 @@
   "start": "Старт",
   "messages": "Messages",
   "players": "Players",
-  "sign-in": "Sign in",
-  "sign-up": "Sign up",
+  "signin": "Sign in",
+  "signup": "Sign up",
   "user-signed-as": "Signed in as "
 }

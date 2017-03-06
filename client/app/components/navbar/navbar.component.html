@@ -3,7 +3,7 @@
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <a class="navbar-brand brand" routerLink="/">
-                <img alt="Brand" src="./assets/brand.jpg">
+                <img src="./assets/brand.jpg">
             </a>
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" aria-expanded="false"
                     role="navigation">
@@ -18,16 +18,15 @@
             <ul class="nav navbar-nav width-wide">
                 <li role="presentation"><a routerLink="/" class="start-game">{{ (isGameProcessing ? "game" : "start" ) |
                     translate: "navbar" : currentLanguage }}</a></li>
-                <li role="presentation"><a routerLink="profile">{{ "profile" | translate: "navbar" : currentLanguage
-                    }}</a></li>
-                <li role="presentation"></li>
+                <li role="presentation"><a routerLink="profile">{{ "profile" | translate: "navbar" :
+                    currentLanguage}}</a></li>
                 <li *ngIf="!userName" role="presentation">
-                    <button class="btn btn-info" routerLink="signin">{{ "sign-in" | translate: "navbar" :
-                        currentLanguage }}
+                    <button class="btn btn-info" routerLink="signin">{{ "signin" | translate: "navbar" : currentLanguage
+                        }}
                     </button>
                 </li>
                 <li *ngIf="!userName" role="presentation">
-                    <button class="btn btn-group" routerLink="signup">{{ "sign-up" | translate: "navbar" :
+                    <button class="btn btn-group" routerLink="signup">{{ "signup" | translate: "navbar" :
                         currentLanguage }}
                     </button>
                 </li>
@@ -43,7 +42,7 @@
                     <p class="navbar-text">{{ "user-signed-as" | translate: "navbar" : currentLanguage }}
                         <a href="{{user.vk ? 'https://vk.com/id' + user.vk.id : '#'}}" class="navbar-link">
                             {{userName}}
-                            <img *ngIf="avatar" src="{{avatar}}" alt="user avatar" class="img-circle icon-vk">
+                            <img *ngIf="avatar" src="{{avatar}}" alt="avatar" class="img-circle icon-vk">
                             <span *ngIf="!avatar" class="glyphicon glyphicon-user large-size"></span>
                         </a>
                     </p>

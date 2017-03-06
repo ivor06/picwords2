@@ -3,7 +3,7 @@
     <i *ngIf="isLoading" class="fa fa-spinner fa-spin fa-3x"></i>
     <div *ngIf="!isLoading" class="row">
         <div class="col-md-6 well">
-            <form [formGroup]="form" (ngSubmit)="save()">
+            <form [formGroup]="form" (keydown.enter)="onEnter()" (ngSubmit)="save()">
                 <fieldset>
                     <div class="form-group">
                         <label>{{ "user-name" | translate: "user-form" : currentLanguage }}</label>

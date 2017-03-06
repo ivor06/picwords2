@@ -2,10 +2,8 @@ import * as express from "express";
 import {Express} from "~express/lib/express"
 import * as bodyParser from "body-parser";
 import * as passport from "passport";
-import * as expressSession from "express-session";
 import * as http from "http";
 import * as https from "https";
-import * as cors from "cors";
 
 import {connectDb} from "./providers/db";
 import {HttpError} from "../common/error";
@@ -92,8 +90,12 @@ class Server {
                 throw err;
             });
 
+            const serv = this.app.listen(port, hostname, () => {
+                // console.log("express app listen on ", serv.address().address + ":" + serv.address().port);
+            });
+
             let messageController = new MessageController();
             messageController.start();
-        });
+        }, console.error);
     }
 }

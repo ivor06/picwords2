@@ -1,7 +1,7 @@
 <div class="signin-form">
     <h1>{{ "signin" | translate: "signin-form" : currentLanguage }}</h1>
     <form #f="ngForm" [formGroup]="form" (ngSubmit)="signin()">
-        <div class="form-group">
+        <div class="form-group" (keydown.enter)="onEnter()">
             <label>Email</label>
             <input
                     formControlName="email"
@@ -37,13 +37,14 @@
         <button
                 class="btn btn-primary"
                 type="submit"
-                [disabled]="!form.valid">Sign In
+                [disabled]="!form.valid">{{ "signin" | translate: "signin-form" : currentLanguage }}
         </button>
     </form>
     <br/>
-    <div>Or</div>
+    <div>{{ "or" | translate: "signin-form" : currentLanguage }}</div>
     <br/>
-    <button class="btn btn-group" (click)="onSignUp()">{{ "sign-up" | translate: "navbar" : currentLanguage }}</button>
+    <button class="btn btn-group" (click)="onSignUp()">{{ "signup" | translate: "signin-form" : currentLanguage }}
+    </button>
     <button class="btn btn-group button-vk" (click)="onVkAuth()">
         <img src="./assets/icons/vk_152.png" class="img-circle icon-vk">
     </button>

@@ -1,4 +1,3 @@
-/// <reference path="../../../../typings/index.d.ts" />
 import {Component} from "@angular/core";
 import {BroadcastMessageEvent} from "../../services/broadcast-message.event";
 import {TranslateMixin} from "../../pipes/translate.mixin";
@@ -42,6 +41,9 @@ export class DialogWindowComponent extends TranslateMixin {
         this._broadcastMessageEvent.on("xs-mode")
             .subscribe(isXs => this.isXs = isXs);
 
+        this._broadcastMessageEvent.on("dialog.setContent")
+            .subscribe((content?: DialogContent) => this.setContent(content));
+
         this._broadcastMessageEvent.on("dialog.show")
             .subscribe((time?: number) => {
                 this.show();
@@ -49,11 +51,8 @@ export class DialogWindowComponent extends TranslateMixin {
                     setTimeout(this.hide.bind(this), time);
             });
 
-        this._broadcastMessageEvent.on("dialog.setContent")
-            .subscribe((content?: DialogContent) => {
-                console.log("setContent", content);
-                this.setContent(content);
-            });
+        this._broadcastMessageEvent.on("dialog.hide")
+            .subscribe(() => this.hide());
     }
 
     setContent(content: DialogContent) {

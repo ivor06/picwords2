@@ -30,6 +30,7 @@
     "./app/services/broadcast-message.event.ts",
     "./app/services/broadcast.service.ts",
     "./app/services/i18n.service.ts",
+    "./app/services/image.service.ts",
     "./app/services/message.service.ts",
     "./app/services/user.service.ts",
     "./app/validators/form.validator.ts",

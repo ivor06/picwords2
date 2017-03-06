@@ -6,5 +6,7 @@
   "required-password": "Password is required",
   "invalid-email": "Please type a valid email",
   "password": "Password",
-  "signin": "Sign in"
+  "signin": "Sign in",
+  "signup": "Sign up",
+  "or": "or"
 }

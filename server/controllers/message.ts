@@ -24,14 +24,14 @@ class MessageController {
 
     constructor() {
         this.game.questionsBus
-            .filter(message => !!message.clientId)
             .subscribe((message: MessageType) => {
+                if (!message.clientId)
+                    return this.io.sockets.emit("message", message);
                 if (message.isAnswered) {
                     const
                         clientId = message.clientId,
                         userId = this.userIds[clientId],
                         answerTime = message.answerTime;
-
                     if (!MessageController.clients[clientId].achievements.minTime || (answerTime < MessageController.clients[clientId].achievements.minTime)) {
                         MessageController.clients[clientId].achievements.minTime = answerTime;
                         message.isRecord = true;
@@ -40,15 +40,12 @@ class MessageController {
                     this.io.sockets.emit("userListByRoom", MessageController.clients);
                     if (userId)
                         updateAchievements(userId, MessageController.clients[clientId].achievements);
-                } else if (message.isQuestion)
+                    this.io.sockets.emit("message", message);
+                } else if (message.isQuestion && this.sockets[message.clientId])
                     this.sockets[message.clientId].emit("message", message);
                 else
                     this.io.sockets.emit("message", message);
             });
-
-        this.game.questionsBus
-            .filter(message => !message.clientId)
-            .subscribe(message => this.io.sockets.emit("message", message));
     }
 
     static getUsersByRoom(room?: string): UsersByRoom {
@@ -66,69 +63,76 @@ class MessageController {
             userId = socket.handshake.query.userId || null,
             ua = socket.handshake.headers["user-agent"].substring(socket.handshake.headers["user-agent"].lastIndexOf(")") + 1);
 
-        let userIdApproved = false;
-
         console.log("user connected. socketId:", socketId, "  userSocketId:", userSocketId, "  userId:", userId, ua);
 
         if (userSocketId && MessageController.clients[userSocketId])
-            onDisconnect("reconnect", userSocketId);
+            this.onDisconnect(socketId, "reconnect", userSocketId);
 
-        if (userId)
-            findById(userId).then(user => {
-                console.log("user found:", user.id);
-                userIdApproved = true;
+        const resolveUser = new Promise((resolve, reject) => {
+            if (userId)
+                findById(userId).then(
+                    user => {
+                        console.log("user found:", user.id);
+                        resolve(user);
+                    }, reject);
+            else
+                resolve(null);
+            });
+
+        resolveUser.then(
+            user => {
                 this.setClient(socketId, socket, user);
-            }, error => {
+
+                /* User's start game request */
+                socket.on("start", this.game.start.bind(this.game));
+
+                /* User's message */
+                socket.on("message", this.onMessage.bind(this, socketId));
+
+                /* User's disconnect */
+                socket.on("disconnect", this.onDisconnect.bind(this, socketId));
+
+                if (!this.game.isGameProcessing) {
+                    this.game.start();
+                    setTimeout(() => {
+                        this.game.stop();
+                    }, 120000);
+                } else
+                    this.game.askQuestion(socketId);
+            },
+            error => {
                 console.error(error);
                 this.setClient(socketId, socket);
+            }
+        );
+    }
+
+    onMessage(socketId: string, message: string, callback) {
+        if (typeof message !== TYPES.STRING || message.length > MESSAGES.MAX_LENGTH)
+            return callback();
+        const
+            time = new Date(),
+            msg = new Message({
+                clientId: socketId,
+                text: message,
+                time: time
             });
-        else
-            this.setClient(socketId, socket);
+        this.sockets[socketId].broadcast.emit("message", msg);
+        this.game.answersBus.next(msg);
+        callback && callback(time);
+    }
 
-        /* User's start game request */
-        socket.on("start", this.game.start.bind(this.game));
-
-        /* User's message */
-        socket.on("message", onMessage.bind(this));
-
-        /* User's disconnect */
-        socket.on("disconnect", onDisconnect.bind(this));
-
-        if (!this.game.isGameProcessing) {
-            this.game.start();
-            setTimeout(() => {
-                this.game.stop();
-            }, 120000);
+    onDisconnect(socketId, reason, clientSocketId?: string) {
+        const id = clientSocketId || socketId;
+        console.log("user disconnected", id, "  reason:", reason);
+        delete MessageController.clients[id];
+        delete this.sockets[id];
+        delete this.userIds[id];
+        if (isEmptyObject(this.sockets)) {
+            console.log("nobody in the room");
+            this.game.stop();
         } else
-            this.game.askQuestion(socketId);
-
-        function onMessage(message: string, callback) {
-            if (typeof message !== TYPES.STRING || message.length > MESSAGES.MAX_LENGTH)
-                return callback();
-            const
-                time = new Date(),
-                msg = new Message({
-                    clientId: socketId,
-                    text: message,
-                    time: time
-                });
-            this.game.answersBus.next(msg);
-            socket.broadcast.emit("message", msg);
-            callback && callback(time);
-        }
-
-        function onDisconnect(reason, clientSocketId?: string) {
-            const id = clientSocketId || socketId;
-            console.log("user disconnected", socketId, "  reason:", reason);
-            delete MessageController.clients[id];
-            delete this.sockets[id];
-            delete this.userIds[id];
-            if (isEmptyObject(this.sockets)) {
-                console.log("nobody in the room");
-                this.game.stop();
-            } else
-                socket.broadcast.emit("disconnected", id);
-        }
+            this.io.sockets.emit("disconnected", id);
     }
 
     setClient(key: string, socket: SIO.Socket, user?: UserType) {

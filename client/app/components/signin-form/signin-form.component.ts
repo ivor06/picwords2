@@ -35,6 +35,11 @@ export class SignInFormComponent extends TranslateMixin {
         });
     }
 
+    onEnter() {
+        if (this.form.valid)
+            this.signin();
+    }
+
     signin() {
         this._userService.signInLocal(this.form.value)
             .then(() => {
@@ -51,7 +56,7 @@ export class SignInFormComponent extends TranslateMixin {
 
     onVkAuth() {
         this._userService.signInVk()
-            .then((data) => {
+            .then(() => {
                 this._router.navigate(["profile"]);
             })
             .catch(error => {

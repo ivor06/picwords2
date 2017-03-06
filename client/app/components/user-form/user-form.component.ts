@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component} from "@angular/core";
 import {Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {validate} from "jsonschema";
@@ -16,7 +16,7 @@ import {userSchema} from "../../../../common/schemas/user.schema";
     styleUrls: ["user-form.component.css"]
 })
 
-export class UserFormComponent extends TranslateMixin implements OnInit {
+export class UserFormComponent extends TranslateMixin {
     private form: FormGroup;
     private user: UserType;
     private isLoading = true;
@@ -47,7 +47,9 @@ export class UserFormComponent extends TranslateMixin implements OnInit {
         this.isLoading = false;
     }
 
-    ngOnInit() {
+    onEnter() {
+        if (this.form.valid)
+            this.save();
     }
 
     save() {

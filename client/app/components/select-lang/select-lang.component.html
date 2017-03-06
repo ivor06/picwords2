@@ -7,8 +7,8 @@
                 aria-haspopup="true"
                 aria-expanded="true"
                 (click)="onToggle()">
-            <span class="flag-icon flag-icon-{{ languages[currentLang].flagName }}">></span>
-            <span>{{ languages[currentLang].langName }}</span>
+            <span class="flag-icon flag-icon-{{languages[currentLang].flagName}}"></span>
+            <span>{{languages[currentLang].langName}}</span>
             <span class="caret"></span>
         </button>
         <ul
@@ -19,7 +19,7 @@
                     *ngFor="let language of languages | keys"
                     (click)="onSelectLanguage(language.key)"
                     class="btn btn-info">
-                <span class="flag-icon flag-icon-{{ languages[language.key].flagName }}">></span>
+                <span class="flag-icon flag-icon-{{languages[language.key].flagName}}"></span>
                 <span>{{languages[language.key].langName}}</span>
             </li>
         </ul>

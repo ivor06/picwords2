@@ -1,7 +1,3 @@
-/// <reference path="../../../../typings/index.d.ts" />
-// TODO manually fixed rx.d.ts and rx.all.d.ts - ScheduledItem ===> internals.ScheduledItem
-// TODO manually fixed rx-dom/index.d.ts - Rx.Observer ====> Observer, Rx.Observable ====> Observable
-
 import {Component, OnInit, ChangeDetectorRef, ElementRef} from "@angular/core";
 
 import {UserType, UsersByRoom} from "../../../../common/classes/user";
@@ -10,8 +6,9 @@ import {TranslateMixin} from "../../pipes/translate.mixin";
 import {Message, MessageType} from "../../../../common/classes/message";
 import {BroadcastMessageEvent} from "../../services/broadcast-message.event";
 import {MessageService} from "../../services/message.service";
-import {removeObjectKeys} from "../../../../common/util";
-import {MESSAGES} from "../../../../common/config";
+import {removeObjectKeys, isNumber, TYPES} from "../../../../common/util";
+import {CLIENT, MESSAGES, GAME} from "../../../../common/config";
+import {ImageService} from "../../services/image.service";
 
 const MESSAGE_LIST_PADDING = 45;
 
@@ -33,12 +30,13 @@ export class GameComponent extends TranslateMixin implements OnInit {
     private _users: UsersByRoom;
     private _sendMessageHeight: number;
     // private currentRoom: string = "room1";
-    // private currentImage = "./assets/images/1.jpg";
-    // private isShowImage = false;
-    // private isShowMiniature = false;
+    private nextImage: string;
+    private currentImage: string;
+    private isShowMiniature = false;
 
-    constructor(private _userService: UserService,
+    constructor(private _imageService: ImageService,
                 private _messageService: MessageService,
+                private _userService: UserService,
                 private _broadcastMessageEvent: BroadcastMessageEvent,
                 private element: ElementRef,
                 private changeDetectorRef: ChangeDetectorRef) {
@@ -69,6 +67,27 @@ export class GameComponent extends TranslateMixin implements OnInit {
 
         this._messageService.getMessage()
             .subscribe((message: MessageType) => {
+                if (isNumber(message.questionNumber))
+                    this._imageService.getImageByNumber(message.questionNumber)
+                        .subscribe(() => {
+                            },
+                            error => this.isShowMiniature = false,
+                            () => this.nextImage = "./" + CLIENT.IMAGES_PATH + "/" + message.questionNumber + ".jpg"
+                        );
+                if (message.answer) {
+                    this.currentImage = this.nextImage;
+                    if (!this.isShowMiniature)
+                        this.isShowMiniature = true;
+                    this._broadcastMessageEvent.emit("dialog.setContent", {
+                        header: this.getTranslation("answer-correct"),
+                        text: message.answer,
+                        image: this.currentImage,
+                        isClosable: true,
+                        isCloseOnClick: true
+                    });
+                    this.showImage(GAME.IMAGE_SHOW_TIME);
+
+                }
                 this.messageList.push(message);
                 this.check();
             });
@@ -76,11 +95,6 @@ export class GameComponent extends TranslateMixin implements OnInit {
         this.currentUser = this._userService.getCurrentUser();
         if (!this.currentUser || !this.currentUser.id)
             this.currentUser = {id: ""};
-    }
-
-    onKeyDown(event: KeyboardEvent) {
-        if ((event.charCode || event.keyCode) === 13) // TODO remove to html
-            this.send();
     }
 
     send() {
@@ -120,9 +134,15 @@ export class GameComponent extends TranslateMixin implements OnInit {
             this.changeDetectorRef.detectChanges();
             if (document.getElementsByClassName("messageList")[0]["offsetHeight"] - MESSAGE_LIST_PADDING > document.getElementsByClassName("game-area")[0]["offsetHeight"] - this._sendMessageHeight) {
                 this.messageList.shift();
+                if (this._historyMessageList.length)
+                    this._historyMessageList.shift();
                 this.check();
             }
         }
+    }
+
+    showImage(time?: number) {
+        this._broadcastMessageEvent.emit("dialog.show", (isNumber(time) ? time : null));
     }
 
     ngOnInit() {

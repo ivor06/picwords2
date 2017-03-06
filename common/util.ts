@@ -14,6 +14,8 @@ export {
     isEmptyObject,
     onError,
     isNumber,
+    isString,
+    isObject,
     promiseSeries
 }
 
@@ -47,10 +49,6 @@ function filterObjectKeys<T>(obj: T, fieldList: string[]): T {
     return obj;
 }
 
-function isEmptyObject(obj: any): boolean {
-    return (obj == null || ((typeof obj === TYPES.OBJECT) && Object.getOwnPropertyNames(obj).length === 0));
-}
-
 function displayObject(obj) {
     for (let key of obj) {
         if (obj.hasOwnProperty(key) && !(obj[key] instanceof Function))
@@ -75,4 +73,16 @@ function promiseSeries(promiseList: Promise<any>[], callback?): Promise<any[]> {
 function isNumber(value: any): boolean {
     // return (value !== null) && !isNaN(value) && (typeof value === TYPES.NUMBER);
     return typeof value === TYPES.NUMBER;
+}
+
+function isString(value: any): boolean {
+    return typeof value === TYPES.STRING;
+}
+
+function isObject(value: any): boolean {
+    return typeof value === TYPES.OBJECT;
+}
+
+function isEmptyObject(obj: any): boolean {
+    return (obj == null || (this.isObject(obj) && Object.getOwnPropertyNames(obj).length === 0));
 }

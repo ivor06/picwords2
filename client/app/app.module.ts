@@ -24,6 +24,7 @@ import {SignInFormComponent} from "./components/signin-form/signin-form.componen
 import {ProfileComponent} from "./components/profile/profile.component";
 import {MessageService} from "./services/message.service";
 import {DialogWindowComponent} from "./components/dialog-window/dialog-window.component";
+import {ImageService} from "./services/image.service";
 
 @NgModule({
     imports: [
@@ -58,6 +59,7 @@ import {DialogWindowComponent} from "./components/dialog-window/dialog-window.co
         BroadcastMessageEvent,
         BroadcastService,
         I18nService,
+        ImageService,
         MessageService,
         UserService
     ],

@@ -58,7 +58,7 @@ class GameController {
         const questionAnsweredSource = this.answersBus
             .filter((message: Message) => {
                 if (this.question && message.text === this.question.answer) {
-                    console.log("correct answer!", this.isAnswered);
+                    console.log("correct answer!  this.isAnswered:", this.isAnswered);
                     if (!this.isAnswered) {
                         this.isAnswered = true;
                         this.question.answerTime = Date.now();
@@ -86,7 +86,7 @@ class GameController {
 
         Observable
             .combineLatest(questionAnsweredSource, stSource,
-                (answer, stSource) => (answer === null && this.question)
+                (answer, stSource) => (answer === null && this.question) // TODO answer in null only before first correct answer
                     ? this.questionsBus.next({
                     time: new Date(),
                     answer: this.question.answer,
@@ -142,6 +142,7 @@ class GameController {
                 text: this.question.text,
                 time: new Date(),
                 answerLength: this.question.answer.length,
+                questionNumber: this.question.number,
                 isQuestion: true
             };
             if (socketID)
@@ -167,7 +168,7 @@ class GameController {
             length = answer.length,
             hintLettersAmount = getHintLettersAmount(answer) - 1 + order;
 
-        /* Author of hint processing algorithm is Mikhail Maximov */
+        /* Hint processing algorithm suggested by Mikhail Maximov */
         if (order === 0) {
             this.hintPositionList = getRandomPositionList(length);
             this.hintLetterTotal = 0;

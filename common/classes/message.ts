@@ -6,6 +6,7 @@ class Message {
     text: string;
     className: string;
     time: Date;
+    questionNumber: number;
     answer: string;
     answerTime: number;
     answerLength: number;
@@ -35,6 +36,7 @@ type MessageType = {
     text?: string;
     className?: string;
     time?: Date;
+    questionNumber?: number;
     answer?: string;
     answerTime?: number;
     answerLength?: number;

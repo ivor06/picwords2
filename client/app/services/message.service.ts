@@ -1,13 +1,13 @@
-//// <reference path="../../../typings/globals/rx-dom/index.d.ts" />
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 import "rxjs/add/operator/toPromise";
 import "rxjs/add/observable/of";
 import "rxjs/add/observable/fromEvent";
+import "rxjs/add/operator/distinctUntilChanged";
 
-import {UserType} from "../../../common/classes/user";
 import {UserService} from "./user.service";
 import {SOCKET_IO_URL} from "../../../common/config";
+import {isObject} from "../../../common/util";
 import {join} from "../../../common/url";
 import {BroadcastMessageEvent} from "./broadcast-message.event";
 import {MessageType} from "../../../common/classes/message";
@@ -32,47 +32,49 @@ declare var io: {
 @Injectable()
 export class MessageService {
 
-    private user: UserType = {};
     private userId: string;
     private socketId: string;
     private socket: Socket;
+    private connection: Promise<string>;
 
     constructor(private _broadcastMessageEvent: BroadcastMessageEvent,
                 private _userService: UserService) {
         this._broadcastMessageEvent.on("set-user")
-            .subscribe((user: UserType) => {
-                this.user = user;
-                if (this.userId !== user.id)
-                    this.connectSocketIO();
+            .filter(user => user.id !== this.userId)
+            .subscribe(user => {
+                this.userId = user.id;
+                if (isObject(this.connection))
+                    this.connection.then(socketId => {
+                        this.socket.on("disconnect", (data) => this.connectSocketIO());
+                        this.socket.disconnect(true);
+                    });
             });
         this.connectSocketIO();
     }
 
     connectSocketIO() {
-        if (this.socket) {
-            this.socket.disconnect(true);
-            this.socket.remove();
-        }
-
-        this.userId = this._userService.getCurrentUserId();
-        const
-            querySocketId = this.socketId ? "?socketId=" + this.socketId : null,
-            queryUserId = this.userId ? "?userId=" + this.userId : null;
-        this.socketId = null;
-        this._broadcastMessageEvent.emit("socket-id", this.socketId);
-
-        const path = join(SOCKET_IO_URL, querySocketId, queryUserId);
-
-        this.socket = io.connect(path); // 'opening', 'open', 'closing', 'closed'
-
-        this.socket.on("connect", () => {
-            this.socketId = this.socket.id || null;
+        this.connection = new Promise((resolve, reject) => {
+            this.userId = this._userService.getCurrentUserId();
+            const
+                querySocketId = this.socketId ? "?socketId=" + this.socketId : null,
+                queryUserId = this.userId ? "?userId=" + this.userId : null;
+            this.socketId = null;
             this._broadcastMessageEvent.emit("socket-id", this.socketId);
+
+            const path = join(SOCKET_IO_URL, querySocketId, queryUserId);
+
+            this.socket = io.connect(path); // 'opening', 'open', 'closing', 'closed'
+
+            this.socket.on("connect", () => {
+                this.socketId = this.socket.id || null;
+                this._broadcastMessageEvent.emit("socket-id", this.socketId);
+
+                this.socket.on("disconnected", (socketId: string) => this._broadcastMessageEvent.emit("user-disconnect", socketId));
+
+                this.socket.on("userListByRoom", (users: any) => this._broadcastMessageEvent.emit("users-by-room", users));
+                resolve(this.socketId);
+            });
         });
-
-        this.socket.on("disconnected", (socketId: string) => this._broadcastMessageEvent.emit("user-disconnect", socketId));
-
-        this.socket.on("userListByRoom", (users: any) => this._broadcastMessageEvent.emit("users-by-room", users));
     }
 
     startGame(): Promise<Date> {
