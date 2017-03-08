@@ -16,7 +16,6 @@ import {UsersComponent} from "./components/users/users.component";
 import {DataTableModule, SharedModule, InputTextareaModule, InputTextModule, ButtonModule} from "primeng/primeng";
 import {GameComponent} from "./components/game/game.component";
 import {ObjectToArrayPipe} from "./pipes/object-to-array.pipe";
-import {FooterComponent} from "./components/footer/footer.component";
 import {BroadcastService} from "./services/broadcast.service";
 import {BroadcastMessageEvent} from "./services/broadcast-message.event";
 import {ResponsiveComponent} from "./components/responsive/responsive.component";
@@ -25,6 +24,7 @@ import {ProfileComponent} from "./components/profile/profile.component";
 import {MessageService} from "./services/message.service";
 import {DialogWindowComponent} from "./components/dialog-window/dialog-window.component";
 import {ImageService} from "./services/image.service";
+import {YandexMetrikaComponent} from "./components/yandex-metrika/yandex-metrika.component";
 
 @NgModule({
     imports: [
@@ -48,12 +48,12 @@ import {ImageService} from "./services/image.service";
         ObjectToArrayPipe,
         TranslatePipe,
         NavBarComponent,
-        FooterComponent,
         ProfileComponent,
         SignInFormComponent,
         UserFormComponent,
         UsersComponent,
-        GameComponent
+        GameComponent,
+        YandexMetrikaComponent
     ],
     providers: [
         BroadcastMessageEvent,
