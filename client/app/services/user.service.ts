@@ -101,6 +101,12 @@ export class UserService {
             .then(response => this.setUser(response.json(), "local", true));
     }
 
+    forgotPassword(email: string): Promise<boolean> {
+        return this._http.post(API_URL + "/auth/local/forgot", {email: email}, {headers: this._headers})
+            .toPromise()
+            .then(response => response.json());
+    }
+
     oauthVkRedirect(url: string): Promise<boolean> {
         return new Promise(resolve => {
             const

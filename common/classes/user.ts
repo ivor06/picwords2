@@ -2,9 +2,9 @@ import {HashObject} from "../interfaces";
 
 export {
     User,
-    IUser,
     UserType,
     Achievements,
+    Visit,
     ProfileLocal,
     ProfileLocalType,
     ProfileVk,
@@ -17,12 +17,7 @@ export {
 
 class User {
     id: string;
-    language: string;
-    history: UserHistory;
-    lastVisit: Date;
-    geo: GeoCoordinates;
-    userAgentList: string[];
-    ipList: string[];
+    visitList: Visit[];
     achievements: Achievements;
     currentRoom: string;
     local: ProfileLocalType;
@@ -38,24 +33,31 @@ class User {
 
 type UserType = {
     id?: string;
-    language?: string;
-    history?: UserHistory;
-    lastVisit?: Date;
-    geo?: GeoCoordinates;
-    userAgentList?: string[];
-    ipList?: string[];
+    visitList?: Visit[];
     achievements?: Achievements;
-    currentRoom?: string;
     local?: ProfileLocalType;
     vk?: ProfileVkType;
 };
 
-interface IUser extends User {
+interface Visit {
+    language?: string;
+    timezone?: number;
+    ip?: string;
+    userAgent?: string;
+    geo?: Geo;
+    connectTime?: Date;
+    disconnectTime?: Date;
+    currentRoom?: string;
 }
 
-interface GeoCoordinates {
-    latitude: number;
-    longitude: number;
+interface Geo {
+    latitude?: number;
+    longitude?: number;
+    geo_id?: number;
+    country_iso_code?: string;
+    country?: string;
+    city?: string;
+    time_zone?: string;
 }
 
 interface Achievements {
@@ -63,11 +65,6 @@ interface Achievements {
     currentScore?: number;
     combo?: number[];
     minTime?: number;
-}
-
-interface UserHistory {
-    visitList?: any[],
-    lastTime?: Date
 }
 
 type UserSignin = {

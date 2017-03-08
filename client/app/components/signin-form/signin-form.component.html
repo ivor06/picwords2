@@ -39,6 +39,12 @@
                 type="submit"
                 [disabled]="!form.valid">{{ "signin" | translate: "signin-form" : currentLanguage }}
         </button>
+        <button
+                class="btn btn-sm float-right"
+                type="button"
+                [disabled]="!form.controls['email'].valid"
+                (click)="forgot()">{{ "forgot" | translate: "signin-form" : currentLanguage }}
+        </button>
     </form>
     <br/>
     <div>{{ "or" | translate: "signin-form" : currentLanguage }}</div>

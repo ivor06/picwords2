@@ -1,10 +1,11 @@
 export {BaseError, HttpError}
 
-class BaseError {
+class BaseError extends Error {
     title?: string;
-    message?: string;
+    message: string;
 
     constructor(title?: string, message?: string) {
+        super(message);
         this.title = title;
         this.message = message;
     }

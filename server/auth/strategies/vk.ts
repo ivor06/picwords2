@@ -1,11 +1,10 @@
-// TODO Manually fixed crypto-js/index.d.ts
 import * as BearerStrategy from "passport-http-bearer";
 import * as https from "https";
 import {Observable} from "rxjs/Observable";
 import {ReplaySubject} from "rxjs/ReplaySubject";
 import _Strategy = require('~passport~passport-strategy');
 
-import {HttpError} from "../../../common/error";
+import {HttpError} from "../../../common/classes/error";
 import {UserType, ProfileVk, ProfileVkType, ErrorOnGetAccessTokenVk} from "../../../common/classes/user";
 import {HashObject} from "../../../common/interfaces";
 import {AUTH} from "../../../common/config";
@@ -39,7 +38,7 @@ const
         const state = req.query.state;
         res.status(200).end(); // reply on Vk service request
         if (!req.query.code || !state)
-            return hashTokens[state] = Observable.create(observer => observer.error(new HttpError(400, "Bad request", "User code and state required"))); // TODO more simple
+            return hashTokens[state] = Observable.create(observer => observer.error(new HttpError(400, "Bad request", "User code and state required"))); // TODO Can be simple?
         const options = {
             hostname: AUTH.VK.OAUTH_URL,
             port: 443,

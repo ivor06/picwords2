@@ -16,7 +16,9 @@ export {
     isNumber,
     isString,
     isObject,
-    promiseSeries
+    promiseSeries,
+    resolvedPromise,
+    rejectedPromise
 }
 
 // TODO ObjectType from KeysPipe
@@ -85,4 +87,12 @@ function isObject(value: any): boolean {
 
 function isEmptyObject(obj: any): boolean {
     return (obj == null || (this.isObject(obj) && Object.getOwnPropertyNames(obj).length === 0));
+}
+
+function resolvedPromise<T>(value: T): Promise<T> {
+    return new Promise((resolve, reject) => resolve(value));
+}
+
+function rejectedPromise<T>(value: T): Promise<T> {
+    return new Promise((resolve, reject) => reject(value));
 }

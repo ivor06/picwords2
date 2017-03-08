@@ -19,7 +19,6 @@
             '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
             'rx': 'npm:rx',
             'rxjs': 'npm:rxjs',
-            'rx-dom': 'npm:rx-dom',
             'primeng': 'npm:primeng',
             'punycode': 'node_modules/punycode/punycode.js',
             'querystring': 'node_modules/querystring',
@@ -43,10 +42,6 @@
             },
             rxjs: {
                 main: './Rx.js',
-                defaultExtension: 'js'
-            },
-            "rx-dom": {
-                main: './index.js',
                 defaultExtension: 'js'
             },
             primeng: {

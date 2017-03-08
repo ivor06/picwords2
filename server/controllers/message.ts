@@ -4,15 +4,17 @@ import "rxjs/add/observable/of";
 import {fromEvent} from "rxjs/Observable/fromEvent";
 
 import {Message, MessageType} from "../../common/classes/message";
-import {UserType, UsersByRoom} from "../../common/classes/user";
+import {UserType, UsersByRoom, Visit} from "../../common/classes/user";
 import {MESSAGES} from "../../common/config";
 import {TYPES, isEmptyObject} from "../../common/util";
-import {findById, updateAchievements} from "../providers/user";
+import {findById, updateAchievements, updateVisitList} from "../providers/user";
 import {GameController} from "./game";
 
 export {
     MessageController
 }
+
+const RE_IP = /.+:(\d+\.\d+\.\d+\.\d+)/;
 
 class MessageController {
     static clients = {};
@@ -60,10 +62,9 @@ class MessageController {
         const
             socketId = socket.id,
             userSocketId = socket.handshake.query.socketId || null,
-            userId = socket.handshake.query.userId || null,
-            ua = socket.handshake.headers["user-agent"].substring(socket.handshake.headers["user-agent"].lastIndexOf(")") + 1);
+            userId = socket.handshake.query.userId || null;
 
-        console.log("user connected. socketId:", socketId, "  userSocketId:", userSocketId, "  userId:", userId, ua);
+        console.log("user connected. socketId:", socketId, "  userSocketId:", userSocketId, "  userId:", userId);
 
         if (userSocketId && MessageController.clients[userSocketId])
             this.onDisconnect(socketId, "reconnect", userSocketId);
@@ -81,7 +82,7 @@ class MessageController {
 
         resolveUser.then(
             user => {
-                this.setClient(socketId, socket, user);
+                this.setClient(socket, user);
 
                 /* User's start game request */
                 socket.on("start", this.game.start.bind(this.game));
@@ -102,9 +103,23 @@ class MessageController {
             },
             error => {
                 console.error(error);
-                this.setClient(socketId, socket);
+                this.setClient(socket);
             }
         );
+    }
+
+    onDisconnect(socketId, reason, clientSocketId?: string) {
+        const id = clientSocketId || socketId;
+        console.log("user disconnected", id, "  reason:", reason);
+        if (this.userIds[socketId] && MessageController.clients[id].visit)
+            updateVisitList(this.userIds[socketId], Object.assign(MessageController.clients[id].visit, {disconnectTime: new Date()}));
+        delete MessageController.clients[id];
+        delete this.sockets[id];
+        delete this.userIds[id];
+        if (isEmptyObject(this.sockets))
+            this.game.stop();
+        else
+            this.io.sockets.emit("disconnected", id);
     }
 
     onMessage(socketId: string, message: string, callback) {
@@ -122,40 +137,41 @@ class MessageController {
         callback && callback(time);
     }
 
-    onDisconnect(socketId, reason, clientSocketId?: string) {
-        const id = clientSocketId || socketId;
-        console.log("user disconnected", id, "  reason:", reason);
-        delete MessageController.clients[id];
-        delete this.sockets[id];
-        delete this.userIds[id];
-        if (isEmptyObject(this.sockets)) {
-            console.log("nobody in the room");
-            this.game.stop();
-        } else
-            this.io.sockets.emit("disconnected", id);
-    }
-
-    setClient(key: string, socket: SIO.Socket, user?: UserType) {
-        let name: string;
+    setClient(socket: SIO.Socket&{client: any, conn: any, request: any}, user?: UserType) {
+        const socketId = socket.id;
+        let name: string,
+            visit: Visit = null;
         if (user) {
-            this.userIds[key] = user.id;
+            this.userIds[socketId] = user.id;
             if (user.vk)
                 name = user.vk.nickname ? user.vk.nickname : user.vk.first_name + " " + user.vk.last_name;
             if (user.local)
                 name = user.local.name;
+
+            const matchIp = (socket.client.request.headers['x-forwarded-for'] || socket.client.conn.remoteAddress || socket.conn.remoteAddress || socket.request.connection.remoteAddress || "").match(RE_IP),
+                ip = (matchIp && matchIp.length) ? matchIp[1] : null;
+            visit = {
+                ip: ip,
+                userAgent: socket.handshake.headers["user-agent"],
+                connectTime: new Date(),
+                timezone: socket.handshake.query.timezone
+            }
         }
+
         if (!name)
             name = MessageController.generateUserName();
-        MessageController.clients[key] = {
+        MessageController.clients[socketId] = {
             name: name,
             achievements: user
                 ? user.achievements
                 : {
                 totalScore: 0,
                 combo: []
-            }
+            },
+            visit: visit
         };
-        this.sockets[key] = socket;
+
+        this.sockets[socketId] = socket;
 
         this.io.sockets.emit("userListByRoom", MessageController.clients);
     }

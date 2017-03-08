@@ -10,8 +10,8 @@
                  [ngClass]="{'alert': content.isError, 'alert-danger': content.isError, 'correct-header': !content.isError}">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                         (click)="hide()">&times;</button>
-                <h4 class="modal-title text-center">{{content.header ? ((content.isError ? ('error' | translate:
-                    'dialog-window' : currentLanguage) + ": " : "") + content.header) : ""}}</h4>
+                <h4 class="modal-title text-center">{{content.header ? content.header : (content.isError ? ('error' |
+                    translate: 'dialog-window' : currentLanguage) : "")}}</h4>
             </div>
             <div class="modal-body">
                 <div *ngIf="content.image" class="media-img">
@@ -22,8 +22,7 @@
                 <div *ngIf="content.image" class="media-body">
                     <h4 class="media-heading text-center">{{content.text}}</h4>
                 </div>
-                <p *ngIf="!content.image && content.text" class="text-center">{{(content?.isError ? ('error-text' |
-                    translate: 'dialog-window' : currentLanguage) + ": " : "") + content.text}}</p>
+                <p *ngIf="!content.image && content.text" class="text-center">{{content.text}}</p>
             </div>
             <div *ngIf="!!content.buttonList && content.buttonList.length" class="modal-footer buttonList">
                 <div *ngFor="let button of content.buttonList">

@@ -6,6 +6,7 @@ import {
     localRegister,
     localLogin,
     localToken,
+    localRecoveryPassword,
     vkLogin,
     vkLoginCallback,
     vkLoginSendAccessToken,
@@ -42,6 +43,18 @@ routerAuth.get("/local/logout",
         req.logout();
         res.end();
     }
+);
+
+routerAuth.post("/local/forgot",
+    (req, res) => localRecoveryPassword(req, res)
+        .then(
+            res.json.bind(res),
+            error => {
+                if ((error instanceof Error) || error.code)
+                    res.status(error.status || 500);
+                res.send(error);
+            }
+        )
 );
 
 routerAuth.get("/vk/login", vkLogin);

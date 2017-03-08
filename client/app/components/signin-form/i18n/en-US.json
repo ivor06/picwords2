@@ -8,5 +8,10 @@
   "password": "Password",
   "signin": "Sign in",
   "signup": "Sign up",
-  "or": "or"
+  "or": "or",
+  "forgot": "Forgot password",
+  "forgot-header": "Password recovery",
+  "forgot-success": "Please check email for a new password",
+  "forgot-error": "Password recovery error happened. Please contact site administration to get new password",
+  "forgot-error-user-not-found": "User not found"
 }

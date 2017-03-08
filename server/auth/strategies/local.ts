@@ -5,10 +5,20 @@ import {Request} from '~express/lib/request';
 import {ParsedAsJson} from 'body-parser';
 
 import {ProfileLocal} from "../../../common/classes/user";
+import {Email} from "../../../common/classes/email";
 import {AUTH} from "../../../common/config";
-import {filterObjectKeys} from "../../../common/util";
-import {HttpError} from "../../../common/error";
-import {findByEmail, findOrCreateByProfile, passwordToHashSync, validateSync, cleanUser} from "../../providers/user";
+import {filterObjectKeys, rejectedPromise} from "../../../common/util";
+import {HttpError} from "../../../common/classes/error";
+import {
+    findByEmail,
+    updateProfile,
+    findOrCreateByProfile,
+    passwordToHashSync,
+    generatePassword,
+    validateSync,
+    cleanUser
+} from "../../providers/user";
+import {sendEmail} from "../../providers/email";
 
 const
     localRegisterInit = function (req: Request&ParsedAsJson, email: string, password: string, cb) {
@@ -54,6 +64,31 @@ const
                 : false
         ), cb);
     },
+    localRecoveryPassword = (req, res): Promise<boolean|HttpError> => {
+        const
+            email = req.body.email,
+            isValid = Email.validate(email),
+            newPassword = generatePassword();
+        if (!isValid)
+            return rejectedPromise(new HttpError(403, "Bad Request", "Valid email required"));
+        console.log("new password for email", email + ":", newPassword);
+        return findByEmail(email)
+            .then(user => {
+                if (!user)
+                    return rejectedPromise(new HttpError(404, "Not Found", "User not found"));
+                // user.local.password = passwordToHashSync(newPassword);
+                return sendEmail({
+                    to: email,
+                    subject: "password recovery from picwords.ru",
+                    text: "Your new password for picwords.ru is: " + newPassword,
+                    html: "<p>Your new password for picwords.ru is: <strong>" + newPassword + "</strong></p>"
+                })
+                    .then(sentMessageInfo => {
+                        console.log("sentMessageInfo:", sentMessageInfo);
+                        return updateProfile(new ProfileLocal(user.local));
+                    });
+            });
+    },
     localOptions = {
         usernameField: "email",
         passwordField: "password",
@@ -66,5 +101,6 @@ const
 export {
     localRegisterStrategy,
     localLoginStrategy,
-    localBearerStrategy
+    localBearerStrategy,
+    localRecoveryPassword
 }

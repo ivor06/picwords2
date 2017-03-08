@@ -22,6 +22,7 @@
   ],
   "files": [
     "../typings/index.d.ts",
+    "../common/classes/email.ts",
     "../common/classes/message.ts",
     "../common/classes/question.ts",
     "../common/classes/user.ts",
@@ -32,6 +33,7 @@
     "./routes/index.ts",
     "./routes/auth.ts",
     "./providers/db.ts",
+    "./providers/email.ts",
     "./providers/question.ts",
     "./providers/user.ts",
     "./controllers/game.ts",

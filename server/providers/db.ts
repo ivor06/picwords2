@@ -9,13 +9,13 @@ const
 
 export {
     connectDb,
+    disconnectDb,
     getDbStats,
     collections,
     counts
 }
 
-let db: Db,
-    users, questions: Collection;
+let users, questions: Collection;
 
 function connectDb(): Promise<Db> {
     return MongoClient.connect(DB.URL).then(db => Promise.all(["users", "questions"]
@@ -25,6 +25,10 @@ function connectDb(): Promise<Db> {
             counts[collectionName] = count;
             return count;
         }))).then(() => db));
+}
+
+function disconnectDb(): Promise<void> {
+    return connectDb().then(db => db.close());
 }
 
 /* Get DB statistics */

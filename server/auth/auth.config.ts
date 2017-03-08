@@ -1,19 +1,20 @@
 import * as passport from "passport";
+
 import {findById} from "../providers/user";
 import {
-    anyTokenStrategy,
-    vkLogin,
-    vkLoginCallback,
-    vkLoginSendAccessToken,
-    vkTokenLogoutStrategy
+    anyTokenStrategy, vkLogin, vkLoginCallback,
+    vkLoginSendAccessToken, vkTokenLogoutStrategy
 } from "./strategies/vk"
-
-import {localRegisterStrategy, localLoginStrategy, localBearerStrategy} from "./strategies/local"
+import {
+    localRegisterStrategy, localLoginStrategy,
+    localBearerStrategy, localRecoveryPassword
+} from "./strategies/local"
 
 export {
     localRegister,
     localLogin,
     localToken,
+    localRecoveryPassword,
     vkLogin,
     vkLoginCallback,
     vkLoginSendAccessToken,

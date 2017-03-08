@@ -107,7 +107,7 @@ class GameController {
                         this.intervalHint
                             .takeWhile(data => !this.isAnswered)
                             .subscribe(this.showHint.bind(this));
-                    }, error => console.log);
+                    }, error => console.log(error));
             });
     }
 
@@ -152,7 +152,6 @@ class GameController {
     }
 
     noAnswer() {
-        console.log("noAnswer");
         this.questionsBus.next({
             time: new Date(),
             isNobodyAnswered: true

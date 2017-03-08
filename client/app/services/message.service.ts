@@ -24,7 +24,7 @@ interface Socket {
 }
 
 declare var io: {
-    connect(url: string): Socket;
+    connect(url: string, opts?: {transports: string[]}): Socket;
     socket: Socket;
     on(target: string, cb: (data: any) => void);
 };
@@ -57,13 +57,14 @@ export class MessageService {
             this.userId = this._userService.getCurrentUserId();
             const
                 querySocketId = this.socketId ? "?socketId=" + this.socketId : null,
-                queryUserId = this.userId ? "?userId=" + this.userId : null;
+                queryUserId = this.userId ? "?userId=" + this.userId : null,
+                queryTimeZone = this.userId ? "?timezone=" + new Date().getTimezoneOffset() : null;
             this.socketId = null;
             this._broadcastMessageEvent.emit("socket-id", this.socketId);
 
-            const path = join(SOCKET_IO_URL, querySocketId, queryUserId);
+            const path = join(SOCKET_IO_URL, querySocketId, queryUserId, queryTimeZone);
 
-            this.socket = io.connect(path); // 'opening', 'open', 'closing', 'closed'
+            this.socket = io.connect(path, {transports: ["websocket", "xhr-polling"]}); // 'opening', 'open', 'closing', 'closed'
 
             this.socket.on("connect", () => {
                 this.socketId = this.socket.id || null;

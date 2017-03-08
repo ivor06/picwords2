@@ -1,8 +1,8 @@
-import {connectDb, collections, counts} from "./db";
 import {Collection} from "mongodb";
 import {Observable} from "rxjs/Observable";
 import "rxjs/add/observable/fromPromise";
 
+import {connectDb, collections, counts} from "./db";
 import {QuestionType} from "../../common/classes/question";
 import {removeObjectKeys} from "../../common/util";
 
@@ -17,7 +17,6 @@ connectDb().then(() => questions = collections["questions"]);
 
 function questionsAmount(): number {
     return counts["questions"];
-    // return questions.count({});
 }
 
 function findByNumber(number: number): Promise<QuestionType> {
@@ -30,6 +29,5 @@ function findByNumber(number: number): Promise<QuestionType> {
 
 function getRandomQuestion(): Observable<QuestionType> {
     const questionNumber = Math.floor(Math.random() * questionsAmount() + 1);
-    // console.log("getRandomQuestion", questionNumber);
     return Observable.fromPromise(findByNumber(questionNumber).then(question => question ? question : this.getRandomQuestion()));
 }

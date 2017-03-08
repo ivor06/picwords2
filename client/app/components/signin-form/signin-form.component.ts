@@ -6,6 +6,7 @@ import {FormValidator} from "../../validators/form.validator";
 import {TranslateMixin} from "../../pipes/translate.mixin";
 import {UserService} from "../../services/user.service";
 import {BroadcastMessageEvent} from "../../services/broadcast-message.event";
+import {HttpError} from "../../../../common/classes/error";
 
 const fb = new FormBuilder();
 
@@ -47,6 +48,38 @@ export class SignInFormComponent extends TranslateMixin {
             })
             .catch(error => {
                 console.log("error in userService.signIn:", error); // TODO Modal/Dialog window
+            });
+    }
+
+    forgot() {
+        this._userService.forgotPassword(this.form.value["email"])
+            .then(result => {
+                this._broadcastMessageEvent.emit("dialog.setContent", {
+                    isError: !result,
+                    header: this.getTranslation("forgot-header"),
+                    text: this.getTranslation(result ? "forgot-success" : "forgot-error"),
+                    isClosable: true,
+                    isCloseOnClick: true
+                });
+                this._broadcastMessageEvent.emit("dialog.show", null);
+            }, error => {
+                // console.log("error:", error, "\n--------------\n");
+                let errorObj: HttpError = null,
+                    message: string = null;
+                try {
+                    errorObj = error.json();
+                    if (errorObj.status && errorObj.status === 404)
+                        message = this.getTranslation("forgot-error-user-not-found");
+                } catch (e) {
+                    console.error(e);
+                }
+                this._broadcastMessageEvent.emit("dialog.setContent", {
+                    isError: true,
+                    text: message ? message : this.getTranslation("forgot-error"),
+                    isClosable: true,
+                    isCloseOnClick: true
+                });
+                this._broadcastMessageEvent.emit("dialog.show", null);
             });
     }
 

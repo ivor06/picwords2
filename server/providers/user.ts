@@ -1,10 +1,10 @@
-import * as bcryptjs from "bcryptjs";
 import {Collection, ObjectID} from "mongodb";
 import {Request} from "~express/lib/request";
 import {Observable} from "rxjs/Observable";
+import * as bcryptjs from "bcryptjs";
 import res = require("~express/lib/response");
 
-import {User, UserType, ProfileLocal, ProfileVk, UsersByRoom, Achievements} from "../../common/classes/user";
+import {User, UserType, ProfileLocal, ProfileVk, UsersByRoom, Achievements, Visit} from "../../common/classes/user";
 import {MessageController} from "../controllers/message";
 import {collections, connectDb} from "./db";
 import {AUTH} from "../../common/config";
@@ -17,21 +17,25 @@ export {
     findByRoom,
     cleanUser,
     unsetToken,
+    insertUser,
     updateUser,
     updateProfile,
     updateAchievements,
+    updateVisitList,
     findOrCreateByProfile,
     generateHash,
+    generatePassword,
     passwordToHashSync,
     validate,
-    validateSync
+    validateSync,
+    replaceId
 }
 
 let users: Collection;
 connectDb().then(() => users = collections["users"]);
 
 function findByRoom(name: string): Observable<UsersByRoom> {
-    return Observable.of(MessageController.getUsersByRoom());
+    return Observable.of(MessageController.getUsersByRoom()); // TODO use room' name
 }
 
 function findById(id: string): Promise<UserType> {
@@ -119,10 +123,19 @@ function updateAchievements(userId: string, achievements: Achievements): Promise
         .then(result => result.result.ok && result.result.nModified === 1);
 }
 
+function updateVisitList(userId: string, visit: Visit): Promise<boolean> {
+    return users
+        .updateOne(
+            {_id: new ObjectID(userId)},
+            {$push: {visitList: visit}}
+        )
+        .then(result => result.result.ok && result.result.nModified === 1);
+}
+
 function findOrCreateByProfile(profile: ProfileLocal, req?: Request): Promise<UserType>
 function findOrCreateByProfile(profileVk: ProfileVk, req?: Request): Promise<UserType>
 function findOrCreateByProfile(profile: ProfileLocal|ProfileVk, req?): Promise<UserType> {
-    const id = (req.query && req.query.id) ? req.query.id : null;
+    const id = (req && req.query && req.query.id) ? req.query.id : null;
     let profileName: string,
         searchObj: any;
     if (profile instanceof ProfileLocal) {
@@ -155,25 +168,28 @@ function findOrCreateByProfile(profile: ProfileLocal|ProfileVk, req?): Promise<U
                 user[profileName] = profile;
                 return addProfile(user.id, profile).then(() => user);
             }
-            const newUser = new User(req ? {
-                    achievements: {
-                        totalScore: 0,
-                        currentScore: 0,
-                        combo: []
-                    },
-                    ipList: [req.connection.remoteAddress],
-                    userAgentList: [req.headers["user-agent"]] // TODO header x-forwarded-for if server behind proxy
-                } : {
-                    achievements: {
-                        totalScore: 0,
-                        currentScore: 0,
-                        combo: []
-                    }
-                }
-            );
+            const newUser = new User({
+                achievements: {
+                    totalScore: 0,
+                    currentScore: 0,
+                    combo: []
+                },
+                visitList: [],
+            });
             newUser[profileName] = profile;
             return insertUser(newUser).then(id => Object.assign(newUser, {id: id}));
         });
+}
+
+function generatePassword(length: number = 6): string {
+    const
+        charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+        charsetLength = charset.length;
+    let password = "";
+    for (let i = 0; i < length; i++) {
+        password += charset.charAt(Math.floor(Math.random() * charsetLength));
+    }
+    return password;
 }
 
 function generateHash(password: string): Promise<string> {
