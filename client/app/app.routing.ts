@@ -5,21 +5,21 @@ import {UsersComponent} from "./components/users/users.component";
 import {GameComponent} from "./components/game/game.component";
 import {SignInFormComponent} from "./components/signin-form/signin-form.component";
 import {ProfileComponent} from "./components/profile/profile.component";
+import {GameDeactivator} from "./deactivators/game.deactivator";
 
 const appRoutes: Routes = [
     {
         path: "",
-        component: GameComponent
+        component: GameComponent,
+        canDeactivate: [GameDeactivator]
     },
     {
         path: "signup",
         component: UserFormComponent
-        // canDeactivate: [ PreventUnsavedChanges ]
     },
     {
         path: "profile/edit",
         component: UserFormComponent
-        // canDeactivate: [ PreventUnsavedChanges ]
     },
     {
         path: "users",

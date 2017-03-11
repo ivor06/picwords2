@@ -25,6 +25,7 @@ import {MessageService} from "./services/message.service";
 import {DialogWindowComponent} from "./components/dialog-window/dialog-window.component";
 import {ImageService} from "./services/image.service";
 import {YandexMetrikaComponent} from "./components/yandex-metrika/yandex-metrika.component";
+import {GameDeactivator} from "./deactivators/game.deactivator";
 
 @NgModule({
     imports: [
@@ -61,7 +62,8 @@ import {YandexMetrikaComponent} from "./components/yandex-metrika/yandex-metrika
         I18nService,
         ImageService,
         MessageService,
-        UserService
+        UserService,
+        GameDeactivator
     ],
     bootstrap: [AppComponent]
 })
