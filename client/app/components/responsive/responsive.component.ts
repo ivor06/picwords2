@@ -19,7 +19,7 @@ export class ResponsiveComponent implements OnInit {
     }
 
     ngOnInit() {
-        this._broadcastMessageEvent.emit("xs-mode", window.innerWidth < CLIENT.DISPLAY_MODES.SM);
+        setTimeout(() => this._broadcastMessageEvent.emit("xs-mode", window.innerWidth < CLIENT.DISPLAY_MODES.SM), 0);
         Observable.fromEvent(window, "resize")
             .pluck("currentTarget", "innerWidth")
             .throttleTime(CLIENT.THROTTLE_TIME)

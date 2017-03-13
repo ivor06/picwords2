@@ -1,5 +1,6 @@
 import {Component, OnInit, ChangeDetectorRef, ElementRef} from "@angular/core";
-import {Subscription} from "rxjs";
+import {Subscription, Observable} from "rxjs";
+import "rxjs/add/observable/fromEvent";
 
 import {UserType, UsersByRoom} from "../../../../common/classes/user";
 import {UserService} from "../../services/user.service";
@@ -33,6 +34,7 @@ export class GameComponent extends TranslateMixin implements OnInit {
         sendMessageHeight: null
     };
     static subscribes = {
+        onResize: null,
         xs: null,
         socketId: null,
         messages: null,
@@ -47,7 +49,6 @@ export class GameComponent extends TranslateMixin implements OnInit {
     private _historyMessageList: string[] = [];
     private _users: UsersByRoom = {};
     private _sendMessageHeight: number;
-    // private currentRoom: string = "room1";
     private nextImage: string;
     private currentImage: string;
     private isShowMiniature = false;
@@ -61,12 +62,24 @@ export class GameComponent extends TranslateMixin implements OnInit {
         super();
 
         if (GameComponent.state.isInited) {
+            GameComponent.state.isInited = false;
             this.loadState();
             traversalObject(GameComponent.subscribes, subscriber => (subscriber instanceof Subscription) && subscriber.unsubscribe());
-            GameComponent.state.isInited = false;
         }
 
+        this.currentUser = this._userService.getCurrentUser();
+        if (!this.currentUser || !this.currentUser.id)
+            this.currentUser = {id: ""};
+
+        if (isEmptyObject(this._users))
+            this._userService.getUsersByRoom("room1")
+                .subscribe(users => this._users = users);
+
         this.bindEvents();
+
+        GameComponent.state.isInited = true;
+
+        this._broadcastMessageEvent.emit("progress.start", false);
     }
 
     ngOnInit() {
@@ -135,16 +148,15 @@ export class GameComponent extends TranslateMixin implements OnInit {
     }
 
     bindEvents() {
-        this.currentUser = this._userService.getCurrentUser();
-        if (!this.currentUser || !this.currentUser.id)
-            this.currentUser = {id: ""};
-
-        if (isEmptyObject(this._users))
-            this._userService.getUsersByRoom("room1")
-                .subscribe(users => this._users = users);
-
         GameComponent.subscribes.xs = this._broadcastMessageEvent.on("xs-mode")
-            .subscribe(isXs => this.isXs = isXs);
+            .subscribe(isXs => {
+                // console.log("game. isXs:", isXs);
+                this.isXs = isXs;
+            });
+
+        GameComponent.subscribes.onResize = Observable.fromEvent(window, "resize")
+            .throttleTime(CLIENT.THROTTLE_TIME)
+            .subscribe(() => this.check());
 
         GameComponent.subscribes.socketId = this._broadcastMessageEvent.on("socket-id")
             .subscribe(socketId => this.socketId = socketId);
@@ -163,7 +175,7 @@ export class GameComponent extends TranslateMixin implements OnInit {
                     this.changeDetectorRef.detectChanges();
             });
 
-        GameComponent.subscribes.messages = this._messageService.getMessage()
+        GameComponent.subscribes.messages = this._broadcastMessageEvent.on("message")
             .subscribe((message: MessageType) => {
                 if (isNumber(message.questionNumber))
                     this._imageService.getImageByNumber(message.questionNumber)
@@ -180,9 +192,7 @@ export class GameComponent extends TranslateMixin implements OnInit {
                         this._broadcastMessageEvent.emit("dialog.setContent", {
                             header: this.getTranslation("answer-correct"),
                             text: message.answer,
-                            image: this.currentImage,
-                            isClosable: true,
-                            isCloseOnClick: true
+                            image: this.currentImage
                         });
                         this.showImage(GAME.IMAGE_SHOW_TIME);
                     }
@@ -190,7 +200,5 @@ export class GameComponent extends TranslateMixin implements OnInit {
                 this.messageList.push(message);
                 this.check();
             });
-
-        GameComponent.state.isInited = true;
     }
 }

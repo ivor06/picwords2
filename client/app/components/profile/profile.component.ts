@@ -1,3 +1,4 @@
+/// <reference path="../../../../typings/index.d.ts" />
 import {Component, OnInit} from "@angular/core";
 import {Router, ActivatedRoute} from '@angular/router';
 
@@ -16,7 +17,6 @@ import {BroadcastMessageEvent} from "../../services/broadcast-message.event";
 export class ProfileComponent extends TranslateMixin implements OnInit {
     private currentUserId: string;
     private user: UserType = {};
-    private isLoading = true;
 
     constructor(private _router: Router,
                 private _route: ActivatedRoute,
@@ -37,12 +37,14 @@ export class ProfileComponent extends TranslateMixin implements OnInit {
                 this._userService.getUser(id)
                     .subscribe(
                         user => this.user = user,
-                        error => this.isLoading = false,
-                        () => this.isLoading = false
+                        error => this._broadcastMessageEvent.emit("progress.start", false),
+                        () => this._broadcastMessageEvent.emit("progress.start", false)
                     );
-            else if (this.currentUserId)
-                this.user = this._userService.getCurrentUser();
-            this.isLoading = false;
+            else {
+                if (this.currentUserId)
+                    this.user = this._userService.getCurrentUser();
+                this._broadcastMessageEvent.emit("progress.start", false);
+            }
         });
     }
 
@@ -51,18 +53,23 @@ export class ProfileComponent extends TranslateMixin implements OnInit {
     }
 
     addProfile(profileName: string) {
+        this._broadcastMessageEvent.emit("progress.start", true);
         switch (profileName) {
             case "local": {
                 this._router.navigate(["signin"]);
                 break;
             }
             case "vk": {
-                this._userService.signInVk().then(user => this.user = user)
-                    .catch(error => console.error("error in userService.signInVk:", error));
+                this._userService.signInVk()
+                    .then(user => {
+                        this.user = user;
+                        this._broadcastMessageEvent.emit("progress.start", false);
+                    })
+                    .catch(error => this._broadcastMessageEvent.emit("progress.start", false));
                 break;
             }
             default: {
-                console.error("No such profile name");
+                this._broadcastMessageEvent.emit("progress.start", false);
             }
         }
     }

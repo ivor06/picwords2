@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {Router} from '@angular/router';
+import {Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {validate} from "jsonschema";
 
@@ -8,6 +8,7 @@ import {UserType} from "../../../../common/classes/user";
 import {UserService} from "../../services/user.service";
 import {TranslateMixin} from "../../pipes/translate.mixin";
 import {userSchema} from "../../../../common/schemas/user.schema";
+import {BroadcastMessageEvent} from "../../services/broadcast-message.event";
 
 @Component({
     moduleId: module.id,
@@ -19,13 +20,14 @@ import {userSchema} from "../../../../common/schemas/user.schema";
 export class UserFormComponent extends TranslateMixin {
     private form: FormGroup;
     private user: UserType;
-    private isLoading = true;
     private isEdit: boolean = null;
 
     constructor(private _formBuilder: FormBuilder,
                 private _router: Router,
+                private _broadcastMessageEvent: BroadcastMessageEvent,
                 private _userService: UserService) {
         super();
+        this._broadcastMessageEvent.emit("progress.start", true);
         this.user = this._userService.getCurrentUser();
         if (this.user && this.user.local)
             this.isEdit = true;
@@ -44,7 +46,7 @@ export class UserFormComponent extends TranslateMixin {
             city: []
         };
         this.form = this._formBuilder.group(Object.assign(controlsConfig, this.isEdit ? {} : {password: ["", Validators.required]}));
-        this.isLoading = false;
+        this._broadcastMessageEvent.emit("progress.start", false);
     }
 
     onEnter() {
@@ -53,15 +55,25 @@ export class UserFormComponent extends TranslateMixin {
     }
 
     save() {
+        this._broadcastMessageEvent.emit("progress.start", true);
         const validateResult = validate(this.user, userSchema);
         if (validateResult && validateResult.errors.length === 0)
             this._userService[this.isEdit ? "edit" : "signUp"](this.user.local)
-                .then(() => {
-                    this._router.navigate(["profile"]);
-                })
+                .then(() => this._router.navigate(["profile"]))
                 .catch(error => {
-                    console.error("error in userService.signUp:", error); // TODO Modal/Dialog window
+                    let message: string = null;
+                    if (error && error.status) {
+                        if (error.status === 403)
+                            message = this.getTranslation("signup-error-user-found");
+                        else if (error.status === 400)
+                            message = this.getTranslation("signup-error-bad-request");
+                    }
+                    this._broadcastMessageEvent.emit("dialog.setContent", {
+                        isError: true,
+                        text: message ? message : this.getTranslation("signin-error"),
+                    });
+                    this._broadcastMessageEvent.emit("progress.start", false);
+                    this._broadcastMessageEvent.emit("dialog.show", null);
                 });
-        else console.log("not valid");
     }
 }

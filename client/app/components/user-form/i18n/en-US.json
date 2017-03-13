@@ -11,5 +11,8 @@
   "required-email": "Email is required",
   "required-password": "Password is required",
   "invalid-email": "Please type a valid email",
-  "button-save": "Save"
+  "button-save": "Save",
+  "signup-error": "Error has happened. Please try sign up one more time",
+  "signup-error-bad-request": "Error has happened. Please check email address and password",
+  "signup-error-user-found": "Email is registered already. If this email is your, please use password recovery procedure"
 }

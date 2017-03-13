@@ -7,11 +7,14 @@
   "invalid-email": "Please type a valid email",
   "password": "Password",
   "signin": "Sign in",
+  "signin-error": "Error has happened. Please try sign in one more time",
+  "signin-error-unauthorized": "Email or password is incorrect. Please type it again",
+  "signin-error-user-not-found": "User not found. Please check email address",
   "signup": "Sign up",
   "or": "or",
   "forgot": "Forgot password",
   "forgot-header": "Password recovery",
   "forgot-success": "Please check email for a new password",
-  "forgot-error": "Password recovery error happened. Please contact site administration to get new password",
-  "forgot-error-user-not-found": "User not found"
+  "forgot-error": "Password recovery error has happened. Please contact site administration to get new password",
+  "forgot-error-user-not-found": "User not found. Please check email"
 }

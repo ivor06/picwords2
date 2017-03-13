@@ -40,9 +40,9 @@ const
         if (req.body.city) profileLocal.city = (req.body.city);
         findOrCreateByProfile(profileLocal, req).then(
             user => cb(
-                user ? null : new HttpError(500, "Server error", "User register error"),
+                user ? null : new HttpError(403, "Forbidden", "User registered already"),
                 filterObjectKeys(cleanUser(user || {}, []), AUTH.COMMON_FIELD_LIST.concat(["local"]))),
-            error => cb(new HttpError(500, "Server error", error)));
+            error => cb(new HttpError(500, "Server error", "Internal server error")));
     },
     localLoginInit = function (req, email, password, cb) {
         if (!email || !password)

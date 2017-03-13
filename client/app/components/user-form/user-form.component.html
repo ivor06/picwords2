@@ -1,6 +1,5 @@
 <div class="user-form">
     <h1>{{ isEdit ? "edit" : "user-new" | translate: "user-form" : currentLanguage }}</h1>
-    <i *ngIf="isLoading" class="fa fa-spinner fa-spin fa-3x"></i>
     <div *ngIf="!isLoading" class="row">
         <div class="col-md-6 well">
             <form [formGroup]="form" (keydown.enter)="onEnter()" (ngSubmit)="save()">

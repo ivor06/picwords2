@@ -1,3 +1,4 @@
+import {HashObject} from "./interfaces";
 const TYPES = {
     STRING: "string",
     NUMBER: "number",
@@ -16,18 +17,42 @@ export {
     isNumber,
     isString,
     isObject,
+    isContainsValue,
     promiseSeries,
     resolvedPromise,
     rejectedPromise
 }
 
-// TODO ObjectType from KeysPipe
-function traversalObject(obj: any, iterator: (obj: any, key: string) => void) {
+function traversalObject(obj: HashObject<any>, iterator: (obj: any, key: string) => void) {
     let result = false;
     if (obj !== null && typeof obj === TYPES.OBJECT && typeof iterator === TYPES.FUNCTION) {
         if (Object.keys.length > 0) {
             result = true;
-            Object.keys(obj).forEach(key => iterator(obj[key], key));
+            Object.keys(obj).forEach(key => {
+                try {
+                    iterator(obj[key], key);
+                } catch (e) {
+                    result = false;
+                }
+            });
+        }
+    }
+    return result;
+}
+
+
+function someObjectKeys(obj: any, iterator: (obj: any, key: string) => boolean) {
+    let result = false;
+    if (obj !== null && typeof obj === TYPES.OBJECT && typeof iterator === TYPES.FUNCTION) {
+        if (Object.keys.length > 0) {
+            result = true;
+            return Object.keys(obj).some(key => {
+                try {
+                    return !!iterator(obj[key], key);
+                } catch (e) {
+                    return false;
+                }
+            });
         }
     }
     return result;
@@ -54,7 +79,7 @@ function filterObjectKeys<T>(obj: T, fieldList: string[]): T {
 function displayObject(obj) {
     for (let key of obj) {
         if (obj.hasOwnProperty(key) && !(obj[key] instanceof Function))
-            console.log(key + ": " + obj[key]);
+            console.error(key + ": " + obj[key]);
     }
 }
 
@@ -86,7 +111,16 @@ function isObject(value: any): boolean {
 }
 
 function isEmptyObject(obj: any): boolean {
-    return (obj == null || (this.isObject(obj) && Object.getOwnPropertyNames(obj).length === 0));
+    return (obj == null || (isObject(obj) && Object.getOwnPropertyNames(obj).length === 0));
+}
+
+function isContainsValue<T>(obj: HashObject<T> | T[], value: T): boolean {
+    let result = false;
+    if (obj instanceof Array)
+        result = obj.some(item => item === value);
+    else if ((obj instanceof Object) && !isEmptyObject(obj))
+        return someObjectKeys(obj, (item => item === value));
+    return result;
 }
 
 function resolvedPromise<T>(value: T): Promise<T> {

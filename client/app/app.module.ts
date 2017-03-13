@@ -26,6 +26,7 @@ import {DialogWindowComponent} from "./components/dialog-window/dialog-window.co
 import {ImageService} from "./services/image.service";
 import {YandexMetrikaComponent} from "./components/yandex-metrika/yandex-metrika.component";
 import {GameDeactivator} from "./deactivators/game.deactivator";
+import {ProgressBarComponent} from "./components/progress-bar/progress-bar.component";
 
 @NgModule({
     imports: [
@@ -54,6 +55,7 @@ import {GameDeactivator} from "./deactivators/game.deactivator";
         UserFormComponent,
         UsersComponent,
         GameComponent,
+        ProgressBarComponent,
         YandexMetrikaComponent
     ],
     providers: [

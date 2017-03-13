@@ -3,10 +3,10 @@ import {Headers, Http} from "@angular/http";
 import {Observable} from "rxjs/Observable";
 import "rxjs/add/operator/toPromise";
 import "rxjs/add/observable/of";
+import "rxjs/add/operator/take";
 import "rxjs/add/observable/throw";
 
 import {
-    User,
     UserType,
     UsersByRoom,
     ProfileLocalType
@@ -14,14 +14,12 @@ import {
 import {API_URL, AUTH} from "../../../common/config";
 import {BroadcastMessageEvent} from "./broadcast-message.event";
 import {VK} from "../../../common/interfaces";
-import {traversalObject, promiseSeries, isEmptyObject} from "../../../common/util";
+import {traversalObject, promiseSeries, isEmptyObject, rejectedPromise} from "../../../common/util";
 
 @Injectable()
 export class UserService {
 
     private user: UserType = {};
-
-    private _userList: UserType[];
 
     private _headers = new Headers({
         "Content-Type": "application/json"
@@ -40,8 +38,9 @@ export class UserService {
             this.signInVkToken();
     }
 
-    getUserList(): Observable<User[]> {
-        return Observable.of(this._userList);
+    getUserList(): Observable<UserType[]> {
+        return this._http.get(API_URL + "/user/list", {headers: this._headers})
+            .map(response => response.json());
     }
 
     getUsersByRoom(roomName: string): Observable<UsersByRoom> {
@@ -52,7 +51,7 @@ export class UserService {
     getUser(id: string): Observable<UserType> {
         if (!id)
             return Observable.of(null);
-        return id ? this._http.get(API_URL + "/user/" + id)
+        return id ? this._http.get(API_URL + "/user/id=" + id)
             .map(response => {
                 this.user = response.json();
                 this._broadcastMessageEvent.emit("set-user", this.user);
@@ -97,6 +96,7 @@ export class UserService {
     signInLocal(profileLocal: ProfileLocalType) {
         const url = API_URL + "/auth/local/login" + (this.getCurrentUserId() ? ("/id=" + this.getCurrentUserId()) : "");
         return this._http.post(url, profileLocal, {headers: this._headers})
+            .take(1)
             .toPromise()
             .then(response => this.setUser(response.json(), "local", true));
     }
@@ -104,7 +104,10 @@ export class UserService {
     forgotPassword(email: string): Promise<boolean> {
         return this._http.post(API_URL + "/auth/local/forgot", {email: email}, {headers: this._headers})
             .toPromise()
-            .then(response => response.json());
+            .then(
+                response => response.json(),
+                error => rejectedPromise(error.json())
+            );
     }
 
     oauthVkRedirect(url: string): Promise<boolean> {
