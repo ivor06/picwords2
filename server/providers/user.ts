@@ -15,6 +15,7 @@ export {
     findByEmail,
     findByToken,
     findByRoom,
+    findAll,
     cleanUser,
     unsetToken,
     insertUser,
@@ -28,8 +29,11 @@ export {
     passwordToHashSync,
     validate,
     validateSync,
-    replaceId
+    replaceId,
+    setOnline
 }
+
+const userIdsOnline = {};
 
 let users: Collection;
 connectDb().then(() => users = collections["users"]);
@@ -58,6 +62,32 @@ function findByToken(token: string, profileName: string): Promise<UserType> {
         .find(query)
         .limit(1)
         .next().then(replaceId);
+}
+
+function findAll(): Promise<UserType[]> {
+    return users
+        .find({})
+        .project({
+            "achievements": 1,
+            "visitList.connectTime": 1,
+            "visitList.disconnectTime": 1,
+            "visitList": {$slice: -1},
+            "local.name": 1,
+            "local.avatar": 1,
+            "local.city": 1,
+            "vk.nickname": 1,
+            "vk.first_name": 1,
+            "vk.last_name": 1,
+            "vk.has_photo": 1,
+            "vk.photo_50": 1,
+            "vk.city": 1
+        })
+        .map(user => {
+            if (isOnline(user["_id"]))
+                user.isOnline = true;
+            return replaceId(user);
+        })
+        .toArray();
 }
 
 function insertUser(user: UserType): Promise<string> {
@@ -174,6 +204,7 @@ function findOrCreateByProfile(profile: ProfileLocal|ProfileVk, req?): Promise<U
                     currentScore: 0,
                     combo: []
                 },
+                roles: {},
                 visitList: [],
             });
             newUser[profileName] = profile;
@@ -211,7 +242,8 @@ function validateSync(password: string, password2: string): boolean {
 function cleanUser(dbUser: UserType, removeCredentialsList: string[] = null): UserType {
     const user: UserType = {
         id: dbUser.id,
-        achievements: dbUser.achievements
+        achievements: dbUser.achievements,
+        roles: dbUser.roles
     };
     AUTH.PROFILE_LIST
         .filter(profileName => !!dbUser[profileName])
@@ -237,4 +269,15 @@ function replaceId(result: {_id: string, id?: string}) {
         delete result._id;
     }
     return result;
+}
+
+function setOnline(userId: string, isOnline: boolean) {
+    if (isOnline && !userIdsOnline[userId])
+        userIdsOnline[userId] = true;
+    if (!isOnline)
+        delete userIdsOnline[userId];
+}
+
+function isOnline(userId: string) {
+    return !!userIdsOnline[userId];
 }

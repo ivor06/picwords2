@@ -12,11 +12,14 @@ export {
     ErrorOnGetAccessTokenVk,
     UserSignin,
     UserByRoomType,
-    UsersByRoom
+    UsersByRoom,
+    UserRatingType
 }
 
 class User {
     id: string;
+    isOnline: boolean;
+    roles: Roles;
     visitList: Visit[];
     achievements: Achievements;
     currentRoom: string;
@@ -33,6 +36,8 @@ class User {
 
 type UserType = {
     id?: string;
+    isOnline?: boolean;
+    roles?: Roles;
     visitList?: Visit[];
     achievements?: Achievements;
     local?: ProfileLocalType;
@@ -65,6 +70,11 @@ interface Achievements {
     currentScore?: number;
     combo?: number[];
     minTime?: number;
+}
+
+interface Roles {
+    isAdmin?: number;
+    isModerator?: number[];
 }
 
 type UserSignin = {
@@ -179,9 +189,15 @@ type VkCityType = number | {
     title: string;
 }
 
-type UserByRoomType = {
-    name: string;
+interface UserByRoomType {
+    name?: string;
     achievements?: Achievements;
+}
+
+interface UserRatingType extends UserByRoomType {
+    avatar?: string;
+    city: string;
+    lastVisit: Date;
 }
 
 interface UsersByRoom extends HashObject<UserByRoomType> {

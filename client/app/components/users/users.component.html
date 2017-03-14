@@ -1,0 +1,37 @@
+<div class="users-wrapper">
+    <div class="ui-widget-header ui-helper-clearfix" style="padding:4px 10px;border-bottom: 0 none">
+        <i class="fa fa-search" style="float:left;margin:4px 4px 0 0"></i>
+        <input #gb type="text" pInputText size="50" style="float:left"
+               placeholder="{{'search' | translate: 'users' : currentLanguage}}">
+    </div>
+    <p-dataTable
+            [value]="userList"
+            [rows]="rowsAmount"
+            [paginator]="true"
+            [globalFilter]="gb"
+            selectionMode="single"
+            (onRowSelect)="onUserClick($event?.data)"
+            tableStyleClass="users-table">
+        <p-column *ngFor="let col of cols" [field]="col.field" [header]="col.header" [sortable]="col.sortable">
+            <template *ngIf="col.field === 'totalScore'" let-col let-user="rowData" pTemplate type="body">
+                <p class="text-center">{{user[col.field] ? user[col.field] : 0}}</p>
+            </template>
+            <template *ngIf="col.field === 'minAnswer'" let-col let-user="rowData" pTemplate type="body">
+                <p class="text-center">{{user[col.field]}}</p>
+            </template>
+            <template *ngIf="col.formatType === 'date'" let-col let-user="rowData" pTemplate type="body">
+                <p *ngIf="user[col.field]" class="text-center">{{user[col.field] | date}}</p>
+                <p *ngIf="!user[col.field]" class="text-center">{{"online" | translate: "users" : currentLanguage}}</p>
+            </template>
+            <template *ngIf="col.formatType === 'long-string'" let-col let-user="rowData" pTemplate type="body">
+                <p class="long-string text-center">{{user[col.field]}}</p>
+            </template>
+            <template *ngIf="col.formatType === 'user'" let-col let-user="rowData" pTemplate type="body">
+                <p>
+                    <span class="long-string">{{user[col.field]}}</span>
+                    <img *ngIf="user.avatar" class="avatar-small" src="{{user.avatar}}" (click)="onUserClick(user)">
+                </p>
+            </template>
+        </p-column>
+    </p-dataTable>
+</div>

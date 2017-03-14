@@ -51,12 +51,9 @@ export class UserService {
     getUser(id: string): Observable<UserType> {
         if (!id)
             return Observable.of(null);
-        return id ? this._http.get(API_URL + "/user/id=" + id)
-            .map(response => {
-                this.user = response.json();
-                this._broadcastMessageEvent.emit("set-user", this.user);
-                return this.user;
-            }) : null;
+        return id
+            ? this._http.get(API_URL + "/user/id=" + id).map(response => response.json())
+            : null;
     }
 
     getCurrentUser(): UserType {

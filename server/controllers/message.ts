@@ -7,7 +7,7 @@ import {Message, MessageType} from "../../common/classes/message";
 import {UserType, UsersByRoom, Visit} from "../../common/classes/user";
 import {MESSAGES} from "../../common/config";
 import {TYPES, isEmptyObject} from "../../common/util";
-import {findById, updateAchievements, updateVisitList} from "../providers/user";
+import {findById, updateAchievements, updateVisitList, setOnline} from "../providers/user";
 import {GameController} from "./game";
 
 export {
@@ -116,6 +116,7 @@ class MessageController {
         delete MessageController.clients[id];
         delete this.sockets[id];
         delete this.userIds[id];
+        setOnline(id, false);
         if (isEmptyObject(this.sockets))
             this.game.stop();
         else
@@ -143,6 +144,7 @@ class MessageController {
             visit: Visit = null;
         if (user) {
             this.userIds[socketId] = user.id;
+            setOnline(user.id, true);
             if (user.vk)
                 name = user.vk.nickname ? user.vk.nickname : user.vk.first_name + " " + user.vk.last_name;
             if (user.local)

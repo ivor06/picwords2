@@ -1,0 +1,24 @@
+.users-wrapper {
+    height: 100%;
+    margin-top: -75px;
+    padding-top: 135px;
+}
+
+.avatar-small {
+    width: 41px;
+}
+
+.long-string {
+    word-break: break-all;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+}
+
+.ui-cell-data {
+    text-align: center;
+}
+
+.ui-cell-data > p {
+    text-align: center;
+}
