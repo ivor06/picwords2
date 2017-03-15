@@ -25,6 +25,7 @@ import {MessageService} from "./services/message.service";
 import {DialogWindowComponent} from "./components/dialog-window/dialog-window.component";
 import {ImageService} from "./services/image.service";
 import {YandexMetrikaComponent} from "./components/yandex-metrika/yandex-metrika.component";
+import {FooterStickComponent} from "./components/footer-stick/footer-stick.component";
 import {GameDeactivator} from "./deactivators/game.deactivator";
 import {ProgressBarComponent} from "./components/progress-bar/progress-bar.component";
 
@@ -56,6 +57,7 @@ import {ProgressBarComponent} from "./components/progress-bar/progress-bar.compo
         UsersComponent,
         GameComponent,
         ProgressBarComponent,
+        FooterStickComponent,
         YandexMetrikaComponent
     ],
     providers: [

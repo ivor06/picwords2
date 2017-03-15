@@ -1,33 +1,50 @@
 <nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
+    <div class="container-fluid flex">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <a class="navbar-brand brand" routerLink="/">
-                <img src="./assets/brand.jpg">
+            <a class="navbar-brand brand" routerLink="news">
+                <img src="./assets/icons/favicon.ico">
             </a>
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" aria-expanded="false"
-                    role="navigation">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar">a</span>
-                <span class="icon-bar">b</span>
-                <span class="icon-bar">c</span>
-            </button>
+            <div class="btn-group dropdown float-right">
+                <button
+                        type="button"
+                        class="navbar-toggle collapsed"
+                        data-toggle="collapse"
+                        aria-expanded="false"
+                        role="navigation"
+                        (click)="onToggle()">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <ul
+                        class="dropdown-menu menu-xs-mode"
+                        role="menu"
+                        [style.display]="isMenuExpand ? 'block' : 'none'">
+                    <li role="presentation">
+
+                    </li>
+                </ul>
+            </div>
         </div>
         <!-- Collect the nav links, forms,    -->
-        <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav width-wide">
-                <li role="presentation"><a routerLink="/" class="start-game">{{ (isGameProcessing ? "game" : "start" ) |
+        <div *ngIf="!isXs">
+            <ul class="nav navbar-nav">
+                <li role="presentation"><a routerLink="/" class="start-game">{{(isGameProcessing ? "game" : "start" ) |
                     translate: "navbar" : currentLanguage }}</a></li>
+                <li role="presentation"><a routerLink="users">{{"players" | translate: "navbar" : currentLanguage}}</a>
+                </li>
                 <li role="presentation"><a routerLink="profile">{{ "profile" | translate: "navbar" :
                     currentLanguage}}</a></li>
                 <li *ngIf="!userName" role="presentation">
-                    <button class="btn btn-info" routerLink="signin">{{ "signin" | translate: "navbar" : currentLanguage
-                        }}
+                    <button class="btn btn-info" routerLink="signin">{{"signin" | translate: "navbar" :
+                        currentLanguage}}
                     </button>
                 </li>
-                <li *ngIf="!userName" role="presentation">
-                    <button class="btn btn-group" routerLink="signup">{{ "signup" | translate: "navbar" :
-                        currentLanguage }}
+                <li *ngIf="!userName" role="presentation" class="hidden-sm">
+                    <button class="btn btn-group" routerLink="signup">{{"signup" | translate: "navbar" : currentLanguage
+                        }}
                     </button>
                 </li>
                 <li *ngIf="!userName" role="presentation">
@@ -39,18 +56,20 @@
                     <button class="btn btn-group" (click)="onLogout()">Logout</button>
                 </li>
                 <li *ngIf="userName" role="presentation">
-                    <p class="navbar-text">{{ "user-signed-as" | translate: "navbar" : currentLanguage }}
-                        <a href="{{user.vk ? 'https://vk.com/id' + user.vk.id : '#'}}" class="navbar-link">
-                            {{userName}}
-                            <img *ngIf="avatar" src="{{avatar}}" alt="avatar" class="img-circle icon-vk">
+                    <div class="navbar-text flex">
+                        <span class="signed-as flex">
+                            {{ "user-signed-as" | translate: "navbar" : currentLanguage }}
+                        </span>
+                        <a href="{{user.vk ? 'https://vk.com/id' + user.vk.id : '#'}}"
+                           class="signed-as-a navbar-link flex">
+                            <span *ngIf="!avatar" class="signed-as">{{userName}}</span>
                             <span *ngIf="!avatar" class="glyphicon glyphicon-user large-size"></span>
+                            <img *ngIf="avatar" src="{{avatar}}" alt="avatar" class="navbar-img-circle icon-vk">
                         </a>
-                    </p>
-                </li>
-                <li role="presentation" class="float-right">
-                    <select-lang></select-lang>
+                    </div>
                 </li>
             </ul>
         </div>
+        <select-lang></select-lang>
     </div>
 </nav>

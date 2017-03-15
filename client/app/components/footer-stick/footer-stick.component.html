@@ -1,0 +1,24 @@
+<footer class="footer navbar navbar-default navbar-fixed-bottom">
+    <div>
+        <div class="container-fluid navbar flex" data-toggle="collapse" aria-expanded="false" role="navigation">
+            <div *ngIf="isXs" class="row nav navbar-nav width-100 flex">
+                <a routerLink="/" routerLinkActive="active" class="col-xs-3"><i class="fa fa-gamepad"></i></a>
+                <a routerLink="users" routerLinkActive="active" class="col-xs-3"><i class="fa fa-users"></i></a>
+                <a routerLink="{{userId ? 'profile' : 'signin'}}" routerLinkActive="active" class="col-xs-3"><i
+                        class="fa fa-user"></i></a>
+                <a routerLink="users" routerLinkActive="active" class="col-xs-3"><i class="fa fa-question"></i></a>
+            </div>
+            <ul *ngIf="!isXs" class="nav navbar-nav width-wide flex">
+                <li role="presentation"><a href="mailto:{{mailTo}}">email: {{mailTo}}</a></li>
+                <li role="presentation">
+                    <button class="btn btn-group button-vk" (click)="onVkAuth()">
+                        <img src="./assets/icons/vk_152.png" class="img-circle icon-vk">
+                    </button>
+                </li>
+                <li role="presentation">
+                    <yandex-metrika class="flex"></yandex-metrika>
+                </li>
+            </ul>
+        </div>
+    </div>
+</footer>

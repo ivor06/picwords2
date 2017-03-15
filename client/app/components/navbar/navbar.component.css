@@ -3,13 +3,31 @@
 }
 
 ul.navbar-nav > li {
-    margin-right: 5px;
+    padding-right: 5px;
     display: flex;
     height: 60px;
 }
 
-ul.navbar-nav > li button, select-lang {
+select-lang {
+    position: absolute;
+    top: 0;
+    right: 10px;
+    bottom: 0;
+    display: flex;
+}
+
+.flex {
+    display: flex;
+}
+
+ul.navbar-nav > li button, img, select-lang {
     margin: auto;
+}
+
+ul.navbar-nav > li div.navbar-text {
+    height: 100%;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 nav a:visited, a:link {
@@ -19,6 +37,10 @@ nav a:visited, a:link {
 nav a:hover {
     color: #039be5;
     background-color: #CFD8DC;
+}
+
+nav .signed-as-a:hover {
+    background: none;
 }
 
 nav a.active {
@@ -54,4 +76,15 @@ nav a.active {
     font-size: 40px;
     margin-left: 10px;
     margin-top: -10px;
+}
+
+.signed-as {
+    margin: auto 5px;
+    overflow: hidden;
+}
+
+.menu-xs-mode {
+    right: 0px;
+    left: initial;
+    padding: 0px;
 }

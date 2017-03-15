@@ -1,0 +1,29 @@
+div.navbar-nav > a {
+    height: 60px;
+    display: flex;
+}
+
+div.navbar-nav > a > i {
+    margin: auto;
+}
+
+.button-vk {
+    padding: 0;
+}
+
+.icon-vk {
+    width: 41px;
+}
+
+.flex {
+    display: flex;
+    margin-bottom: 0;
+}
+
+.flex > * {
+    margin: auto;
+}
+
+.width-100 {
+    width: 100%;
+}

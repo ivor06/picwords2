@@ -22,6 +22,8 @@ export class NavBarComponent extends TranslateMixin implements OnInit {
     private userName: string = null;
     private avatar: string = null;
     private isGameProcessing = true;
+    private isXs: boolean;
+    private isMenuExpand = false;
 
     constructor(private router: Router,
                 private element: ElementRef,
@@ -35,6 +37,10 @@ export class NavBarComponent extends TranslateMixin implements OnInit {
         Observable.fromEvent(this.element.nativeElement.childNodes[0], "click")
             .filter((event: Event) => (event.target["className"].indexOf("start-game") !== -1) && !this.isGameProcessing)
             .subscribe(() => this._messageService.startGame());
+
+        this._broadcastMessageEvent.on("xs-mode")
+            .subscribe(isXs => this.isXs = isXs);
+
         this._broadcastMessageEvent.on("set-user")
             .subscribe((user: UserType) => {
                 this.user = user;
@@ -49,9 +55,13 @@ export class NavBarComponent extends TranslateMixin implements OnInit {
                 }
             });
 
-        this._messageService.getMessage()
+        this._broadcastMessageEvent.on("message")
             .filter(message => message.isStopped || message.isStarted)
             .subscribe(message => this.isGameProcessing = !message.isStopped);
+    }
+
+    onToggle() {
+        this.isMenuExpand = !this.isMenuExpand;
     }
 
     onVkAuth() {
