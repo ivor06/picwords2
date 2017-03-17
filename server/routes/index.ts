@@ -1,18 +1,23 @@
 import * as express from "express";
 
-import {findById, cleanUser, findByRoom, findAll} from "../providers/user"
+import {findById, cleanUser, findByRoom, findAll} from "../providers/user";
+import {findAllNews} from "../providers/news";
 
 const router = express.Router();
 
 export {router}
 
+router.get("/news/all",
+    (req, res) => findAllNews().then(
+        res.json.bind(res),
+        res.send.bind(res)
+    ));
+
 router.get("/user/id=:id",
-    (req, res) => {
-        findById(req.params.id).then(
-            user => res.json(cleanUser(user)),
-            res.send.bind(res)
-        );
-    });
+    (req, res) => findById(req.params.id).then(
+        user => res.json(cleanUser(user)),
+        res.send.bind(res)
+    ));
 
 router.get("/user/list",
     (req, res) => findAll().then(

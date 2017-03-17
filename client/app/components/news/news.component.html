@@ -1,0 +1,18 @@
+<div class="news-wrapper container">
+    <h2 class="text-center">{{"quiz" | translate: "news" : currentLanguage}}</h2>
+    <div class="text-justify text-indent">{{"about" | translate: "news" : currentLanguage}}</div>
+    <h3 class="text-center">{{"news" | translate: "news" : currentLanguage}}</h3>
+    <ul class="news-list">
+        <li class="row" *ngFor="let news of newsList">
+            <div class="news-item panel panel-group">
+                <div class="panel-heading">
+                    <em>{{news.date | date : "yyyy/MM/dd"}}</em>
+                    <span class="news-item-title">
+                            <strong>{{news.title[currentLanguage]}}</strong>
+                        </span>
+                </div>
+                <article class="panel-body">{{news.text[currentLanguage]}}</article>
+            </div>
+        </li>
+    </ul>
+</div>

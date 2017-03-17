@@ -4,6 +4,7 @@ export {
     HashObject,
     HashString,
     HashNumber,
+    HashBoolean,
     MapHashString,
     ObjectType,
     KeyboardEventWithTargetValue,
@@ -14,6 +15,8 @@ export {
 interface HashObject<T> { [key: string]: T; }
 interface HashString extends HashObject<string> {}
 interface HashNumber extends HashObject<number> {
+}
+interface HashBoolean extends HashObject<boolean> {
 }
 interface MapHashString extends Map<string, HashString> {}
 

@@ -1,0 +1,26 @@
+.news-wrapper {
+    height: 100%;
+    margin-top: -75px;
+    padding-top: 135px;
+}
+
+.news-list {
+    list-style: none;
+    padding: 0 5% 60px;
+}
+
+.news-item {
+    border: 1px solid #888;
+}
+
+.news-item > div.panel-heading {
+    background-color: #eee;
+}
+
+.news-item-title {
+    margin-left: 15px;
+}
+
+.text-indent {
+    text-indent: 25px;
+}
