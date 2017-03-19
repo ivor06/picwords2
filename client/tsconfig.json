@@ -33,6 +33,7 @@
     "./app/services/i18n.service.ts",
     "./app/services/image.service.ts",
     "./app/services/message.service.ts",
+    "./app/services/feedback.service.ts",
     "./app/services/news.service.ts",
     "./app/services/user.service.ts",
     "./app/validators/form.validator.ts",
@@ -48,6 +49,7 @@
     "./app/components/game/game.component.ts",
     "./app/components/profile/profile.component.ts",
     "./app/components/progress-bar/progress-bar.component.ts",
+    "./app/components/feedback/feedback.component.ts",
     "./app/components/news/news.component.ts",
     "./app/components/yandex-metrika/yandex-metrika.component.ts",
     "./app/components/spaceship/spaceship.component.ts",
@@ -57,6 +59,7 @@
     "../common/classes/question.ts",
     "../common/classes/user.ts",
     "../common/classes/news.ts",
+    "../common/classes/feedback.ts",
     "../common/interfaces.ts",
     "../common/schemas/user.schema.ts"
   ]

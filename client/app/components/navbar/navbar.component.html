@@ -23,7 +23,19 @@
                         role="menu"
                         [style.display]="isMenuExpand ? 'block' : 'none'">
                     <li role="presentation">
-
+                        <button class="btn btn-default" routerLink="news" (click)="onToggle()">
+                            {{"news" | translate: "navbar" : currentLanguage}}
+                        </button>
+                    </li>
+                    <li role="presentation">
+                        <button class="btn btn-default" routerLink="feedback" (click)="onToggle()">
+                            {{"feedback" | translate: "navbar" : currentLanguage}}
+                        </button>
+                    </li>
+                    <li role="presentation">
+                        <button class="btn btn-default" routerLink="feedback/give" (click)="onToggle()">
+                            {{"give-feedback" | translate: "navbar" : currentLanguage}}
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -38,13 +50,13 @@
                 <li role="presentation"><a routerLink="profile">{{ "profile" | translate: "navbar" :
                     currentLanguage}}</a></li>
                 <li *ngIf="!userName" role="presentation">
-                    <button class="btn btn-info" routerLink="signin">{{"signin" | translate: "navbar" :
-                        currentLanguage}}
+                    <button class="btn btn-info" routerLink="signin">
+                        {{"signin" | translate: "navbar" : currentLanguage}}
                     </button>
                 </li>
                 <li *ngIf="!userName" role="presentation" class="hidden-sm">
-                    <button class="btn btn-group" routerLink="signup">{{"signup" | translate: "navbar" : currentLanguage
-                        }}
+                    <button class="btn btn-group" routerLink="signup">
+                        {{"signup" | translate: "navbar" : currentLanguage}}
                     </button>
                 </li>
                 <li *ngIf="!userName" role="presentation">

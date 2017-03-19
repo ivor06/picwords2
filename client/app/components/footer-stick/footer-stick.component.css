@@ -3,6 +3,10 @@ div.navbar-nav > a {
     display: flex;
 }
 
+div.navbar-nav > a:hover {
+    background-color: #CFD8DC;
+}
+
 div.navbar-nav > a > i {
     margin: auto;
 }

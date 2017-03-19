@@ -1,0 +1,93 @@
+<div class="feedback-wrapper container">
+    <h2 class="text-center">{{(isGiveFeedback ? "give-feedback" : "feedback-list") | translate: "feedback" :
+        currentLanguage}}</h2>
+    <ul *ngIf="!isGiveFeedback" class="feedback-list">
+        <li class="row" *ngFor="let feedbackItem of feedbackList">
+            <div class="feedback-item panel panel-group">
+                <div class="panel-heading">
+                    <em>{{feedbackItem.date | date : "yyyy/MM/dd"}}</em>
+                    <span class="feedback-item-title">
+                        <strong>{{feedbackItem.author}}</strong>
+                    </span>
+                    <span class="feedback-item-title">
+                        <strong class="text-underline">{{feedbackItem.title[currentLanguage] ? feedbackItem.title[currentLanguage] : feedbackItem.title[altLang]}}</strong>
+                    </span>
+                </div>
+                <div class="panel panel-body">
+                    <div *ngFor="let lang of langList">
+                        <div *ngIf="feedbackItem.text[lang]" class="flex padding-bottom-5">
+                            <span class="flag-icon flag-icon-{{languages[lang].flagName}}"></span>
+                            <article class="text-indent"> {{feedbackItem.text[lang]}}</article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+    <div *ngIf="isGiveFeedback" class="feedback-form row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8 well">
+            <form [formGroup]="form" (keydown.enter)="onEnter()" (ngSubmit)="save()">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label>{{ "feedback-author" | translate: "feedback" : currentLanguage }}</label>
+                            <div class="flex">
+                                <span class="flag-icon flag-icon-{{languages[currentLanguage].flagName}} unvisible"></span>
+                                <input
+                                        type="text"
+                                        [(ngModel)]="feedback.author"
+                                        #author="ngForm"
+                                        [formControl]="form.controls['author']"
+                                        class="form-control">
+                            </div>
+                        </div>
+                        <div *ngIf="(!authorName && author.touched) && !author.valid" class="alert alert-danger">
+                            <label>{{ "required-author" | translate: "feedback" : currentLanguage }}</label>
+                        </div>
+                        <div class="form-group">
+                            <label>{{ "feedback-title" | translate: "feedback" : currentLanguage }}</label>
+                            <div *ngFor="let lang of langList" class="flex">
+                                <span class="flag-icon flag-icon-{{languages[lang].flagName}}"></span>
+                                <input
+                                        type="text"
+                                        class="form-control width-50"
+                                        [(ngModel)]="feedback.title[lang]"
+                                        [formControl]="form.controls['title']"
+                                        placeholder="{{('feedback-title-placeholder') | translate : 'feedback' : lang : true}}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div>{{ "feedback-reply" | translate: "feedback" : currentLanguage }}</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>{{ "feedback-text" | translate: "feedback" : currentLanguage }}</label>
+                    <div *ngFor="let lang of langList" class="flex">
+                        <span class="flag-icon flag-icon-{{languages[lang].flagName}}"></span>
+                        <textarea
+                                type="text"
+                                class="form-control"
+                                [(ngModel)]="feedback.text[lang]"
+                                [formControl]="form.controls['text']"
+                                placeholder="{{('feedback-text-placeholder') | translate : 'feedback' : lang : true}}">
+                            </textarea>
+                    </div>
+                </div>
+                <div *ngIf="form.controls['text'].touched && form.controls['text'].errors">
+                    <div
+                            *ngIf="form.controls['text'].errors.required"
+                            class="alert alert-danger">{{ "required-text" | translate: "feedback" : currentLanguage }}
+                    </div>
+                </div>
+                <button
+                        type="submit"
+                        class="btn btn-primary"
+                        [disabled]="!form.valid">
+                    {{ "button-send" | translate: "feedback" : currentLanguage }}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

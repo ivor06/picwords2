@@ -6,5 +6,8 @@
   "players": "Рейтинг",
   "signin": "Войти",
   "signup": "Регистрация",
-  "user-signed-as": "Вы зашли как "
+  "user-signed-as": "Вы зашли как ",
+  "news": "Новости",
+  "feedback": "Отзывы",
+  "give-feedback": "Оставить отзыв"
 }

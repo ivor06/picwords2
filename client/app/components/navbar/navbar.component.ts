@@ -49,7 +49,7 @@ export class NavBarComponent extends TranslateMixin implements OnInit {
                 else if ((user.vk && user.vk.photo_50)) {
                     this.userName = user.vk.nickname ? user.vk.nickname : user.vk.first_name + " " + user.vk.last_name;
                     this.avatar = user.vk.photo_50;
-                } else if (user.local) {
+                } else if (user.local) { // TODO User.getName
                     this.userName = user.local.name;
                     this.avatar = user.local.avatar ? user.local.avatar : null;
                 }

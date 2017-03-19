@@ -1,0 +1,16 @@
+{
+  "feedback-list": "Отзывы",
+  "feedback-author": "Автор",
+  "feedback-title": "Заголовок",
+  "feedback-title-placeholder": "Текст заголовка",
+  "feedback-text": "Текст",
+  "feedback-text-placeholder": "Текст отзыва",
+  "feedback-reply": "Ответ на:",
+  "feedback-success": "Ваш отзыв принят!",
+  "feedback-error": "Ошибка при получении списка отзывов",
+  "give-feedback": "Оставить отзыв",
+  "give-feedback-error": "Не удалось сохранить отзыв, попробуйте ещё раз",
+  "button-send": "Отправить",
+  "required-author": "Укажите автора",
+  "required-text": "Оставьте отзыв по крайней мере на одном языке"
+}

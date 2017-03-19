@@ -1,0 +1,16 @@
+{
+  "feedback-list": "Feedback",
+  "feedback-author": "Author",
+  "feedback-title": "Title",
+  "feedback-title-placeholder": "Text of title",
+  "feedback-text": "Text",
+  "feedback-text-placeholder": "Text of feedback",
+  "feedback-reply": "Reply on:",
+  "feedback-success": "Your feedback has accepted!",
+  "feedback-error": "Feedback list request failed",
+  "give-feedback": "Give a feedback",
+  "give-feedback-error": "Feedback didn't saved, please try again.",
+  "button-send": "Send",
+  "required-author": "Author required",
+  "required-text": "Please type text in one language at least"
+}

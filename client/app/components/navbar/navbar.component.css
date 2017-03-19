@@ -51,12 +51,12 @@ nav a.active {
     width: 96%;
 }
 
-.float-right {
-    float: right;
+.width-100 {
+    width: 100%;
 }
 
-.brand {
-    margin-right: -15px;
+.float-right {
+    float: right;
 }
 
 .avatar {
@@ -84,7 +84,15 @@ nav a.active {
 }
 
 .menu-xs-mode {
-    right: 0px;
-    left: initial;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #888;
+}
+
+.menu-xs-mode > li {
+    border-bottom: 1px solid #777;
+}
+
+.menu-xs-mode > li > button {
+    width: 100%;
 }

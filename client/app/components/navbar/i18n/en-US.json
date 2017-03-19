@@ -6,5 +6,8 @@
   "players": "Players",
   "signin": "Sign in",
   "signup": "Sign up",
-  "user-signed-as": "Signed in as "
+  "user-signed-as": "Signed in as ",
+  "news": "News",
+  "feedback": "Feedback",
+  "give-feedback": "Give a feedback"
 }

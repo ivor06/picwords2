@@ -28,6 +28,10 @@ import {YandexMetrikaComponent} from "./components/yandex-metrika/yandex-metrika
 import {FooterStickComponent} from "./components/footer-stick/footer-stick.component";
 import {GameDeactivator} from "./deactivators/game.deactivator";
 import {ProgressBarComponent} from "./components/progress-bar/progress-bar.component";
+import {NewsService} from "./services/news.service";
+import {NewsComponent} from "./components/news/news.component";
+import {FeedbackService} from "./services/feedback.service";
+import {FeedbackComponent} from "./components/feedback/feedback.component";
 
 @NgModule({
     imports: [
@@ -55,6 +59,8 @@ import {ProgressBarComponent} from "./components/progress-bar/progress-bar.compo
         SignInFormComponent,
         UserFormComponent,
         UsersComponent,
+        FeedbackComponent,
+        NewsComponent,
         GameComponent,
         ProgressBarComponent,
         FooterStickComponent,
@@ -66,6 +72,8 @@ import {ProgressBarComponent} from "./components/progress-bar/progress-bar.compo
         I18nService,
         ImageService,
         MessageService,
+        FeedbackService,
+        NewsService,
         UserService,
         GameDeactivator
     ],

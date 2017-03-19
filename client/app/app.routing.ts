@@ -6,6 +6,8 @@ import {GameComponent} from "./components/game/game.component";
 import {SignInFormComponent} from "./components/signin-form/signin-form.component";
 import {ProfileComponent} from "./components/profile/profile.component";
 import {GameDeactivator} from "./deactivators/game.deactivator";
+import {NewsComponent} from "./components/news/news.component";
+import {FeedbackComponent} from "./components/feedback/feedback.component";
 
 const appRoutes: Routes = [
     {
@@ -40,6 +42,18 @@ const appRoutes: Routes = [
     {
         path: "signin",
         component: SignInFormComponent
+    },
+    {
+        path: "news",
+        component: NewsComponent
+    },
+    {
+        path: "feedback",
+        component: FeedbackComponent
+    },
+    {
+        path: "feedback/give",
+        component: FeedbackComponent
     }
 ];
 

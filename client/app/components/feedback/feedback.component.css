@@ -1,0 +1,73 @@
+.feedback-wrapper {
+    height: 100%;
+    margin-top: -75px;
+    padding-top: 135px;
+}
+
+.feedback-list {
+    list-style: none;
+    padding: 0 5% 60px;
+}
+
+.feedback-item {
+    border: 1px solid #888;
+}
+
+.feedback-item > div.panel-heading {
+    background-color: #eee;
+}
+
+.feedback-item div.flex > article {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 5px;
+    width: 100%;
+}
+
+.feedback-item-title {
+    margin-left: 15px;
+}
+
+.feedback-form {
+    margin-bottom: 40px;
+}
+
+.feedback-form > div.well {
+    margin-bottom: 0;
+}
+
+.text-indent {
+    text-indent: 25px;
+}
+
+.width-50 {
+    width: 50%;
+}
+
+.unvisible {
+    visibility: hidden;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex > textarea, input, article {
+    margin-left: 10px;
+}
+
+.text-underline {
+    text-decoration: underline;
+}
+
+.text-indent {
+    text-indent: 25px;
+}
+
+.flag-icon {
+    min-width: 20px;
+}
+
+.padding-bottom-5 {
+    padding-bottom: 5px;
+}
