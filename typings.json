@@ -25,7 +25,8 @@
     "passport": "registry:npm/passport#0.3.0+20161028163825",
     "passport-http": "registry:dt/passport-http#0.3.0+20161104204819",
     "passport-http-bearer": "registry:dt/passport-http-bearer#1.0.1+20160708003644",
-    "passport-local": "registry:dt/passport-local#1.0.0+20161128184045"
+    "passport-local": "registry:dt/passport-local#1.0.0+20161128184045",
+    "winston": "registry:dt/winston#2.2.0+20170106144044"
   },
   "globalDevDependencies": {
     "gulp-copy": "registry:dt/gulp-copy#0.0.2+20161006211742",

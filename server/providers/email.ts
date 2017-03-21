@@ -1,6 +1,6 @@
 import {createTransport} from "nodemailer";
 
-import {SERVER} from "../../common/config";
+import {SERVER} from "../config/config";
 import {EmailType} from "../../common/classes/email";
 import {DirectOptions} from "nodemailer-direct-transport";
 

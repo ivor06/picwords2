@@ -1,16 +1,17 @@
 import {JsonSchema} from "../interfaces";
 
-export const userSchema: JsonSchema = {
+export const userSchema: JsonSchema = { // TODO Generate from User;s class.
     id: "/User",
     type: "object",
     properties: {
         "id": {type: "string"},
-        "language": {type: "string"},
-        "history": {type: "string"},
-        "lastVisit": {type: "date"},
-        "geo": {$ref: "#/definitions/GeoType"},
+        "isOnline": {type: "string"},
+        "roles": {type: "string"},
+        "visitList": {
+            type: "array",
+            items: {$ref: "#/definitions/VisitType"}
+        },
         "achievements": {$ref: "#/definitions/AchievementsType"},
-        "currentRoom": {type: "string"},
         "local": {$ref: "#/definitions/LocalType"},
         "vk": {$ref: "#/definitions/VkType"}
     },
@@ -21,18 +22,48 @@ export const userSchema: JsonSchema = {
             required: ["latitude", "longitude"],
             properties: {
                 latitude: {type: "number"},
-                longitude: {type: "number"}
+                longitude: {type: "number"},
+                geo_id: {type: "number"},
+                country_iso_code: {type: "string"},
+                country: {type: "string"},
+                city: {type: "string"},
+                time_zone: {type: "string"}
             },
             additionalProperties: false
         },
         AchievementsType: {
             type: "object",
-            required: ["totalScore", "currentScore", "combo"],
+            required: ["totalScore"],
             properties: {
                 totalScore: {type: "number"},
                 currentScore: {type: "number"},
-                combo: {type: "number"},
+                combo: {
+                    type: "array",
+                    items: {type: "number"}
+                },
                 minTime: {type: "number"}
+            },
+            additionalProperties: false
+        },
+        RolesType: {
+            type: "object",
+            properties: {
+                isAdmin: {type: "boolean"},
+                isModerator: {type: "boolean"}
+            },
+            additionalProperties: false
+        },
+        VisitType: {
+            type: "object",
+            properties: {
+                language: {type: "string"},
+                ip: {type: "string"},
+                userAgent: {type: "string"},
+                timezone: {type: "number"},
+                geo: {$ref: "#/definitions/GeoType"},
+                connectTime: {type: "Date"},
+                disconnectTime: {type: "Date"},
+                currentRoom: {type: "string"}
             },
             additionalProperties: false
         },

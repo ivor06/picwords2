@@ -1,11 +1,11 @@
-/// <reference path="../../typings/index.d.ts" />
 import * as SIO from "socket.io";
 import "rxjs/add/observable/of";
-import {fromEvent} from "rxjs/Observable/fromEvent";
+import {fromEvent} from "rxjs/observable/fromEvent";
 
 import {Message, MessageType} from "../../common/classes/message";
 import {UserType, UsersByRoom, Visit} from "../../common/classes/user";
 import {MESSAGES} from "../../common/config";
+import {log} from "../config/log";
 import {TYPES, isEmptyObject} from "../../common/util";
 import {findById, updateAchievements, updateVisitList, setOnline} from "../providers/user";
 import {GameController} from "./game";
@@ -23,6 +23,14 @@ class MessageController {
     private game = new GameController();
     private sockets = {};
     private userIds = {};
+
+    static getUsersByRoom(room?: string): UsersByRoom {
+        return MessageController.clients;
+    }
+
+    static generateUserName(): string {
+        return "player " + Math.floor(Math.random() * 1000);
+    }
 
     constructor() {
         this.game.questionsBus
@@ -50,21 +58,13 @@ class MessageController {
             });
     }
 
-    static getUsersByRoom(room?: string): UsersByRoom {
-        return MessageController.clients;
-    }
-
-    static generateUserName(): string {
-        return "player " + Math.floor(Math.random() * 1000);
-    }
-
     onConnect(socket) {
         const
             socketId = socket.id,
             userSocketId = socket.handshake.query.socketId || null,
             userId = socket.handshake.query.userId || null;
 
-        console.log("user connected. socketId:", socketId, "  userSocketId:", userSocketId, "  userId:", userId);
+        log.log("user connected. socketId:", socketId, "  userSocketId:", userSocketId, "  userId:", userId);
 
         if (userSocketId && MessageController.clients[userSocketId])
             this.onDisconnect(socketId, "reconnect", userSocketId);
@@ -73,12 +73,12 @@ class MessageController {
             if (userId)
                 findById(userId).then(
                     user => {
-                        console.log("user found:", user.id);
+                        log.log("user found:", user.id);
                         resolve(user);
                     }, reject);
             else
                 resolve(null);
-            });
+        });
 
         resolveUser.then(
             user => {
@@ -102,7 +102,7 @@ class MessageController {
                     this.game.askQuestion(socketId);
             },
             error => {
-                console.error(error);
+                log.error(error);
                 this.setClient(socket);
             }
         );
@@ -110,7 +110,7 @@ class MessageController {
 
     onDisconnect(socketId, reason, clientSocketId?: string) {
         const id = clientSocketId || socketId;
-        console.log("user disconnected", id, "  reason:", reason);
+        log.log("user disconnected", id, "  reason:", reason);
         if (this.userIds[socketId] && MessageController.clients[id].visit)
             updateVisitList(this.userIds[socketId], Object.assign(MessageController.clients[id].visit, {disconnectTime: new Date()}));
         delete MessageController.clients[id];
@@ -150,14 +150,20 @@ class MessageController {
             if (user.local)
                 name = user.local.name;
 
-            const matchIp = (socket.client.request.headers['x-forwarded-for'] || socket.client.conn.remoteAddress || socket.conn.remoteAddress || socket.request.connection.remoteAddress || "").match(RE_IP),
+            const matchIp = (
+                    socket.client.request.headers['x-forwarded-for']
+                    || socket.client.conn.remoteAddress
+                    || socket.conn.remoteAddress
+                    || socket.request.connection.remoteAddress
+                    || ""
+                ).match(RE_IP),
                 ip = (matchIp && matchIp.length) ? matchIp[1] : null;
             visit = {
                 ip: ip,
                 userAgent: socket.handshake.headers["user-agent"],
                 connectTime: new Date(),
                 timezone: socket.handshake.query.timezone
-            }
+            };
         }
 
         if (!name)

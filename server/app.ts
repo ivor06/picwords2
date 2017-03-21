@@ -1,8 +1,10 @@
 import {Server} from "./server";
+import {disconnectDb} from "./providers/db";
+import {log} from "./config/log";
 
-let server = Server.bootstrap();
+Server.bootstrap();
 
 process.on("uncaughtException", (error) => { // TODO reboot server when unhandled rejection
-    console.log("\n----- uncaughtException ----- \n", error);
-    // server = Server.bootstrap();
+    log.error("\n----- uncaughtException ----- \n", error);
+    disconnectDb();
 });

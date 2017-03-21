@@ -12,12 +12,10 @@ import {LANGUAGES} from "../../../../common/config";
 export class SelectLangComponent {
 
     @Output() static onChangeLanguage = new EventEmitter();
+    static currentLanguage = navigator.language.substr(0, 2);
 
-    languages = LANGUAGES;
-
-    isActiveLanguageList = false;
-
-    currentLang: string = navigator.language.substr(0, 2);
+    private languages = LANGUAGES;
+    private isActiveLanguageList = false;
 
     onToggle() {
         this.isActiveLanguageList = !this.isActiveLanguageList;
@@ -25,9 +23,13 @@ export class SelectLangComponent {
 
     onSelectLanguage(currentLang: string) {
         this.isActiveLanguageList = false;
-        if (this.currentLang !== currentLang) {
-            this.currentLang = currentLang;
+        if (SelectLangComponent.currentLanguage !== currentLang) {
+            SelectLangComponent.currentLanguage = currentLang;
             SelectLangComponent.onChangeLanguage.emit(currentLang);
         }
+    }
+
+    getCurrentLanguage(): string {
+        return SelectLangComponent.currentLanguage;
     }
 }

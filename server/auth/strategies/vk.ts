@@ -2,12 +2,11 @@ import * as BearerStrategy from "passport-http-bearer";
 import * as https from "https";
 import {Observable} from "rxjs/Observable";
 import {ReplaySubject} from "rxjs/ReplaySubject";
-import _Strategy = require('~passport~passport-strategy');
 
 import {HttpError} from "../../../common/classes/error";
 import {UserType, ProfileVk, ProfileVkType, ErrorOnGetAccessTokenVk} from "../../../common/classes/user";
 import {HashObject} from "../../../common/interfaces";
-import {AUTH} from "../../../common/config";
+import {AUTH} from "../../config/config";
 import {findOrCreateByProfile, generateHash, findByToken, unsetToken, cleanUser} from "../../providers/user";
 import {TYPES, filterObjectKeys} from "../../../common/util";
 
@@ -17,7 +16,7 @@ const
     vkLogin = (req, res) => generateHash(Date.now().toString()).then(hash => {
         const
             getShortHash = (_hash => {
-                let sh = _hash.substring(7, 15).replace(/\/|\\|&|\$|=|\?/g, "");
+                const sh = _hash.substring(7, 15).replace(/\/|\\|&|\$|=|\?/g, "");
                 return sh in hashTokens ? getShortHash(_hash + "_") : sh; // TODO check generate hash again with the same payload
             }),
             shortHash = getShortHash(hash),
@@ -64,7 +63,7 @@ const
                     return hashTokens[state].error(new HttpError(503, "Internal server error", "VK oauth hasn't sent access token: " + (parsedData as ErrorOnGetAccessTokenVk).error_description));
                 profileVk.id = profileVk["user_id"];
                 delete profileVk["user_id"];
-                const options = {
+                const tokenRequestOptions = {
                     hostname: AUTH.VK.API_URL,
                     port: 443,
                     path: AUTH.VK.API.GET_USERS +
@@ -73,17 +72,17 @@ const
                     "&ids=" + profileVk["user_id"] +
                     "&fields=" + AUTH.VK.USER_FIELD_LIST.join(",")
                 };
-                https.get(options, response => {
-                    response.on("data", data => {
-                        let parsedData: ProfileVkType|ErrorOnGetAccessTokenVk;
+                https.get(tokenRequestOptions, tokenResponse => {
+                    tokenResponse.on("data", tokenData => {
+                        let tokenParsedData: ProfileVkType|ErrorOnGetAccessTokenVk;
                         try {
-                            parsedData = JSON.parse(data).response[0];
+                            tokenParsedData = JSON.parse(tokenData).response[0];
                         }
                         catch (e) {
                             return hashTokens[state].error(new HttpError(500, "Service unavailable", "VK service error"));
                         }
-                        if ((parsedData as ProfileVkType).id) {
-                            Object.assign(profileVk, parsedData as ProfileVk);
+                        if ((tokenParsedData as ProfileVkType).id) {
+                            Object.assign(profileVk, tokenParsedData as ProfileVk);
                             req.query = {id: hashIds[state]};
                             findOrCreateByProfile(profileVk, req).then(user => {
                                 if (user)
@@ -93,11 +92,11 @@ const
                                 hashTokens[state].complete();
                             });
                         } else {
-                            console.error("user profile request error:", data, parsedData);
+                            console.error("user profile request error:", tokenData, tokenParsedData);
                             hashTokens[state].error(new HttpError(503, "Service unavailable", "VK service unavailable"));
                         }
                     });
-                    response.on("error", error => {
+                    tokenResponse.on("error", error => {
                         console.error("vk.users.get error:", error);
                         hashTokens[state].error(new HttpError(503, "Service unavailable", "VK service unavailable"));
                     });
@@ -116,19 +115,9 @@ const
         const state = req.query.state;
         if (state && hashTokens[state]) {
             hashTokens[state].subscribe(
-                token => {
-                    if (typeof token === TYPES.STRING) {
-                        return res.json({token: token});
-                    }
-                    else
-                        res.send(token);
-                },
-                (error: HttpError) => {
-                    return res.status(error.status).send(error)
-                },
-                () => {
-                    delete hashTokens[state];
-                }
+                token => (typeof token === TYPES.STRING) ? res.json({token: token}) : res.send(token),
+                (error: HttpError) => res.status(error.status).send(error),
+                () => delete hashTokens[state]
             );
         }
         else

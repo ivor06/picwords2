@@ -32,6 +32,16 @@ class User {
                 if (user.hasOwnProperty(key))
                     this[key] = user[key];
     }
+
+    static getName(user: UserType): string {
+        return new User(user).getName();
+    }
+
+    getName(): string {
+        return this.vk
+            ? (this.vk.nickname ? this.vk.nickname : this.vk.first_name + " " + this.vk.last_name)
+            : (this.local ? this.local.name : null);
+    }
 }
 
 type UserType = {
@@ -73,8 +83,8 @@ interface Achievements {
 }
 
 interface Roles {
-    isAdmin?: number;
-    isModerator?: number[];
+    isAdmin?: boolean;
+    isModerator?: boolean;
 }
 
 type UserSignin = {

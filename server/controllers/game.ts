@@ -5,7 +5,8 @@ import "rxjs/";
 import "rxjs/add/observable/interval";
 import "rxjs/add/operator/takeUntil";
 
-import {GAME} from "../../common/config";
+import {GAME} from "../config/config";
+import {log} from "../config/log";
 import {getRandomQuestion} from "../providers/question";
 import {QuestionType} from "../../common/classes/question";
 import {Message, MessageType} from "../../common/classes/message";
@@ -37,6 +38,10 @@ const
     };
 
 class GameController {
+    answersBus = new Subject<Message>();
+    questionsBus = new Subject<MessageType>();
+    isGameProcessing = false;
+
     private startStop = new Subject<boolean>();
     private intervalQuestion = Observable.interval(GAME.QUESTION_TIME).startWith(null);
     private intervalHint = Observable.interval(GAME.HINT_TIME).take(2);
@@ -46,10 +51,6 @@ class GameController {
     private hintLetterList: number[] = [];
     private hintLetterTotal = 0;
 
-    answersBus = new Subject<Message>();
-    questionsBus = new Subject<MessageType>();
-    isGameProcessing = false;
-
     constructor() {
         const stSource = this.startStop.asObservable()
             .filter(start => start)
@@ -58,7 +59,7 @@ class GameController {
         const questionAnsweredSource = this.answersBus
             .filter((message: Message) => {
                 if (this.question && message.text === this.question.answer) {
-                    console.log("correct answer!  this.isAnswered:", this.isAnswered);
+                    log.info("correct answer!  this.isAnswered:", this.isAnswered);
                     if (!this.isAnswered) {
                         this.isAnswered = true;
                         this.question.answerTime = Date.now();
@@ -86,7 +87,7 @@ class GameController {
 
         Observable
             .combineLatest(questionAnsweredSource, stSource,
-                (answer, stSource) => (answer === null && this.question) // TODO answer in null only before first correct answer
+                (answer, stSourceData) => (answer === null && this.question) // TODO answer in null only before first correct answer
                     ? this.questionsBus.next({
                     time: new Date(),
                     answer: this.question.answer,
@@ -95,7 +96,7 @@ class GameController {
                     : null
             )
             .subscribe(() => {
-                getRandomQuestion()
+                getRandomQuestion() // TODO improve get random questions algorithm
                 // .timestamp()
                     .subscribe(question => {
                         this.question = Object.assign(question, {
@@ -107,13 +108,13 @@ class GameController {
                         this.intervalHint
                             .takeWhile(data => !this.isAnswered)
                             .subscribe(this.showHint.bind(this));
-                    }, error => console.log(error));
+                    }, error => log.error(error));
             });
     }
 
     start() {
         if (!this.isGameProcessing) {
-            console.log("start game");
+            log.info("start game");
             this.isGameProcessing = true;
             this.questionsBus.next({
                 time: new Date(),
@@ -125,7 +126,7 @@ class GameController {
 
     stop() {
         if (this.isGameProcessing) {
-            console.log("stop game");
+            log.info("stop game");
             this.startStop.next(false);
             this.isGameProcessing = false;
             delete this["question"];

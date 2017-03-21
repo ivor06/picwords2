@@ -12,6 +12,7 @@ export {
     traversalObject,
     removeObjectKeys,
     filterObjectKeys,
+    removeUndefined,
     isEmptyObject,
     onError,
     isNumber,
@@ -76,6 +77,16 @@ function filterObjectKeys<T>(obj: T, fieldList: string[]): T {
     return obj;
 }
 
+function removeUndefined<T>(obj: T): T {
+    traversalObject(obj, (value, key) => {
+        if (value === undefined)
+            delete obj[key];
+        else if (value && isObject(value))
+            removeUndefined(value);
+    });
+    return obj;
+}
+
 function displayObject(obj) {
     for (let key of obj) {
         if (obj.hasOwnProperty(key) && !(obj[key] instanceof Function))
@@ -99,11 +110,11 @@ function promiseSeries(promiseList: Promise<any>[], callback?): Promise<any[]> {
 
 function isNumber(value: any): boolean {
     // return (value !== null) && !isNaN(value) && (typeof value === TYPES.NUMBER);
-    return typeof value === TYPES.NUMBER;
+    return typeof value === TYPES.NUMBER || value instanceof Number;
 }
 
 function isString(value: any): boolean {
-    return typeof value === TYPES.STRING;
+    return typeof value === TYPES.STRING || value instanceof String;
 }
 
 function isObject(value: any): boolean {

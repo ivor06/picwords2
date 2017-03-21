@@ -6,7 +6,7 @@ import {ParsedAsJson} from 'body-parser';
 
 import {ProfileLocal} from "../../../common/classes/user";
 import {Email} from "../../../common/classes/email";
-import {AUTH} from "../../../common/config";
+import {AUTH} from "../../config/config";
 import {filterObjectKeys, rejectedPromise} from "../../../common/util";
 import {HttpError} from "../../../common/classes/error";
 import {

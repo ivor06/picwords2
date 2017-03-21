@@ -4,11 +4,11 @@ import {findById} from "../providers/user";
 import {
     anyTokenStrategy, vkLogin, vkLoginCallback,
     vkLoginSendAccessToken, vkTokenLogoutStrategy
-} from "./strategies/vk"
+} from "./strategies/vk";
 import {
     localRegisterStrategy, localLoginStrategy,
     localBearerStrategy, localRecoveryPassword
-} from "./strategies/local"
+} from "./strategies/local";
 
 export {
     localRegister,

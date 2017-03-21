@@ -1,11 +1,17 @@
 .wrapper {
-    /*margin: 0 2%;*/
-    /*width: 100px;*/
-    /*float: right;*/
+    margin: auto;
+}
+
+.wrapper ul {
+    padding: 0;
+    min-width: 0;
+    border: 1px solid gray;
 }
 
 .wrapper ul li {
     width: 100%;
+    margin-left: 0;
+    border-bottom: 1px solid #555;
 }
 
 .wrapper ul li:hover {
