@@ -2,13 +2,13 @@ import {Collection, ObjectID} from "mongodb";
 import {Request} from "~express/lib/request";
 import {Observable} from "rxjs/Observable";
 import * as bcryptjs from "bcryptjs";
-import res = require("~express/lib/response");
 
 import {User, UserType, ProfileLocal, ProfileVk, UsersByRoom, Achievements, Visit} from "../../common/classes/user";
 import {MessageController} from "../controllers/message";
-import {collections, connectDb} from "./db";
-import {AUTH} from "../../common/config";
-import {filterObjectKeys, removeObjectKeys, traversalObject} from "../../common/util";
+import {collections, connectDb, replaceId} from "./db";
+import {AUTH} from "../config/config";
+import {filterObjectKeys, removeObjectKeys, traversalObject, rejectedPromise} from "../../common/util";
+import {log} from "../config/log";
 
 export {
     findById,
@@ -29,7 +29,6 @@ export {
     passwordToHashSync,
     validate,
     validateSync,
-    replaceId,
     setOnline
 }
 
@@ -45,23 +44,26 @@ function findByRoom(name: string): Observable<UsersByRoom> {
 function findById(id: string): Promise<UserType> {
     return users
         .find({_id: new ObjectID(id)})
+        .map(replaceId)
         .limit(1)
-        .next().then(replaceId);
+        .next() as Promise<UserType>;
 }
 
 function findByEmail(email: string): Promise<UserType> {
     return users
         .find({"local.email": email})
+        .map(replaceId)
         .limit(1)
-        .next().then(replaceId);
+        .next() as Promise<UserType>;
 }
 
 function findByToken(token: string, profileName: string): Promise<UserType> {
     const query = profileName === "vk" ? {"vk.access_token": token} : {"local.token": token};
     return users
         .find(query)
+        .map(replaceId)
         .limit(1)
-        .next().then(replaceId);
+        .next() as Promise<UserType>;
 }
 
 function findAll(): Promise<UserType[]> {
@@ -87,13 +89,13 @@ function findAll(): Promise<UserType[]> {
                 user.isOnline = true;
             return replaceId(user);
         })
-        .toArray();
+        .toArray() as Promise<UserType[]>;
 }
 
-function insertUser(user: UserType): Promise<string> {
+function insertUser(user: UserType): Promise<string> { // TODO Validate
     return users
         .insertOne(user)
-        .then(result => (result.result.ok === 1) ? result.insertedId.toString() : null);
+        .then(result => (result.result.ok === 1) ? result.insertedId.toString() : null) as Promise<string>;
 }
 
 function unsetToken(token: string): Promise<number> {
@@ -102,7 +104,7 @@ function unsetToken(token: string): Promise<number> {
             {"vk.access_token": token},
             {$unset: {"vk.access_token": ""}}
         )
-        .then(result => result.result.ok && result.result.nModified);
+        .then(result => result.result.ok && result.result.nModified) as Promise<number>;
 }
 
 function addProfile(id: string, profile: ProfileLocal|ProfileVk): Promise<boolean> {
@@ -113,10 +115,11 @@ function addProfile(id: string, profile: ProfileLocal|ProfileVk): Promise<boolea
     } else if (profile instanceof ProfileVk) {
         profileName = "vk";
     } else {
-        return new Promise((resole, reject) => reject("Cannot find/create user profile")); // TODO More simple, please!
+        log._error("Cannot find/create user profile");
+        return rejectedPromise(false);
     }
     setObj[profileName] = profile;
-    return users.updateOne({_id: new ObjectID(id)}, {$set: setObj}).then(result => result.result.ok && result.result.nModified === 1);
+    return users.updateOne({_id: new ObjectID(id)}, {$set: setObj}).then(result => result.result.ok && result.result.nModified === 1) as Promise<boolean>;
 }
 
 function updateProfile(profile: ProfileLocal|ProfileVk): Promise<boolean> {
@@ -129,9 +132,9 @@ function updateProfile(profile: ProfileLocal|ProfileVk): Promise<boolean> {
         profileName = "vk";
         searchObj["vk.id"] = profile.id;
     } else
-        return new Promise((resole, reject) => reject("Cannot find/create user profile")); // TODO More simple, please!
+        return rejectedPromise(false);
     const setObj = buildSetObject(filterObjectKeys(profile, AUTH[profileName.toUpperCase()].USER_FIELD_LIST.concat([AUTH[profileName.toUpperCase()].TOKEN_FIELD])), profileName);
-    return users.updateOne(searchObj, {$set: setObj}).then(result => result.result.ok && result.result.nModified === 1);
+    return users.updateOne(searchObj, {$set: setObj}).then(result => result.result.ok && result.result.nModified === 1) as Promise<boolean>;
 }
 
 function updateUser(user: UserType): Promise<boolean> {
@@ -141,7 +144,7 @@ function updateUser(user: UserType): Promise<boolean> {
             {$set: user},
             {upsert: true}
         )
-        .then(result => result.result.ok && result.result.nModified === 1);
+        .then(result => result.result.ok && result.result.nModified === 1)  as Promise<boolean>;
 }
 
 function updateAchievements(userId: string, achievements: Achievements): Promise<boolean> {
@@ -150,7 +153,7 @@ function updateAchievements(userId: string, achievements: Achievements): Promise
             {_id: new ObjectID(userId)},
             {$set: {achievements: achievements}}
         )
-        .then(result => result.result.ok && result.result.nModified === 1);
+        .then(result => result.result.ok && result.result.nModified === 1)  as Promise<boolean>;
 }
 
 function updateVisitList(userId: string, visit: Visit): Promise<boolean> {
@@ -159,7 +162,7 @@ function updateVisitList(userId: string, visit: Visit): Promise<boolean> {
             {_id: new ObjectID(userId)},
             {$push: {visitList: visit}}
         )
-        .then(result => result.result.ok && result.result.nModified === 1);
+        .then(result => result.result.ok && result.result.nModified === 1)  as Promise<boolean>;
 }
 
 function findOrCreateByProfile(profile: ProfileLocal, req?: Request): Promise<UserType>
@@ -194,9 +197,9 @@ function findOrCreateByProfile(profile: ProfileLocal|ProfileVk, req?): Promise<U
                 return updateProfile(profile).then(() => user);
             }
             if (id) {
-                const user: UserType = {id: id};
-                user[profileName] = profile;
-                return addProfile(user.id, profile).then(() => user);
+                const newUser: UserType = {id: id};
+                newUser[profileName] = profile;
+                return addProfile(newUser.id, profile).then(() => newUser);
             }
             const newUser = new User({
                 achievements: {
@@ -205,14 +208,14 @@ function findOrCreateByProfile(profile: ProfileLocal|ProfileVk, req?): Promise<U
                     combo: []
                 },
                 roles: {},
-                visitList: [],
+                visitList: []
             });
             newUser[profileName] = profile;
-            return insertUser(newUser).then(id => Object.assign(newUser, {id: id}));
-        });
+            return insertUser(newUser).then(insertedId => Object.assign(newUser, {id: insertedId}));
+        }) as Promise<UserType>;
 }
 
-function generatePassword(length: number = 6): string {
+function generatePassword(length = 6): string {
     const
         charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
         charsetLength = charset.length;
@@ -260,14 +263,6 @@ function buildSetObject(obj, profileName) {
         const setObjKey = profileName + "." + key;
         result[setObjKey] = value;
     });
-    return result;
-}
-
-function replaceId(result: {_id: string, id?: string}) {
-    if (result) {
-        result.id = result._id;
-        delete result._id;
-    }
     return result;
 }
 

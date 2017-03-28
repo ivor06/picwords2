@@ -1,8 +1,7 @@
 .user-form {
     height: 100%;
-    margin-top: -75px;
-    padding-top: 125px;
-    padding-bottom: 60px;
+    margin: -75px 2% 0 2%;
+    padding-top: 135px;
 }
 
 .avatar {

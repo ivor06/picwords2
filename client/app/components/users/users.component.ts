@@ -70,7 +70,7 @@ export class UsersComponent extends TranslateMixin implements OnInit {
             wrapperPaddings = parseFloat(getComputedStyle(usersWrapper).paddingTop) + parseFloat(getComputedStyle(usersWrapper).paddingBottom);
             uiWidgetHeader = document.getElementsByClassName("ui-widget-header")[0]["offsetHeight"];
         } catch (e) {
-            isError = true
+            isError = true;
         }
         if (!isError) {
             const rowsAmount = Math.floor((wrapperHeight - wrapperPaddings - (uiWidgetHeader * 3)) / ROW_HEIGHT);

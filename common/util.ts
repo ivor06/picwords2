@@ -41,7 +41,6 @@ function traversalObject(obj: HashObject<any>, iterator: (obj: any, key: string)
     return result;
 }
 
-
 function someObjectKeys(obj: any, iterator: (obj: any, key: string) => boolean) {
     let result = false;
     if (obj !== null && typeof obj === TYPES.OBJECT && typeof iterator === TYPES.FUNCTION) {
@@ -67,7 +66,8 @@ function removeObjectKeys<T>(obj: T, fieldList: string[]): T {
 
 function filterObjectKeys<T>(obj: T, fieldList: string[]): T {
     if ((typeof obj === TYPES.OBJECT) && fieldList.length) {
-        let result = Object.create(obj);
+        // let result: T = Object.create(obj);
+        let result: T = {} as T;
         fieldList.forEach(field => {
             if (obj.hasOwnProperty(field) && obj[field] !== null)
                 result[field] = obj[field];
@@ -95,7 +95,7 @@ function displayObject(obj) {
 }
 
 function onError(error) {
-    console.error((new Date).toLocaleTimeString() + " error: ", error);
+    console.error((new Date()).toLocaleTimeString() + " error: ", error);
     if (error instanceof Object) displayObject(error);
 }
 
@@ -105,7 +105,7 @@ function promiseSeries(promiseList: Promise<any>[], callback?): Promise<any[]> {
         if (typeof callback === TYPES.FUNCTION)
             resultList.push(callback(result));
         return resultList;
-    })), Promise.resolve());
+    })), null);
 }
 
 function isNumber(value: any): boolean {

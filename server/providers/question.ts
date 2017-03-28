@@ -22,9 +22,9 @@ function questionsAmount(): number {
 function findByNumber(number: number): Promise<QuestionType> {
     return questions
         .find({number: number})
+        .project({_id: 0})
         .limit(1)
-        .next()
-        .then(question => removeObjectKeys(question, ["_id"]));
+        .next() as Promise<QuestionType>;
 }
 
 function getRandomQuestion(): Observable<QuestionType> {

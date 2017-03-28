@@ -19,9 +19,9 @@ const fb = new FormBuilder();
 })
 
 export class SignInFormComponent extends TranslateMixin {
-    private form: FormGroup;
-
     @Output() public submit = new EventEmitter();
+
+    private form: FormGroup;
 
     constructor(private _formBuilder: FormBuilder,
                 private _router: Router,
@@ -63,7 +63,7 @@ export class SignInFormComponent extends TranslateMixin {
                     }
                     this._broadcastMessageEvent.emit("dialog.setContent", {
                         isError: true,
-                        text: message ? message : this.getTranslation("signin-error"),
+                        text: message ? message : this.getTranslation("signin-error")
                     });
                     this._broadcastMessageEvent.emit("progress.start", false);
                     this._broadcastMessageEvent.emit("dialog.show", null);

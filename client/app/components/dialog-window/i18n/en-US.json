@@ -1,6 +1,7 @@
 {
   "error": "Error",
   "error-text": "Error has happened",
+  "error-disconnect": "Internet connection refused",
   "error-status-401": "Unauthorized",
   "error-status-403": "Bad Request",
   "error-status-404": "Not Found",

@@ -27,7 +27,7 @@ function connectDb(): Promise<Db> {
         .map(collectionName => db.collection(collectionName).count({}).then(count => {
             collections[collectionName] = db.collection(collectionName);
             return counts[collectionName] = count;
-        }))).then(() => db));
+        }))).then(() => db)) as Promise<Db>;
 }
 
 function disconnectDb(): Promise<void> {
@@ -42,10 +42,10 @@ function getDbStats() {
         }));
 }
 
-function replaceId<T>(result: T&{_id: string, id?: string}): T {
+function replaceId<T>(result: T): T {
     if (result) {
-        result.id = result._id;
-        delete result._id;
+        result["id"] = result["_id"];
+        delete result["_id"];
     }
     return result;
 }

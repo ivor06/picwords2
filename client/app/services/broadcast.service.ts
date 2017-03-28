@@ -28,6 +28,6 @@ export class BroadcastService {
     on<T>(key: any, eventName: string): Observable<T> {
         return this._eventBus.asObservable()
             .filter(event => (event.key === key) && (event.eventName === eventName))
-            .map(event => <T>event.data);
+            .map(event => <T> event.data);
     }
 }
