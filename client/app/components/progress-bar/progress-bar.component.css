@@ -1,0 +1,6 @@
+.wrapper {
+    position: absolute;
+    top: 47%;
+    left: 47%;
+    z-index: 2000;
+}
