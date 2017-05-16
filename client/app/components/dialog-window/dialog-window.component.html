@@ -4,16 +4,17 @@
      [ngClass]="{'in': isAnimation, 'displayed': isDisplay}"
      [ngStyle]="{'opacity': isAnimation ? 1 : 0}">
     <div class="modal-dialog">
-        <div *ngIf="content" class="modal-content " [ngClass]="{'error-content': content.isError}"
-             (click)="content.isCloseOnClick && hide()">
+        <div *ngIf="content" class="modal-content max-height-100" [ngClass]="{'error-content': content.isError}"
+             (click)="!content.isNotCloseOnClick && hide()">
             <div class="modal-header"
                  [ngClass]="{'alert': content.isError, 'alert-danger': content.isError, 'correct-header': !content.isError}">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                <button *ngIf="!content.isNotClosable" type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true"
                         (click)="hide()">&times;</button>
                 <h4 class="modal-title text-center">{{content.header ? content.header : (content.isError ? ('error' |
                     translate: 'dialog-window' : currentLanguage) : "")}}</h4>
             </div>
-            <div class="modal-body">
+            <div class="modal-body height-auto">
                 <div *ngIf="content.image" class="media-img">
                     <img
                             class="img-rounded img-responsive img-fluid center-block pull-md-12"
@@ -23,6 +24,9 @@
                     <h4 class="media-heading text-center">{{content.text}}</h4>
                 </div>
                 <p *ngIf="!content.image && content.text" class="text-center">{{content.text}}</p>
+                <p *ngIf="!content.image && content.connectionStatus" class="text-center">{{content.connectionStatus |
+                    translate: 'dialog-window'
+                    : currentLanguage}}</p>
             </div>
             <div *ngIf="!!content.buttonList && content.buttonList.length" class="modal-footer buttonList">
                 <div *ngFor="let button of content.buttonList">
@@ -40,8 +44,8 @@
                 </div>
             </div>
             <div *ngIf="content.isError" class="modal-footer">
-                <a href="#" onclick="location.reload(true); return false;">{{'reload-page' | translate: 'dialog-window'
-                    : currentLanguage}}</a>
+                <a href="#" onclick="location.reload(true); return false;">{{'reload-page' | translate: 'dialog-window':
+                    currentLanguage}}</a>
             </div>
         </div>
     </div>

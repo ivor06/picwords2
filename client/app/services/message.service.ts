@@ -13,12 +13,12 @@ import {BroadcastMessageEvent} from "./broadcast-message.event";
 import {MessageType} from "../../../common/classes/message";
 
 interface Socket {
-    on(event: string, callback: (data: any) => void);
-    emit(event: string, data: any, cb?: (time: string) => void);
     id: string;
     io: any;
     connected: boolean;
     disconnected: boolean;
+    on(event: string, callback: (data: any) => void);
+    emit(event: string, data: any, cb?: (time: string) => void);
     disconnect(close?: boolean);
     remove();
 }
@@ -70,6 +70,25 @@ export class MessageService {
                 this.socketId = this.socket.id || null;
                 this._broadcastMessageEvent.emit("socket-id", this.socketId);
 
+                this.socket.on("message", (message: MessageType) => this._broadcastMessageEvent.emit("message", message));
+
+                this.socket.on("reconnect", (data: string) => {
+                    console.log("connection recovered", data);
+                });
+
+                this.socket.on("reconnecting", (data: string) => {
+                    console.log("reconnecting attempt", data);
+                });
+
+                this.socket.on("disconnect", (data: string) => {
+                    // TODO popup message
+                    // this._broadcastMessageEvent.emit("dialog.setContent", {
+                    //     isError: true,
+                    //     connectionStatus: "error-disconnect",
+                    // });
+                    // this._broadcastMessageEvent.emit("dialog.show", 2000);
+                });
+
                 this.socket.on("disconnected", (socketId: string) => this._broadcastMessageEvent.emit("user-disconnect", socketId));
 
                 this.socket.on("userListByRoom", (users: any) => this._broadcastMessageEvent.emit("users-by-room", users));
@@ -84,9 +103,5 @@ export class MessageService {
 
     sendMessage(message: string): Promise<Date> {
         return new Promise(resolve => this.socket.emit("message", message, time => resolve(time))); // TODO Timeout
-    }
-
-    getMessage(): Observable<MessageType> {
-        return Observable.fromEvent(this.socket as any, "message");
     }
 }

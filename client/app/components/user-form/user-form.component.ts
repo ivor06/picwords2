@@ -37,7 +37,7 @@ export class UserFormComponent extends TranslateMixin {
         }
         const controlsConfig = {
             name: ["", Validators.required],
-            email: ["", Validators.compose([
+            email: ["", Validators.compose([ // TODO Check email registered already
                 Validators.required,
                 FormValidator.email
             ])],
@@ -70,7 +70,7 @@ export class UserFormComponent extends TranslateMixin {
                     }
                     this._broadcastMessageEvent.emit("dialog.setContent", {
                         isError: true,
-                        text: message ? message : this.getTranslation("signin-error"),
+                        text: message ? message : this.getTranslation("signin-error")
                     });
                     this._broadcastMessageEvent.emit("progress.start", false);
                     this._broadcastMessageEvent.emit("dialog.show", null);

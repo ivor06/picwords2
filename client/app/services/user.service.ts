@@ -52,7 +52,7 @@ export class UserService {
         if (!id)
             return Observable.of(null);
         return id
-            ? this._http.get(API_URL + "/user/id=" + id).map(response => response.json())
+            ? this._http.get(API_URL + "/user/id=" + id, {headers: this._headers}).map(response => response.json())
             : null;
     }
 
@@ -128,7 +128,7 @@ export class UserService {
         });
     }
 
-    signInVkToken() {
+    signInVkToken(): Promise<UserType> {
         this.setAuthHeader("vk");
         return this._http.get(API_URL + "/auth/vk/token", {headers: this._headers})
             .toPromise()
@@ -136,7 +136,7 @@ export class UserService {
             .catch(() => this.clearProfile("vk"));
     }
 
-    signInVk() {
+    signInVk(): Promise<UserType> {
         const url = API_URL + "/auth/vk/login" + (this.getCurrentUserId() ? ("/?id=" + this.getCurrentUserId()) : "");
         return this._http.get(url, {headers: this._headers})
             .toPromise()
@@ -148,20 +148,20 @@ export class UserService {
                             state = urlParts.state;
                         traversalObject(urlParts, (value, key) => {
                             if (key !== "oauthUrl")
-                                urlPartsList.push("&" + key + "=" + value)
+                                urlPartsList.push("&" + key + "=" + value);
                         });
                         return this.oauthVkRedirect(urlParts.oauthUrl + "?" + urlPartsList.join("").substring(1))
                             .then(() => this._http.get(API_URL + "/auth/vk/get_access_token?state=" + state, {headers: this._headers})
                                 .toPromise()
-                                .then(response => this.setUser(response.json(), "vk", true)));
+                                .then(getTokenResponse => this.setUser(getTokenResponse.json(), "vk", true) as UserType));
                     }
                 return null;
                 }
             );
     }
 
-    logout(profileName?: string) {
-        promiseSeries((profileName ? [profileName] : AUTH.PROFILE_LIST)
+    logout(profileName?: string): Promise<void[]> {
+        return promiseSeries((profileName ? [profileName] : AUTH.PROFILE_LIST)
             .filter(name => {
                 const token = this.getToken(name);
                 if (!token)
@@ -179,7 +179,7 @@ export class UserService {
             }), this.clearProfile.bind(this));
     }
 
-    setUser(user: UserType, profileName: string, setToken: boolean = false) {
+    setUser(user: UserType, profileName: string, setToken = false): UserType {
         this.user = this.user ? Object.assign(this.user, user) : user;
         if (setToken && this.user[profileName] && this.user[profileName][AUTH[profileName.toUpperCase()].TOKEN_FIELD]) {
             this.setToken(profileName, this.user[profileName][AUTH[profileName.toUpperCase()].TOKEN_FIELD]);

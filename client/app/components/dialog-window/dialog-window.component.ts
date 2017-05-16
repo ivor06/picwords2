@@ -8,9 +8,10 @@ interface DialogContent {
     text?: string;
     image?: string;
     buttonList?: DialogButton[];
-    isClosable?: boolean;
-    isCloseOnClick?: boolean;
+    isNotClosable?: boolean;
+    isNotCloseOnClick?: boolean;
     isError?: boolean;
+    connectionStatus?: string;
     callBack?: (result?: any) => void;
 }
 

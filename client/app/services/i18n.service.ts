@@ -8,6 +8,7 @@ import {HashString, MapHashString} from "../../../common/interfaces";
 export class I18nService {
 
     constructor(private _http: Http) {
+        // TODO get localizations in a good time
     }
 
     getLocalizations(componentName: string, languageList: string[]): Promise<MapHashString> {
