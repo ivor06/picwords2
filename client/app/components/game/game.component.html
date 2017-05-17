@@ -1,8 +1,4 @@
 <div class="game">
-    <div class="device-xs visible-xs"></div>
-    <div class="device-sm visible-sm"></div>
-    <div class="device-md visible-md"></div>
-    <div class="device-lg visible-lg"></div>
     <div class="container-game container-fluid">
         <div class="row">
             <div class="game-area col-xs-12 col-sm-8 col-md-8 col-lg-8">
@@ -18,12 +14,16 @@
                             {{message.isQuestion ? ("question" | translate: "game" : currentLanguage) + ": " : ""}}
                             {{message.isHint ? ("hint" | translate: "game" : currentLanguage) + ": " : ""}}
                             {{(message.answer && !message.isNobodyAnswered) ? (("answer-correct" | translate: "game" :
-                            currentLanguage) + " " + message.answer + (( message.clientId && (message.clientId ===
+                            currentLanguage) + ": " + message.answer + (( message.clientId && (message.clientId ===
                             socketId)) ? (". " + ("answer-correct-yourself" | translate: "game" : currentLanguage) + " "
                             + message.answerPoints + " " + ((message.answerPoints > 1 ? "answer-points" :
-                            "answer-point") | translate: "game" : currentLanguage)) : "")) : ""}}
+                            "answer-point") | translate: "game" : currentLanguage)) : ""))
+                            + ((message.isRecord && message.clientId === socketId) ? ". " + ("answer-record" |
+                            translate: "game" : currentLanguage) + ": "
+                            + (message.answerTime / 1000) + " " + ("seconds" | translate: "game" : currentLanguage) :
+                            "") : ""}}
                             {{message.isLate ? ("answer-late" | translate: "game" : currentLanguage) + " " +
-                            message.answerTime + ("seconds" | translate: "game" : currentLanguage) : ""}}
+                            (message.answerTime / 1000) + " " + ("seconds" | translate: "game" : currentLanguage) : ""}}
                             {{message.isNobodyAnswered ? ("answer-nobody" | translate: "game" : currentLanguage) + ". "
                             + ("answer-correct" | translate: "game" : currentLanguage) + ": " + message.answer : ""}}
                             {{message.isStarted ? ("game-started" | translate: "game" : currentLanguage) + "." : ""}}
@@ -68,7 +68,7 @@
                         <div (click)="showImage()">
                             <img
                                     class="img-rounded image-preview"
-                                 src="{{currentImage}}">
+                                    src="{{currentImage}}">
                         </div>
                     </div>
                 </div>

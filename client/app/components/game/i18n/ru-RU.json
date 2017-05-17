@@ -1,5 +1,5 @@
 {
-  "player": "Player",
+  "player": "Игрок",
   "placeholder": "Ваш ответ...",
   "game-started": "Игра началась",
   "game-stopped": "Игра остановлена",
@@ -11,6 +11,7 @@
   "answer-correct-yourself": "Вы зарабатываете",
   "answer-point": "балл",
   "answer-points": "балла",
+  "answer-record": "Вы установили личный рекорд времени",
   "answer-nobody": "Никто не ответил на вопрос",
   "answer-late": "Вы опоздали на",
   "seconds": "с."

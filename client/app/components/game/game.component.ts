@@ -9,7 +9,7 @@ import {Message, MessageType} from "../../../../common/classes/message";
 import {BroadcastMessageEvent} from "../../services/broadcast-message.event";
 import {MessageService} from "../../services/message.service";
 import {removeObjectKeys, isNumber, isEmptyObject, traversalObject} from "../../../../common/util";
-import {CLIENT, MESSAGES, GAME} from "../../../../common/config";
+import {CLIENT, MESSAGES} from "../../../../common/config";
 import {ImageService} from "../../services/image.service";
 
 const MESSAGE_LIST_PADDING = 45;
@@ -22,7 +22,6 @@ const MESSAGE_LIST_PADDING = 45;
 })
 
 export class GameComponent extends TranslateMixin implements OnInit {
-
     static state = {
         isInited: false,
         isXs: false,
@@ -41,18 +40,18 @@ export class GameComponent extends TranslateMixin implements OnInit {
         users: null,
         disconnect: null
     };
+
+    currentMessage = "";
+    messageList: MessageType[] = [];
+    isXs: boolean;
     private currentUser: UserType;
     private socketId: string;
-    private messageList: MessageType[] = [];
-    private currentMessage = "";
-    private isXs: boolean;
     private _historyMessageList: string[] = [];
     private _users: UsersByRoom = {};
     private _sendMessageHeight: number;
     private nextImage: string;
     private currentImage: string;
     private isShowMiniature = false;
-
     constructor(private _imageService: ImageService,
                 private _messageService: MessageService,
                 private _userService: UserService,
@@ -122,11 +121,20 @@ export class GameComponent extends TranslateMixin implements OnInit {
     check() {
         if (this.element.nativeElement.isConnected || this.element.nativeElement.offsetHeight > 0) {
             this.changeDetectorRef.detectChanges();
-            if (document.getElementsByClassName("messageList")[0]["offsetHeight"] - MESSAGE_LIST_PADDING > document.getElementsByClassName("game-area")[0]["offsetHeight"] - this._sendMessageHeight) {
+            let
+                messageListHeight: number,
+                gameAreaHeight: number;
+            try {
+                messageListHeight = document.getElementsByClassName("messageList")[0]["offsetHeight"];
+                gameAreaHeight = document.getElementsByClassName("game-area")[0]["offsetHeight"];
+            } catch (e) {
+                return console.error(e);
+            }
+            if ((messageListHeight - MESSAGE_LIST_PADDING) > (gameAreaHeight - this._sendMessageHeight)) {
                 this.messageList.shift();
                 if (this._historyMessageList.length)
                     this._historyMessageList.shift();
-                this.check();
+                setTimeout(() => this.check(), 500);
             }
         }
     }
@@ -149,10 +157,7 @@ export class GameComponent extends TranslateMixin implements OnInit {
 
     bindEvents() {
         GameComponent.subscribes.xs = this._broadcastMessageEvent.on("xs-mode")
-            .subscribe(isXs => {
-                // console.log("game. isXs:", isXs);
-                this.isXs = isXs;
-            });
+            .subscribe(isXs => this.isXs = isXs);
 
         GameComponent.subscribes.onResize = Observable.fromEvent(window, "resize")
             .throttleTime(CLIENT.THROTTLE_TIME)
@@ -179,10 +184,9 @@ export class GameComponent extends TranslateMixin implements OnInit {
             .subscribe((message: MessageType) => {
                 if (isNumber(message.questionNumber))
                     this._imageService.getImageByNumber(message.questionNumber)
-                        .subscribe(() => {
-                            },
-                            error => this.isShowMiniature = false,
-                            () => this.nextImage = "./" + CLIENT.IMAGES_PATH + "/" + message.questionNumber + ".jpg"
+                        .subscribe(
+                            () => this.nextImage = "./" + CLIENT.IMAGES_PATH + "/" + message.questionNumber + ".jpg",
+                            error => this.isShowMiniature = false
                         );
                 if (message.answer) {
                     this.currentImage = this.nextImage;
@@ -194,7 +198,7 @@ export class GameComponent extends TranslateMixin implements OnInit {
                             text: message.answer,
                             image: this.currentImage
                         });
-                        this.showImage(GAME.IMAGE_SHOW_TIME);
+                        this.showImage(CLIENT.IMAGE_SHOW_TIME);
                     }
                 }
                 this.messageList.push(message);

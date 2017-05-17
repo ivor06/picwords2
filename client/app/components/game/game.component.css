@@ -1,11 +1,20 @@
 .game {
     height: 100%;
+    width: 100%;
+    position: absolute;
     margin-top: -75px;
     padding-top: 135px;
-    padding-bottom: 60px;
 }
 
-.container-game > .row > div {
+.game > div.container-game {
+    height: 100%;
+}
+
+.game > div.container-game > div.row {
+    height: 100%;
+}
+
+.game > div.container-game > div.row > div {
     height: 100%;
 }
 
@@ -16,6 +25,7 @@
 
 .game-area {
     border: 1px solid brown;
+    min-height: 200px;
 }
 
 .sidebar {
