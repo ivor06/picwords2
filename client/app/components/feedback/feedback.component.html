@@ -1,6 +1,11 @@
 <div class="feedback-wrapper container">
     <h2 class="text-center">{{(isGiveFeedback ? "give-feedback" : "feedback-list") | translate: "feedback" :
         currentLanguage}}</h2>
+    <div class="button-give-feedback">
+        <button *ngIf="!isGiveFeedback" class="btn btn-primary" (click)="onGive()">{{"give-feedback" | translate:
+            "navbar" : currentLanguage}}
+        </button>
+    </div>
     <ul *ngIf="!isGiveFeedback" class="feedback-list">
         <li class="row" *ngFor="let feedbackItem of feedbackList">
             <div class="feedback-item panel panel-group">
@@ -15,7 +20,7 @@
                 </div>
                 <div class="panel panel-body">
                     <div *ngFor="let lang of langList">
-                        <div *ngIf="feedbackItem.text[lang]" class="flex padding-bottom-5">
+                        <div *ngIf="feedbackItem.text && feedbackItem.text[lang]" class="flex padding-bottom-5">
                             <span class="flag-icon flag-icon-{{languages[lang].flagName}}"></span>
                             <article class="text-indent"> {{feedbackItem.text[lang]}}</article>
                         </div>
@@ -58,9 +63,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-6">
-                        <div>{{ "feedback-reply" | translate: "feedback" : currentLanguage }}</div>
-                    </div>
+                    <!--<div class="col-xs-6">-->
+                    <!--<div>{{ "feedback-reply" | translate: "feedback" : currentLanguage }}</div>-->
+                    <!--</div>-->
                 </div>
                 <div class="form-group">
                     <label>{{ "feedback-text" | translate: "feedback" : currentLanguage }}</label>

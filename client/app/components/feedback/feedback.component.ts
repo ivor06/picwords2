@@ -18,18 +18,17 @@ import {User} from "../../../../common/classes/user";
 })
 
 export class FeedbackComponent extends TranslateMixin implements OnInit {
+    isGiveFeedback = false;
+    langList = Object.keys(LANGUAGES);
+    languages = LANGUAGES;
     private form: FormGroup;
-    private languages = LANGUAGES;
-    private langList = Object.keys(LANGUAGES);
     private altLang: string;
-    private feedbackList: FeedbackType[];
+    private feedbackList: FeedbackType[] = [];
     private feedback: FeedbackType = {
         title: {},
         text: {}
     };
-    private isGiveFeedback = false;
     private reference: string = null;
-    private authorName: string = null;
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -61,6 +60,7 @@ export class FeedbackComponent extends TranslateMixin implements OnInit {
                         .subscribe(
                             feedbackList => this.feedbackList = feedbackList.sort((a: FeedbackType, b: FeedbackType) => (a.date > b.date) ? -1 : 1),
                             error => {
+                                console.log("error:", error);
                                 this.broadcastMessageEvent.emit("dialog.setContent", {
                                     isError: true,
                                     text: this.getTranslation("feedback-error")
@@ -85,7 +85,13 @@ export class FeedbackComponent extends TranslateMixin implements OnInit {
                         text: this.getTranslation("feedback-success")
                     });
                     this.broadcastMessageEvent.emit("dialog.show", CLIENT.ERROR_SHOW_TIME);
-                    this.router.navigate(["feedback"]);
+                    // this.router.navigate(["feedback"]);
+                    this.feedbackList.push(this.feedback);
+                    this.feedback = {
+                        title: {},
+                        text: {}
+                    };
+                    this.isGiveFeedback = false;
                 },
                 error => {
                     this.broadcastMessageEvent.emit("dialog.setContent", {
@@ -97,5 +103,9 @@ export class FeedbackComponent extends TranslateMixin implements OnInit {
                 },
                 () => this.broadcastMessageEvent.emit("progress.start", false)
             );
+    }
+
+    onGive() {
+        this.isGiveFeedback = true;
     }
 }
