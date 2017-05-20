@@ -2,6 +2,7 @@ import * as express from "express";
 
 import {findById, cleanUser, findByRoom, findAll} from "../providers/user";
 import {findAllNews} from "../providers/news";
+import {findAllFeedback, insertFeedback} from "../providers/feedback";
 
 const router = express.Router();
 
@@ -9,6 +10,18 @@ export {router}
 
 router.get("/news/all",
     (req, res) => findAllNews().then(
+        res.json.bind(res),
+        res.send.bind(res)
+    ));
+
+router.get("/feedback/all",
+    (req, res) => findAllFeedback().then(
+        res.json.bind(res),
+        res.send.bind(res)
+    ));
+
+router.post("/feedback/add",
+    (req, res) => insertFeedback(req.body).then(
         res.json.bind(res),
         res.send.bind(res)
     ));

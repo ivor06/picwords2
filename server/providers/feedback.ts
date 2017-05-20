@@ -1,4 +1,3 @@
-/// <reference path="../../typings/index.d.ts" />
 import {Collection, ObjectID} from "mongodb";
 
 import {connectDb, collections, replaceId} from "./db";
@@ -16,7 +15,7 @@ connectDb().then(() => feedbackCol = collections["feedback"]);
 function insertFeedback(feedback: FeedbackType): Promise<string> {
     return feedbackCol
         .insertOne(feedback)
-        .then(result => (result.result.ok === 1) ? result.insertedId.toString() : null);
+        .then(result => (result.result.ok === 1) ? result.insertedId.toString() : null) as Promise<string>;
 }
 
 function findFeedbackById(id: string): Promise<FeedbackType> {
@@ -24,12 +23,12 @@ function findFeedbackById(id: string): Promise<FeedbackType> {
         .find({_id: new ObjectID(id)})
         .map(replaceId)
         .limit(1)
-        .next();
+        .next() as Promise<FeedbackType>;
 }
 
 function findAllFeedback(): Promise<FeedbackType[]> {
     return feedbackCol
         .find({})
         .map(replaceId)
-        .toArray();
+        .toArray() as Promise<FeedbackType[]>;
 }

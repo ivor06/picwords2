@@ -1,10 +1,11 @@
 import * as express from "express";
-import {Express} from "~express/lib/express";
 import * as bodyParser from "body-parser";
+import * as compression from "compression";
 import * as passport from "passport";
 import * as https from "https";
 
 import {connectDb, disconnectDb} from "./providers/db";
+import {prepareQuestions} from "./providers/question";
 import {HttpError} from "../common/classes/error";
 import {SERVER, IS_PRODUCTION} from "./config/config";
 import {log} from "./config/log";
@@ -16,11 +17,9 @@ export {
     Server
 };
 
-class Server {
-    app: express.Application;
-    server: https.Server;
-    io: SocketIO.Server;
+const shouldCompress = (req, res) => (req.headers["x-no-compression"]) ? false : compression.filter(req, res);
 
+class Server {
     /**
      *  Bootstrap the application
      *
@@ -29,9 +28,12 @@ class Server {
      *  @static
      *  @return {Server} Returns Server instance.
      */
-    static  bootstrap(): Server {
+    public static bootstrap(): Server {
         return new Server();
     }
+
+    private app: express.Application;
+    private server: https.Server;
 
     /**
      * Constructor
@@ -40,20 +42,19 @@ class Server {
      * constructor
      */
     constructor() {
-        connectDb().then(
-            () => {
-                log.info("Db connected succesfully");
-                this.app = express();
+        connectDb()
+            .then(prepareQuestions)
+            .then(() => {
 
-                this.server = https.createServer({}, this.app);
-                this.server.listen(443);
+                this.app = express();
 
                 if (IS_PRODUCTION)
                     log.info("------------ PRODUCTION ------------");
                 else
                     log.info("------------ DEBUG ------------");
 
-                this.app.use((express as Express).static(SERVER.STATIC));
+                    this.app.use(compression({filter: shouldCompress}));
+                    this.app.use(express.static(SERVER.STATIC));
                 this.app.use(bodyParser.json());
                 this.app.use(bodyParser.urlencoded({extended: false}));
                 this.app.use(passport.initialize());
@@ -68,11 +69,10 @@ class Server {
                 });
                 this.app.use((err) => {
                     log.error("Error:", err);
-                    throw err;
                 });
 
                 const serv = this.app.listen(SERVER.PORT, SERVER.HOST_NAME, () => {
-                    log.info("app listen on", serv.address().address + ":" + serv.address().port);
+                    log.info("app listening on", serv.address().address + ":" + serv.address().port);
                 });
 
                 let messageController = new MessageController();
