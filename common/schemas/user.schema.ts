@@ -1,12 +1,12 @@
 import {JsonSchema} from "../interfaces";
 
-export const userSchema: JsonSchema = { // TODO Generate from User;s class.
+export const userSchema: JsonSchema = {
     id: "/User",
     type: "object",
     properties: {
         "id": {type: "string"},
         "isOnline": {type: "string"},
-        "roles": {type: "string"},
+        "roles": {$ref: "#/definitions/RolesType"},
         "visitList": {
             type: "array",
             items: {$ref: "#/definitions/VisitType"}

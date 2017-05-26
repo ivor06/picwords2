@@ -64,7 +64,7 @@ function removeObjectKeys<T>(obj: T, fieldList: string[]): T {
     return obj;
 }
 
-function filterObjectKeys<T>(obj: T, fieldList: string[]): T {
+function filterObjectKeys<T>(obj: HashObject<any>, fieldList: string[]): HashObject<any> {
     if ((typeof obj === TYPES.OBJECT) && fieldList.length) {
         // let result: T = Object.create(obj);
         let result: T = {} as T;

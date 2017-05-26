@@ -1,5 +1,3 @@
-/// <reference path="../typings/index.d.ts" />
-
 export {
     HashObject,
     HashString,
@@ -35,13 +33,13 @@ interface KeyboardEventWithTargetValue extends KeyboardEvent {
 
 namespace VK {
     export interface OauthRedirectPartsUrl {
-        oauthUrl: string,
-        redirect_uri: string,
-        client_id: string,
-        state: string,
-        display: string,
-        response_type: string,
-        v: string
+        oauthUrl: string;
+        redirect_uri: string;
+        client_id: string;
+        state: string;
+        display: string;
+        response_type: string;
+        v: string;
     }
 }
 

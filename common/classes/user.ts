@@ -26,15 +26,15 @@ class User {
     local: ProfileLocalType;
     vk: ProfileVkType;
 
+    static getName(user: UserType): string {
+        return new User(user).getName();
+    }
+
     constructor(user?: UserType) {
         if (user)
             for (let key in user)
                 if (user.hasOwnProperty(key))
                     this[key] = user[key];
-    }
-
-    static getName(user: UserType): string {
-        return new User(user).getName();
     }
 
     getName(): string {
@@ -166,7 +166,7 @@ type ProfileVkType = {
     id: number; // one of the base fields according https://vk.com/dev/objects/user
 
     /* base VK user profile fields */
-    //uid?: string; // but some of real Vk service' answers contain uid instead id
+    // uid?: string; // but some of real Vk service' answers contain uid instead id
     first_name?: string;
     last_name?: string;
     deactivated?: string;
