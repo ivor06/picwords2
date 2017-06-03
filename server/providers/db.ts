@@ -1,6 +1,6 @@
 import {MongoClient, Db, Collection} from "mongodb";
 
-import {SERVER, DB} from "../config/config";
+import {DB} from "../config/config";
 import {log} from "../config/log";
 import {HashObject, HashNumber} from "../../common/interfaces";
 
@@ -37,9 +37,9 @@ function disconnectDb(): Promise<void> {
 /* Get DB statistics */
 function getDbStats() {
     return connectDb()
-        .then(db => ['users', 'questions'].map(collectionName => {
-            db.collection(collectionName) ? db.collection(collectionName).count({}).then(count => log.info("collection", collectionName, "has", count, "items")) : null;
-        }));
+        .then(db => ["users", "questions"].map(collectionName => db.collection(collectionName)
+            ? db.collection(collectionName).count({}).then(count => log.info("collection", collectionName, "has", count, "items"))
+            : null));
 }
 
 function replaceId<T>(result: T): T {
