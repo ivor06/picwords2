@@ -31,10 +31,10 @@ interface DialogButton {
 })
 
 export class DialogWindowComponent extends TranslateMixin {
-    private isDisplay = false;
-    private isAnimation = false;
-    private content: DialogContent = {};
-    private isXs: boolean;
+    isAnimation = false;
+    isDisplay = false;
+    content: DialogContent = {};
+    isXs: boolean;
 
     constructor(private _broadcastMessageEvent: BroadcastMessageEvent) {
         super();
