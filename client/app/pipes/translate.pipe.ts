@@ -12,7 +12,7 @@ const langList = LANG_LIST;
 
 const
     localizations = new Map<string, MapHashString>(),
-    getTranslation = (value: string, scope: string, language: string, useLanguage?: boolean): string => (
+    getTranslation = (value: string, scope: string, language: string, useLanguage = false): string => (
     localizations && localizations.get(scope) && localizations.get(scope).get(useLanguage ? language : SelectLangComponent.currentLanguage))
         ? localizations.get(scope).get(useLanguage ? language : SelectLangComponent.currentLanguage)[value]
         : value;
@@ -38,7 +38,7 @@ export class TranslatePipe implements PipeTransform {
         }
     }
 
-    transform(value: string, scope: string, language: string, useLanguage?: boolean): string {
+    transform(value: string, scope: string, language: string, useLanguage = false): string {
         return getTranslation(value, scope, language, useLanguage);
     }
 
@@ -46,8 +46,8 @@ export class TranslatePipe implements PipeTransform {
         return localizations.get(scope)
             ? resolvedPromise(null)
             : this.i18nService.getLocalizations(scope, langList).then(
-            localMap => localizations.set(scope, localMap),
-            console.error.bind(console)
-        );
+                localMap => localizations.set(scope, localMap),
+                console.error.bind(console)
+            );
     }
 }
