@@ -14,7 +14,7 @@ import {
 import {API_URL, AUTH} from "../../../common/config";
 import {BroadcastMessageEvent} from "./broadcast-message.event";
 import {VK} from "../../../common/interfaces";
-import {traversalObject, promiseSeries, isEmptyObject, rejectedPromise} from "../../../common/util";
+import {traversalObject, isEmptyObject, rejectedPromise} from "../../../common/util";
 
 @Injectable()
 export class UserService {
@@ -160,14 +160,9 @@ export class UserService {
             );
     }
 
-    logout(profileName?: string): Promise<void[]> {
-        return promiseSeries((profileName ? [profileName] : AUTH.PROFILE_LIST)
-            .filter(name => {
-                const token = this.getToken(name);
-                if (!token)
-                    this.clearProfile(name);
-                return !!token;
-            })
+    logout(profileName?: string): Promise<{}[]> {
+        return Promise.all((profileName ? [profileName] : AUTH.PROFILE_LIST)
+            .filter(name => !!this.getToken(name))
             .map(name => {
                 this.setAuthHeader(name);
                 return this._http.get(API_URL + "/auth/" + name + "/logout", {headers: this._headers})
@@ -176,7 +171,8 @@ export class UserService {
                         () => name,
                         () => name
                     );
-            }), this.clearProfile.bind(this));
+            }))
+            .then(profileList => profileList.map(this.clearProfile.bind(this)));
     }
 
     setUser(user: UserType, profileName: string, setToken = false): UserType {
